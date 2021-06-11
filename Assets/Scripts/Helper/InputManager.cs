@@ -4,18 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class CustomBehaviour : MonoBehaviour
-{
-    protected virtual void OnEnable()
-    {
-        CustomInput.SetInputActive(true);
-    }
-
-    protected virtual void OnDisable()
-    {
-        CustomInput.SetInputActive(false);
-    }
-}
 
 public static class CustomInput
 {
@@ -24,7 +12,7 @@ public static class CustomInput
     public const string Jump = "Jump";
     public const string Crouch = "Crouch";
     public const string Sprint = "Sprint";
-    
+
     private static Dictionary<string, InputAction> _registeredActions;
 
     public static void ImportAsset(InputActionAsset asset, params string[] ids)
@@ -73,6 +61,8 @@ public static class CustomInput
     public static bool GetButtonDown(string button)
     {
         InputAction input = GetAction(button);
+    
+
         return input?.ReadValue<float>() > 0 && input.triggered;
     }
 
@@ -82,16 +72,20 @@ public static class CustomInput
         InputAction input = GetAction(directionalInput);
         if (input == null)
             return Vector2.zero;
+
+
         return input.ReadValue<Vector2>();
     }
-    
-    
 
 
     private static InputAction GetAction(string id)
     {
         if (string.IsNullOrEmpty(id)) return null;
         if (!_registeredActions.ContainsKey(id)) return null;
+        if (!_registeredActions[id].enabled)
+        {
+            _registeredActions[id].Enable();
+        }
 
         return _registeredActions[id];
     }
