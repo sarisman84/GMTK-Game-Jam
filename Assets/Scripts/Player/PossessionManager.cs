@@ -46,15 +46,15 @@ namespace Player
                 !possessedEntities.Contains(obj.gameObject) && obj.GetComponent<TestingDummy>() is { } testingDummy)
             {
                 possessedEntities.Add(obj.gameObject);
-                testingDummy.onOverridingFixedUpdate += FollowPossessor;
-                testingDummy.onOverridingWeaponBehaviour += Woolooloo;
+                testingDummy.ONOverridingFixedUpdate += FollowPossessor;
+                testingDummy.ONOverridingWeaponBehaviour += OverrideTargeting;
                 Destroy(bullet);
             }
 
             Destroy(bullet);
         }
 
-        private void Woolooloo(WeaponController weaponController, Transform owner)
+        private void OverrideTargeting(WeaponController weaponController, Transform owner)
         {
             TestingDummy closestDummy =
                 GameMaster.SingletonAccess.GetNearestObjectOfType<TestingDummy>(owner.gameObject, 15f,

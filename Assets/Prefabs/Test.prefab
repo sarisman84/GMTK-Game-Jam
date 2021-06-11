@@ -144,6 +144,7 @@ GameObject:
   - component: {fileID: 8096020584464913811}
   - component: {fileID: 8096020584464913808}
   - component: {fileID: 1772325600875603084}
+  - component: {fileID: 8290886754629305504}
   m_Layer: 6
   m_Name: Test
   m_TagString: Untagged
@@ -275,3 +276,34 @@ MonoBehaviour:
   barrel: {fileID: 3142970729770169682}
   weaponLibrary:
   - {fileID: 11400000, guid: f6ce430bc9d7d9d4aaf402eed1c256fb, type: 2}
+--- !u!114 &8290886754629305504
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8096020584464913837}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d85b25c065c14aecafd8bb29b3d9454d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 200
+  onHealthChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  onDeath:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8290886754629305504}
+        m_TargetAssemblyTypeName: General.HealthModifier, Assembly-CSharp
+        m_MethodName: DestroyThis
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2

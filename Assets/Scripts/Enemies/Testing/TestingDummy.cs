@@ -1,67 +1,50 @@
 ﻿using System;
 using Managers;
 using Player;
+using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace Enemies.Testing
 {
-    [RequireComponent(typeof(Rigidbody))]
-    public class TestingDummy : MonoBehaviour
+    public class TestingDummy : BaseEnemy
     {
         public float speed = 5f;
         public float changeDirInIntervals = 2f;
-        private Vector3 currentDirection;
+        private Vector3 _currentDirection;
 
-        private float curCountdown = 0;
-
-        private Rigidbody _rigidbody;
-        private WeaponController _weaponController;
+        private float _curCountdown;
 
 
-        public Action<Rigidbody> onOverridingFixedUpdate;
-        public Action<WeaponController, Transform> onOverridingWeaponBehaviour;
-
-
-        private void Awake()
+        protected override void DefaultWeaponBehaviour()
         {
-            _rigidbody = GetComponent<Rigidbody>();
-            _weaponController = GetComponent<WeaponController>();
+            WeaponController.Aim((GameMaster.SingletonAccess.GetPlayer().transform.position - transform.position)
+                .normalized);
+            WeaponController.Shoot(IsInsideDetectionRange(GameMaster.SingletonAccess.GetPlayer(), transform, 15f));
         }
 
-        private void Update()
+        protected override void DefaultRigidbodyBehaviour()
         {
-            curCountdown += Time.deltaTime;
+            Rigidbody.velocity = _currentDirection * (speed * 100f * Time.fixedDeltaTime);
+        }
 
-            if (curCountdown >= changeDirInIntervals)
+        protected override void Update()
+        {
+            _curCountdown += Time.deltaTime;
+
+            if (_curCountdown >= changeDirInIntervals)
             {
-                currentDirection = Random.onUnitSphere;
-                curCountdown = 0;
+                _currentDirection = Random.onUnitSphere;
+                _curCountdown = 0;
             }
 
-
-            if (onOverridingWeaponBehaviour == null)
-            {
-                _weaponController.Aim((GameMaster.SingletonAccess.GetPlayer().transform.position - transform.position)
-                    .normalized);
-                _weaponController.Shoot(IsInsideDetectionRange(GameMaster.SingletonAccess.GetPlayer(), transform, 15f));
-            }
-            else
-                onOverridingWeaponBehaviour.Invoke(_weaponController, transform);
+            base.Update();
         }
 
         public static bool IsInsideDetectionRange(GameObject target, Transform transform, float range)
         {
             float dist = Vector3.Distance(target.transform.position, transform.position);
             return dist < range;
-        }
-
-        private void FixedUpdate()
-        {
-            if (onOverridingFixedUpdate == null)
-                _rigidbody.velocity = currentDirection * (speed * 100f * Time.fixedDeltaTime);
-            else
-                onOverridingFixedUpdate.Invoke(_rigidbody);
         }
     }
 }

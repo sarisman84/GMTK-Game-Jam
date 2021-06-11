@@ -1,10 +1,12 @@
-﻿using UnityEngine;
+﻿using General;
+using UnityEngine;
 
 namespace Player
 {
     [CreateAssetMenu(fileName = "Basic Weapon Settings", menuName = "GMTK/Weapons/Basic", order = 0)]
     public class WeaponSettings : ScriptableObject
     {
+        public float damage = 1f;
         public float fireRate;
         public Bullet bulletPrefab;
 
@@ -17,12 +19,17 @@ namespace Player
             {
                 bullet.Rigidbody.velocity = bullet.transform.forward * (bullet.speed * 100f * Time.fixedDeltaTime);
             };
-            
+
             clone.ONCollisionEnterEvent += collider => CloneOnONCollisionEnterEvent(collider, clone);
         }
 
         private void CloneOnONCollisionEnterEvent(Collider obj, Bullet clone)
         {
+            if (obj.GetComponent<HealthModifier>() is { } healthModifier)
+            {
+                healthModifier.TakeDamage(damage);
+            }
+
             Destroy(clone);
         }
     }
