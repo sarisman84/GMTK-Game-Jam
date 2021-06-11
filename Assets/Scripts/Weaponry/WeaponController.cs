@@ -32,6 +32,11 @@ namespace Player
             barrel.transform.rotation = Quaternion.LookRotation(dir, Vector3.up);
         }
 
+        public void Aim(Vector3 direction)
+        {
+            barrel.transform.rotation = Quaternion.LookRotation(direction, Vector3.up);
+        }
+
         public void Shoot(bool input)
         {
             _currentFireRate += Time.deltaTime;

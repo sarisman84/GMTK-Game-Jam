@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using Enemies.Testing;
+using Managers;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Player
@@ -45,10 +47,23 @@ namespace Player
             {
                 possessedEntities.Add(obj.gameObject);
                 testingDummy.onOverridingFixedUpdate += FollowPossessor;
+                testingDummy.onOverridingWeaponBehaviour += Woolooloo;
                 Destroy(bullet);
             }
 
             Destroy(bullet);
+        }
+
+        private void Woolooloo(WeaponController weaponController, Transform owner)
+        {
+            TestingDummy closestDummy =
+                GameMaster.SingletonAccess.GetNearestObjectOfType<TestingDummy>(owner.gameObject, 15f,
+                    LayerMask.GetMask("Enemy"), possessedEntities);
+            if (closestDummy)
+            {
+                weaponController.Aim((closestDummy.transform.position - owner.position).normalized);
+                weaponController.Shoot(TestingDummy.IsInsideDetectionRange(closestDummy.gameObject, owner, 15f));
+            }
         }
 
         private void FollowPossessor(Rigidbody obj)
