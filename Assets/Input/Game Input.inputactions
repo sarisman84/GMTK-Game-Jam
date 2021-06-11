@@ -14,10 +14,18 @@
                     "interactions": ""
                 },
                 {
-                    "name": "Look",
+                    "name": "DirectionalShot",
                     "type": "Value",
-                    "id": "6efc4a89-2d50-4dc1-9703-53d289e3ee43",
+                    "id": "89ec7f43-0985-434a-acb9-5e09696120f7",
                     "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Possess",
+                    "type": "Button",
+                    "id": "c810ed0e-0fa8-4411-960d-24d097fafbcc",
+                    "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
                 }
@@ -79,68 +87,24 @@
                     "isPartOfComposite": true
                 },
                 {
-                    "name": "Arrows",
-                    "id": "bf91c53a-d03d-4111-9a8f-b37f890f5315",
-                    "path": "2DVector",
+                    "name": "",
+                    "id": "28c36cc1-5694-4085-a4a3-86cb5041f599",
+                    "path": "<Keyboard>/space",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Movement",
-                    "isComposite": true,
+                    "action": "Possess",
+                    "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "up",
-                    "id": "6c0304f4-eb9c-485b-a617-82ee97e87430",
-                    "path": "<Keyboard>/upArrow",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Movement",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "down",
-                    "id": "96de7ddb-da85-4dce-8c28-6b733e36ce53",
-                    "path": "<Keyboard>/downArrow",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Movement",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "left",
-                    "id": "766c7e64-d80d-45a3-98ba-9d754ca9f319",
-                    "path": "<Keyboard>/leftArrow",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Movement",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "right",
-                    "id": "8833ec10-2d77-43a0-a74a-89482e403b09",
-                    "path": "<Keyboard>/rightArrow",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Movement",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
                     "name": "",
-                    "id": "0079088a-abd0-49bc-9809-4dfdb6ed3c68",
-                    "path": "<Mouse>/delta",
+                    "id": "e68ddcda-35a6-4c29-a08c-b233be6a4882",
+                    "path": "<Mouse>/position",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Look",
+                    "action": "DirectionalShot",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
