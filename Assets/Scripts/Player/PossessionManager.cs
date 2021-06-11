@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Enemies.Testing;
 using UnityEngine;
 
 namespace Player
@@ -8,14 +9,15 @@ namespace Player
         public Bullet bulletPrefab;
         public Transform barrel;
         public float cooldown = 3f;
+        public float minionMinSpace = 2f;
 
 
-        public List<GameObject> possesedEntities;
+        public List<GameObject> possessedEntities;
 
 
         private float _currentCooldown;
 
-        public void ShootPosessionShot(bool input)
+        public void ShootPossessionShot(bool input)
         {
             _currentCooldown += Time.deltaTime;
 
@@ -38,13 +40,25 @@ namespace Player
 
         private void OnBulletCollisionEnter(Collider obj, Bullet bullet)
         {
-            if (obj.GetComponent<Bullet>() == null && obj.GetComponent<PlayerController>() == null && !possesedEntities.Contains(obj.gameObject))
+            if (obj.GetComponent<Bullet>() == null && obj.GetComponent<PlayerController>() == null &&
+                !possessedEntities.Contains(obj.gameObject) && obj.GetComponent<TestingDummy>() is { } testingDummy)
             {
-                possesedEntities.Add(obj.gameObject);
+                possessedEntities.Add(obj.gameObject);
+                testingDummy.onOverridingFixedUpdate += FollowPossessor;
                 Destroy(bullet);
             }
 
             Destroy(bullet);
+        }
+
+        private void FollowPossessor(Rigidbody obj)
+        {
+            float dist = Vector3.Distance(transform.position, obj.transform.position);
+
+            if (dist > minionMinSpace)
+                obj.velocity = (transform.position - obj.transform.position).normalized * (500f * Time.deltaTime);
+            else
+                obj.velocity = Vector3.zero;
         }
     }
 }

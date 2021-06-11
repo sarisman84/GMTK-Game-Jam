@@ -35,7 +35,7 @@ namespace Player
             if (_possessionManager)
             {
                 
-                _possessionManager.ShootPosessionShot(CustomInput.GetButton("Possess"));
+                _possessionManager.ShootPossessionShot(CustomInput.GetButton("Possess"));
             }
 
             Vector3 movementDir = _rigidbody.velocity.normalized;
