@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Player
@@ -6,9 +7,9 @@ namespace Player
     public class WeaponController : MonoBehaviour
     {
         public Transform barrel;
-        public float fireRate;
-        public GameObject bulletPrefab;
+        public List<WeaponSettings> weaponLibrary;
 
+        private int _currentWeapon = 0;
         private float _currentFireRate = 0;
         private Camera _cam;
         private Plane _plane;
@@ -35,10 +36,9 @@ namespace Player
         {
             _currentFireRate += Time.deltaTime;
 
-            if (input && _currentFireRate >= fireRate)
+            if (input && _currentFireRate >= weaponLibrary[_currentWeapon].fireRate)
             {
-                GameObject clone = Instantiate(bulletPrefab,
-                    barrel.transform.position + (barrel.forward.normalized * 3f), barrel.transform.rotation);
+                weaponLibrary[_currentWeapon].OnShoot(barrel);
                 _currentFireRate = 0;
             }
         }

@@ -9,7 +9,7 @@ namespace Player
     {
         private Rigidbody _rigidbody;
         private WeaponController _weaponController;
-
+        private PossessionManager _possessionManager;
 
         public Transform model;
         public InputActionAsset inputAsset;
@@ -21,6 +21,7 @@ namespace Player
             CustomInput.ImportAsset(inputAsset, CustomInput.DirectionalKeys, "DirectionalShot", "Possess", "Fire");
             _rigidbody = GetComponent<Rigidbody>();
             _weaponController = GetComponent<WeaponController>();
+            _possessionManager = GetComponent<PossessionManager>();
         }
 
         private void Update()
@@ -29,6 +30,12 @@ namespace Player
             {
                 _weaponController.Aim(CustomInput.GetDirectionalInput("DirectionalShot"));
                 _weaponController.Shoot(CustomInput.GetButton("Fire"));
+            }
+
+            if (_possessionManager)
+            {
+                
+                _possessionManager.ShootPosessionShot(CustomInput.GetButton("Possess"));
             }
 
             Vector3 movementDir = _rigidbody.velocity.normalized;
