@@ -11,8 +11,7 @@ GameObject:
   - component: {fileID: 5788437489684617851}
   - component: {fileID: 2704803061095722459}
   - component: {fileID: 6780060282181726748}
-  - component: {fileID: 7884263048099081787}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -84,19 +83,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &7884263048099081787
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6982708904418669954}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &8510836378774466848
 GameObject:
   m_ObjectHideFlags: 0
@@ -110,7 +96,8 @@ GameObject:
   - component: {fileID: 7594498799598782123}
   - component: {fileID: 2420113425417528177}
   - component: {fileID: 1149102810902346992}
-  m_Layer: 0
+  - component: {fileID: 3278427339700893306}
+  m_Layer: 3
   m_Name: Default Bullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4940,3 +4927,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b3d308a0a0948e69f44f2bbb400587f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  speed: 5
+--- !u!65 &3278427339700893306
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8510836378774466848}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.5, y: 0.5, z: 0.5}
+  m_Center: {x: 0, y: 0, z: 0}
