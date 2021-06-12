@@ -5,6 +5,7 @@ using System.Linq;
 using Managers;
 using Player;
 using UnityEngine;
+using UnityEngine.Events;
 using Utility;
 using UnityEngine.SceneManagement;
 
@@ -15,17 +16,16 @@ namespace Level
     {
         public GameObject playerPrefab;
         public List<LevelSettings> currentLevels;
+        public UnityEvent ONGameOver;
+
         private int _currentLevel;
         private int _currentSublevel;
         private bool _isTransitioning;
 
-        private void Awake()
-        {
-            StartGame();
-        }
 
         public void StartGame()
         {
+            _currentLevel = 0;
             if (!GameMaster.SingletonAccess.GetPlayer())
             {
                 SceneManager.SetActiveScene(SceneManager.CreateScene("Player Scene"));
@@ -43,8 +43,12 @@ namespace Level
 
 
             yield return new WaitForSeconds(delay);
-
-            if (newLevel >= currentLevels.Count) yield break;
+            if (newLevel >= currentLevels.Count)
+            {
+                OnGameOver();
+                _isTransitioning = false;
+                yield break;
+            }
 
             int newSubLevel = currentLevels[newLevel].SelectRandom();
             AsyncOperation op = SceneManager.LoadSceneAsync(
@@ -66,14 +70,25 @@ namespace Level
             {
                 Detector dectector = exit.GetComponent<Detector>();
                 dectector.ONTriggerEnter.RemoveAllListeners();
-                dectector.ONTriggerEnter.AddListener((col) => TransitionToNextLevel(2f));
+                dectector.ONTriggerEnter.AddListener((col) =>
+                {
+                    if (col.gameObject.GetInstanceID() == GameMaster.SingletonAccess.GetPlayer().GetInstanceID())
+                        TransitionToNextLevel(2f);
+                });
             }
+
+            GetComponentFromScene<EnemyGenerator>()?.Generate();
 
             GameMaster.SingletonAccess.GetPlayer().gameObject.SetActive(true);
             GameMaster.SingletonAccess.GetPlayer().transform.position = foundPosition;
 
             _currentLevel = newLevel;
             _isTransitioning = false;
+        }
+
+        private void OnGameOver()
+        {
+            ONGameOver?.Invoke();
         }
 
         private Transform GetGameObjectFromSceneOfTag(string inputTag, bool debug = false)
@@ -101,6 +116,24 @@ namespace Level
             }
 
             return null;
+        }
+
+        private T GetComponentFromScene<T>()
+        {
+            foreach (var rootObj in SceneManager.GetActiveScene().GetRootGameObjects().ToList())
+            {
+                if (rootObj)
+                {
+                    T child = rootObj.GetComponentInChildren<T>();
+
+                    if (child != null)
+                    {
+                        return child;
+                    }
+                }
+            }
+
+            return default;
         }
 
         private IEnumerator ResetPreviousLevel()
