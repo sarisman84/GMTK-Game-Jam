@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Player;
 using UnityEngine;
+using Utility;
 
 namespace Managers
 {
@@ -26,6 +27,11 @@ namespace Managers
         public GameObject GetPlayer()
         {
             return _playerController.gameObject;
+        }
+
+        public void InitializePlayer(PlayerController controller,Vector3 position)
+        {
+            _playerController = ObjectPooler.DynamicInstantiate(controller, position, Quaternion.identity, 1);
         }
 
         public T GetNearestObjectOfType<T>(GameObject center, float radius, LayerMask mask,
