@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using General;
 using Player;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -32,14 +33,10 @@ namespace Managers
         private GameObject _playerController;
         private Scene _playerScene;
         public event Action ONUpdate;
+        public event Action ONPlayerGameOver;
 
-        public GameObject GetPlayer()
-        {
-            if (!_playerController)
-                return null;
-            return _playerController;
-        }
 
+        public GameObject PlayerObject => _playerController;
         public PossessionManager Possessor => _playerController.GetComponent<PossessionManager>();
 
         public void InitializePlayer(GameObject controller, Vector3 position)
@@ -98,6 +95,12 @@ namespace Managers
         private void Update()
         {
             ONUpdate?.Invoke();
+
+            if (_playerController && _playerController.GetComponent<HealthModifier>() is { } healthModifier &&
+                healthModifier.IsFlaggedForDeath && !_playerController.activeSelf)
+            {
+                ONPlayerGameOver?.Invoke();
+            }
         }
     }
 }

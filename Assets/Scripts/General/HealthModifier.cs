@@ -11,6 +11,7 @@ namespace General
         public UnityEvent<float> onHealthChanged;
         public UnityEvent onDeath;
         private float currentHealth;
+        public bool IsFlaggedForDeath { get; private set; }
 
 
         public void Heal(float amm)
@@ -27,6 +28,7 @@ namespace General
 
             if (currentHealth <= 0)
             {
+                IsFlaggedForDeath = true;
                 onDeath?.Invoke();
             }
         }
@@ -44,11 +46,17 @@ namespace General
             }
 
             gameObject.SetActive(false);
+            ResetHealth();
         }
 
         private void Awake()
         {
             ResetHealth();
+        }
+
+        private void OnEnable()
+        {
+            IsFlaggedForDeath = false;
         }
     }
 }
