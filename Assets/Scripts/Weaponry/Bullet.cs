@@ -8,16 +8,30 @@ namespace Player
     {
         private Rigidbody _rigidbody;
         public float speed = 5f;
+        public float lifeDuration = 5f;
         public Rigidbody Rigidbody => _rigidbody;
 
         public event Action<Bullet> ONFixedUpdateEvent;
         public event Action<Collider> ONCollisionEnterEvent;
+        
+        
+        float currentDur = 0;
 
         private void Awake()
         {
             _rigidbody = GetComponent<Rigidbody>();
         }
 
+        private void Update()
+        {
+            currentDur += Time.deltaTime;
+
+            if (currentDur >= lifeDuration)
+            {
+                gameObject.SetActive(false);
+                currentDur = 0;
+            }
+        }
 
         private void FixedUpdate()
         {
@@ -29,16 +43,16 @@ namespace Player
             ONCollisionEnterEvent?.Invoke(other.collider);
         }
 
-        private void OnDestroy()
-        {
-            ONFixedUpdateEvent = null;
-            ONCollisionEnterEvent = null;
-        }
+   
 
         private void OnDisable()
         {
+            currentDur = 0;
             ONFixedUpdateEvent = null;
             ONCollisionEnterEvent = null;
+            _rigidbody.velocity = Vector3.zero;
+            _rigidbody.angularVelocity = Vector3.zero;
+            
         }
     }
 }

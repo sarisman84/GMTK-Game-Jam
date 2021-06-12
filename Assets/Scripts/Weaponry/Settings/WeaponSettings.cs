@@ -1,5 +1,6 @@
 ﻿using General;
 using UnityEngine;
+using Utility;
 
 namespace Player
 {
@@ -13,7 +14,7 @@ namespace Player
 
         public virtual void OnShoot(Transform barrel)
         {
-            Bullet clone = Instantiate(bulletPrefab,
+            Bullet clone = ObjectPooler.DynamicInstantiate(bulletPrefab,
                 barrel.transform.position + (barrel.forward.normalized * 3f), barrel.transform.rotation);
             clone.ONFixedUpdateEvent += bullet =>
             {
@@ -33,7 +34,7 @@ namespace Player
                 healthModifier.TakeDamage(damage);
             }
 
-            Destroy(clone);
+            clone.gameObject.SetActive(false);
         }
     }
 }
