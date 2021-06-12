@@ -3,7 +3,13 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Level/Exit
+  - Level/Spawn/West
+  - Level/Spawn/East
+  - Level/Spawn/North
+  - Level/Spawn/South
+  - Level/Spawn/Center
   layers:
   - Default
   - TransparentFX
