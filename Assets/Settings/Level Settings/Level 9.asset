@@ -14,10 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levelName: Level 9
   subLevels:
-  - levelScene: Level 1
-    endDirection: 0
-  - levelScene: Level 2
-    endDirection: 1
-  - levelScene: Level 3
+  - levelScene: Level 9
     endDirection: 2
   timeRemainingBeforeGameOver: 300

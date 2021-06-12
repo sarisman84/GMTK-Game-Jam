@@ -13,11 +13,5 @@ MonoBehaviour:
   m_Name: Level 13
   m_EditorClassIdentifier: 
   levelName: Level 13
-  subLevels:
-  - levelScene: Level 1
-    endDirection: 0
-  - levelScene: Level 2
-    endDirection: 1
-  - levelScene: Level 3
-    endDirection: 2
+  subLevels: []
   timeRemainingBeforeGameOver: 300
