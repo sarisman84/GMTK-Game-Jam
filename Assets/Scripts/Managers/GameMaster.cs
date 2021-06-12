@@ -96,11 +96,7 @@ namespace Managers
         {
             ONUpdate?.Invoke();
 
-            if (_playerController && _playerController.GetComponent<HealthModifier>() is { } healthModifier &&
-                healthModifier.IsFlaggedForDeath && !_playerController.activeSelf)
-            {
-                ONPlayerGameOver?.Invoke();
-            }
+          
         }
     }
 }
