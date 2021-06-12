@@ -34,21 +34,26 @@ namespace Player
 
             if (_possessionManager)
             {
-                
                 _possessionManager.ShootPossessionShot(CustomInput.GetButton("Possess"));
             }
 
             Vector3 movementDir = _rigidbody.velocity.normalized;
             model.rotation = Quaternion.LookRotation(movementDir, Vector3.up);
-            
         }
 
         private void FixedUpdate()
         {
             Vector2 rawInput = CustomInput.GetDirectionalInput(CustomInput.DirectionalKeys);
-            rawInput *= accelerationSpeed * Time.fixedDeltaTime;
-            _rigidbody.velocity += new Vector3(rawInput.x, 0, rawInput.y);
-            _rigidbody.velocity = Vector3.ClampMagnitude(_rigidbody.velocity, maxMovementSpeed);
+
+
+            if (rawInput != Vector2.zero)
+            {
+                rawInput *= accelerationSpeed * Time.fixedDeltaTime;
+                _rigidbody.velocity += new Vector3(rawInput.x, 0, rawInput.y);
+                _rigidbody.velocity = Vector3.ClampMagnitude(_rigidbody.velocity, maxMovementSpeed);
+            }
+            else
+                _rigidbody.velocity = Vector3.Lerp(_rigidbody.velocity, Vector3.zero, 0.55f);
         }
 
 

@@ -3,6 +3,7 @@ using Enemies.Testing;
 using Managers;
 using Unity.VisualScripting;
 using UnityEngine;
+using Utility;
 
 namespace Player
 {
@@ -27,7 +28,7 @@ namespace Player
             {
                 var transform1 = barrel.transform;
 
-                Bullet clone = Instantiate(bulletPrefab,
+                Bullet clone = ObjectPooler.DynamicInstantiate(bulletPrefab,
                     transform1.position + (barrel.forward.normalized * 3f), transform1.rotation);
 
                 clone.speed = 50;
@@ -48,10 +49,10 @@ namespace Player
                 possessedEntities.Add(obj.gameObject);
                 testingDummy.ONOverridingFixedUpdate += FollowPossessor;
                 testingDummy.ONOverridingWeaponBehaviour += OverrideTargeting;
-                Destroy(bullet);
+                testingDummy.gameObject.layer = LayerMask.NameToLayer("Ally");
             }
 
-            Destroy(bullet);
+            bullet.gameObject.SetActive(false);
         }
 
         private void OverrideTargeting(WeaponController weaponController, Transform owner)
@@ -68,6 +69,7 @@ namespace Player
 
         private void FollowPossessor(Rigidbody obj)
         {
+            if (!obj) return;
             float dist = Vector3.Distance(transform.position, obj.transform.position);
 
             if (dist > minionMinSpace)
