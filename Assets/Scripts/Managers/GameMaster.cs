@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Player;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Utility;
+using Random = UnityEngine.Random;
 
 namespace Managers
 {
@@ -29,6 +31,7 @@ namespace Managers
 
         private GameObject _playerController;
         private Scene _playerScene;
+        public event Action ONUpdate;
 
         public GameObject GetPlayer()
         {
@@ -85,6 +88,16 @@ namespace Managers
             randomResult = new Vector3(Mathf.Clamp(randomResult.x, point.x - radius, point.x + radius), 0,
                 Mathf.Clamp(randomResult.z, point.z - radius, point.z + radius));
             return randomResult;
+        }
+
+        public void ClearUpdateEvents()
+        {
+            ONUpdate = null;
+        }
+
+        private void Update()
+        {
+            ONUpdate?.Invoke();
         }
     }
 }

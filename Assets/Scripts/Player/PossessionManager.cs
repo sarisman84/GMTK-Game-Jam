@@ -39,9 +39,8 @@ namespace Player
                 Bullet clone = ObjectPooler.DynamicInstantiate(bulletPrefab,
                     transform1.position + (barrel.forward.normalized * 3f), transform1.rotation);
 
-                clone.speed = 50;
                 clone.ONFixedUpdateEvent += bullet =>
-                    bullet.Rigidbody.velocity = bullet.transform.forward * (bullet.speed * 100f * Time.fixedDeltaTime);
+                    bullet.Rigidbody.velocity = bullet.transform.forward * (50 * 100f * Time.fixedDeltaTime);
 
 
                 clone.ONCollisionEnterEvent += collider1 => OnBulletCollisionEnter(collider1, clone);

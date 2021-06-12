@@ -70,13 +70,19 @@ namespace Level
             GameObject exit = GetGameObjectFromSceneOfTag("Level/Exit", true)?.gameObject;
             if (exit)
             {
-                Detector dectector = exit.GetComponent<Detector>();
-                dectector.ONTriggerEnter.RemoveAllListeners();
-                dectector.ONTriggerEnter.AddListener((col) =>
+                Detector detector = exit.GetComponent<Detector>();
+                detector.ONTriggerEnter.RemoveAllListeners();
+                detector.ONTriggerEnter.AddListener((col) =>
                 {
                     if (col.gameObject.GetInstanceID() == GameMaster.SingletonAccess.GetPlayer().GetInstanceID())
                         TransitionToNextLevel(2f);
                 });
+                GameMaster.SingletonAccess.ClearUpdateEvents();
+                GameMaster.SingletonAccess.ONUpdate += () =>
+                {
+                    detector.gameObject.SetActive(GameMaster.SingletonAccess.Possessor.possessedEntities.Count >=
+                                                  detector.requiredAmmToEnableDetector);
+                };
             }
 
             GetComponentFromScene<EnemyGenerator>()?.Generate();
