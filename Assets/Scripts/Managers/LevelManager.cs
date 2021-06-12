@@ -6,12 +6,14 @@ using System.Security.Cryptography;
 using General;
 using Managers;
 using Player;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Rendering;
 using Utility;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using Utility.Attributes;
 
 
@@ -20,6 +22,7 @@ namespace Level
     public class LevelManager : MonoBehaviour
     {
         public GameObject playerPrefab;
+        public TMP_Text timerDisplayer;
         [Expose] public List<LevelSettings> currentLevels;
         public UnityEvent ONGameOver;
 
@@ -29,9 +32,15 @@ namespace Level
 
         private Coroutine currentCo;
 
+        private bool _hasTimeRanOut = false;
+        private bool _showTimer = false;
+        private float _currentCountdown = float.MaxValue;
+
 
         public void StartGame()
         {
+            if (!timerDisplayer)
+                throw new NullReferenceException($"Missing Time Displayer. Check the {gameObject.name}'s Inspector");
             _currentLevel = 0;
             if (!GameMaster.SingletonAccess.PlayerObject)
             {
@@ -42,7 +51,43 @@ namespace Level
                 GameMaster.SingletonAccess.ONPlayerGameOver += () => StartCoroutine(OnGameOver());
             }
 
-            currentCo = StartCoroutine(SetCurrentLevelTo(_currentLevel, 2f));
+            currentCo = StartCoroutine(SetCurrentLevelTo(_currentLevel, 0.5f));
+        }
+
+        private void Update()
+        {
+            _hasTimeRanOut = CountdownTime();
+
+            _showTimer = _currentCountdown <= 61 ||
+                         currentLevels[_currentLevel].subLevels[_currentSublevel].countdownType ==
+                         LevelSettings.CountdownType.ToNextStage;
+
+            if (_showTimer)
+                DisplayCountdown();
+            else
+                timerDisplayer.text = "";
+        }
+
+        private bool CountdownTime()
+        {
+            _currentCountdown -= Time.deltaTime;
+            return _currentCountdown <= 0;
+        }
+
+
+        private bool HasTimeRanOut(int newLevel, int newSubLevel)
+        {
+            LevelSettings settings = currentLevels[newLevel];
+            LevelSettings.Level level = settings.subLevels[newSubLevel];
+            return level.countdownType == LevelSettings.CountdownType.ToGameOver && _hasTimeRanOut;
+        }
+
+        public Vector2Int DisplayCountdown()
+        {
+            int minutes = Mathf.FloorToInt(_currentCountdown / 60f);
+            int seconds = Mathf.FloorToInt(_currentCountdown % 60f);
+            timerDisplayer.text = $"{minutes:00}:{seconds:00}";
+            return new Vector2Int(minutes, seconds);
         }
 
 
@@ -52,9 +97,16 @@ namespace Level
             GameMaster.SingletonAccess.Possessor.SetPossessionsActive(false);
             GameMaster.SingletonAccess.PlayerObject.SetActive(false);
 
-
+            int newSubLevel = 0;
             yield return new WaitForSeconds(delay);
-            if (newLevel >= currentLevels.Count)
+            if (newLevel < currentLevels.Count)
+            {
+                newSubLevel = currentLevels[newLevel].SelectRandom();
+                _currentCountdown = currentLevels[newLevel].timeRemaining;
+            }
+
+
+            if (newLevel >= currentLevels.Count || HasTimeRanOut(newLevel, newSubLevel))
             {
                 yield return OnGameOver();
                 _isTransitioning = false;
@@ -62,7 +114,6 @@ namespace Level
             }
 
 
-            int newSubLevel = currentLevels[newLevel].SelectRandom();
             AsyncOperation op = SceneManager.LoadSceneAsync(
                 $"Scenes/Levels/{currentLevels[newLevel].subLevels[newSubLevel].levelScene}",
                 LoadSceneMode.Additive);
@@ -87,7 +138,7 @@ namespace Level
                 detector.ONTriggerEnter.AddListener((col) =>
                 {
                     if (col.gameObject.GetInstanceID() == GameMaster.SingletonAccess.PlayerObject.GetInstanceID())
-                        TransitionToNextLevel(2f);
+                        TransitionToNextLevel(0.5f);
                 });
                 GameMaster.SingletonAccess.ClearUpdateEvents();
                 GameMaster.SingletonAccess.ONUpdate += () =>
@@ -108,7 +159,7 @@ namespace Level
             _currentLevel = newLevel;
             _isTransitioning = false;
             currentCo = null;
-            
+
             while (true)
             {
                 if (GameMaster.SingletonAccess.PlayerObject &&
@@ -118,6 +169,7 @@ namespace Level
                     yield return OnGameOver();
                     break;
                 }
+
 
                 yield return new WaitForEndOfFrame();
             }
@@ -133,7 +185,7 @@ namespace Level
                 StopCoroutine(currentCo);
         }
 
-        private Transform GetGameObjectFromSceneOfTag(string inputTag, bool debug = false)
+        public static Transform GetGameObjectFromSceneOfTag(string inputTag, bool debug = false)
         {
             if (debug)
             {
