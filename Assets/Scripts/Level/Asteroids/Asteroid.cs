@@ -13,6 +13,7 @@ namespace Level.Asteroids
         private void Awake()
         {
             Rigidbody = GetComponent<Rigidbody>();
+            Rigidbody.useGravity = false;
         }
 
         private void OnCollisionEnter(Collision other)
