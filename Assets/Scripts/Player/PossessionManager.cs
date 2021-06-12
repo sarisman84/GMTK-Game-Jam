@@ -48,6 +48,7 @@ namespace Player
                 possessedEntities.Add(obj.gameObject);
                 testingDummy.ONOverridingFixedUpdate += FollowPossessor;
                 testingDummy.ONOverridingWeaponBehaviour += OverrideTargeting;
+                testingDummy.gameObject.layer = LayerMask.NameToLayer("Ally");
                 Destroy(bullet);
             }
 

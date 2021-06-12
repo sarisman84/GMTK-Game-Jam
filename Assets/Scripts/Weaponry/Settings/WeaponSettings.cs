@@ -25,7 +25,8 @@ namespace Player
 
         private void CloneOnONCollisionEnterEvent(Collider obj, Bullet clone)
         {
-            if (obj.GetComponent<HealthModifier>() is { } healthModifier)
+            if (obj.GetComponent<HealthModifier>() is { } healthModifier &&
+                obj.gameObject.layer != LayerMask.NameToLayer("Ally"))
             {
                 healthModifier.TakeDamage(damage);
             }
