@@ -58,9 +58,10 @@ namespace Level
         {
             _hasTimeRanOut = CountdownTime();
 
-            _showTimer = _currentCountdown <= 61 ||
-                         currentLevels[_currentLevel].subLevels[_currentSublevel].countdownType ==
-                         LevelSettings.CountdownType.ToNextStage;
+            _showTimer = (_currentCountdown <= 61 ||
+                          currentLevels[_currentLevel].subLevels[_currentSublevel].countdownType ==
+                          LevelSettings.CountdownType.ToNextStage) &&
+                         GameMaster.SingletonAccess.PlayerObject.activeSelf;
 
             if (_showTimer)
                 DisplayCountdown();
@@ -79,7 +80,8 @@ namespace Level
         {
             LevelSettings settings = currentLevels[newLevel];
             LevelSettings.Level level = settings.subLevels[newSubLevel];
-            return level.countdownType == LevelSettings.CountdownType.ToGameOver && _hasTimeRanOut;
+            return level.countdownType == LevelSettings.CountdownType.ToGameOver && _hasTimeRanOut &&
+                   GameMaster.SingletonAccess.PlayerObject.activeSelf;
         }
 
         public Vector2Int DisplayCountdown()
@@ -167,6 +169,8 @@ namespace Level
                     healthModifier.IsFlaggedForDeath && !GameMaster.SingletonAccess.PlayerObject.activeSelf)
                 {
                     yield return OnGameOver();
+                    _hasTimeRanOut = true;
+                    _currentCountdown = 0;
                     break;
                 }
 

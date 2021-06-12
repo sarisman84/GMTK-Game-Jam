@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levelName: Test
   subLevels:
-  - levelScene: Test_Level1
+  - levelScene: Test_Level5
     endDirection: 2
     countdownType: 1
   timeRemaining: 120

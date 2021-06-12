@@ -62,9 +62,10 @@ namespace Managers
         {
             Transform outOfBoundsBox = LevelManager.GetGameObjectFromSceneOfTag("Level/OutOfBounds");
 
-
+            if (!outOfBoundsBox) return false;
             Collider[] foundColliders = outOfBoundsBox.GetComponents<Collider>();
 
+            if (foundColliders == null) return false;
             foreach (var foundCollider in foundColliders)
             {
                 if (foundCollider.bounds.Contains(onEdgeOfSphere))
