@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using Managers;
 using Player;
 using UnityEngine;
@@ -80,8 +81,9 @@ namespace Level
                 GameMaster.SingletonAccess.ClearUpdateEvents();
                 GameMaster.SingletonAccess.ONUpdate += () =>
                 {
-                    detector.gameObject.SetActive(GameMaster.SingletonAccess.Possessor.possessedEntities.Count >=
-                                                  detector.requiredAmmToEnableDetector);
+                    if (detector)
+                        detector.gameObject.SetActive(GameMaster.SingletonAccess.Possessor.possessedEntities.Count >=
+                                                      detector.requiredAmmToEnableDetector);
                 };
             }
 
