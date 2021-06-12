@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7872ab5797734030903ab2339495166c, type: 3}
-  m_Name: Level 1
+  m_Name: Level 9
   m_EditorClassIdentifier: 
-  levelName: Level 1
+  levelName: Level 9
   subLevels:
-  - levelScene: Level 1
-    endDirection: 3
+  - levelScene: Level 9
+    endDirection: 2
   timeRemainingBeforeGameOver: 300
