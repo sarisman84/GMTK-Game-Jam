@@ -26,6 +26,8 @@ namespace Managers
 
         public GameObject GetPlayer()
         {
+            if (!_playerController)
+                return null;
             return _playerController.gameObject;
         }
 

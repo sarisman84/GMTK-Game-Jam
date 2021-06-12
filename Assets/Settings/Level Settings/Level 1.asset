@@ -12,7 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7872ab5797734030903ab2339495166c, type: 3}
   m_Name: Level 1
   m_EditorClassIdentifier: 
-  levelName: 
-  levelPrefabs: []
-  timeRemainingBeforeGameOver: 0
-  endDirection: 0
+  levelName: Test
+  subLevels:
+  - levelScene: Level 1
+    endDirection: 0
+  - levelScene: Level 2
+    endDirection: 1
+  - levelScene: Level 3
+    endDirection: 2
+  timeRemainingBeforeGameOver: 15

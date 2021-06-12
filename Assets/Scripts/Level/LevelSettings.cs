@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 
 namespace Level
@@ -18,31 +20,18 @@ namespace Level
         }
 
         public string levelName;
-        public List<GameObject> levelPrefabs;
+        public List<Level> subLevels;
         public float timeRemainingBeforeGameOver;
-        public EndDirection endDirection;
 
-        public List<GameObject> InitializePrefabs()
-        {
-            List<GameObject> initializedLevels = new List<GameObject>();
-            foreach (var level in levelPrefabs)
-            {
-                GameObject clone = Instantiate(level, Vector3.zero, Quaternion.identity);
-                clone.SetActive(false);
-                initializedLevels.Add(clone);
-            }
-
-            return initializedLevels;
-        }
 
         public int SelectRandom()
         {
-            return Random.Range(0, levelPrefabs.Count);
+            return Random.Range(0, subLevels.Count);
         }
 
-        public string SpawnPos()
+        public string SpawnPos(int subIndex)
         {
-            switch (endDirection)
+            switch (subLevels[subIndex].endDirection)
             {
                 case EndDirection.West:
                     return "WestSpawn";
@@ -57,6 +46,13 @@ namespace Level
             }
 
             return "";
+        }
+
+        [Serializable]
+        public struct Level
+        {
+            public string levelScene;
+            public EndDirection endDirection;
         }
     }
 }
