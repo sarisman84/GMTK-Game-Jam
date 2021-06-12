@@ -5,6 +5,7 @@ using System.Linq;
 using Managers;
 using Player;
 using UnityEngine;
+using UnityEngine.Events;
 using Utility;
 using UnityEngine.SceneManagement;
 
@@ -15,17 +16,16 @@ namespace Level
     {
         public GameObject playerPrefab;
         public List<LevelSettings> currentLevels;
+        public UnityEvent ONGameOver;
+
         private int _currentLevel;
         private int _currentSublevel;
         private bool _isTransitioning;
 
-        private void Awake()
-        {
-            StartGame();
-        }
 
         public void StartGame()
         {
+            _currentLevel = 0;
             if (!GameMaster.SingletonAccess.GetPlayer())
             {
                 SceneManager.SetActiveScene(SceneManager.CreateScene("Player Scene"));
@@ -43,8 +43,12 @@ namespace Level
 
 
             yield return new WaitForSeconds(delay);
-
-            if (newLevel >= currentLevels.Count) yield break;
+            if (newLevel >= currentLevels.Count)
+            {
+                OnGameOver();
+                _isTransitioning = false;
+                yield break;
+            }
 
             int newSubLevel = currentLevels[newLevel].SelectRandom();
             AsyncOperation op = SceneManager.LoadSceneAsync(
@@ -80,6 +84,11 @@ namespace Level
 
             _currentLevel = newLevel;
             _isTransitioning = false;
+        }
+
+        private void OnGameOver()
+        {
+            ONGameOver?.Invoke();
         }
 
         private Transform GetGameObjectFromSceneOfTag(string inputTag, bool debug = false)
