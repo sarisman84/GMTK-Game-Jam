@@ -66,8 +66,14 @@ namespace Level
             {
                 Detector dectector = exit.GetComponent<Detector>();
                 dectector.ONTriggerEnter.RemoveAllListeners();
-                dectector.ONTriggerEnter.AddListener((col) => TransitionToNextLevel(2f));
+                dectector.ONTriggerEnter.AddListener((col) =>
+                {
+                    if (col.gameObject.GetInstanceID() == GameMaster.SingletonAccess.GetPlayer().GetInstanceID())
+                        TransitionToNextLevel(2f);
+                });
             }
+
+            GetComponentFromScene<EnemyGenerator>()?.Generate();
 
             GameMaster.SingletonAccess.GetPlayer().gameObject.SetActive(true);
             GameMaster.SingletonAccess.GetPlayer().transform.position = foundPosition;
@@ -101,6 +107,24 @@ namespace Level
             }
 
             return null;
+        }
+
+        private T GetComponentFromScene<T>()
+        {
+            foreach (var rootObj in SceneManager.GetActiveScene().GetRootGameObjects().ToList())
+            {
+                if (rootObj)
+                {
+                    T child = rootObj.GetComponentInChildren<T>();
+
+                    if (child != null)
+                    {
+                        return child;
+                    }
+                }
+            }
+
+            return default;
         }
 
         private IEnumerator ResetPreviousLevel()

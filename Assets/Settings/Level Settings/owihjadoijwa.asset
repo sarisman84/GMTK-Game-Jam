@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7872ab5797734030903ab2339495166c, type: 3}
   m_Name: owihjadoijwa
   m_EditorClassIdentifier: 
-  levelName: 
-  subLevels: []
-  timeRemainingBeforeGameOver: 0
+  levelName: Risk of rain
+  subLevels:
+  - levelScene: Level 6
+    endDirection: 2
+  timeRemainingBeforeGameOver: 1000101
