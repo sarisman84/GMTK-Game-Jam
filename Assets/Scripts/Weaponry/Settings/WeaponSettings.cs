@@ -20,13 +20,15 @@ namespace Player
                 bullet.Rigidbody.velocity = bullet.transform.forward * (bullet.speed * 100f * Time.fixedDeltaTime);
             };
 
-            clone.ONCollisionEnterEvent += collider => CloneOnONCollisionEnterEvent(collider, clone);
+            clone.ONCollisionEnterEvent += collider => CloneOnONCollisionEnterEvent(collider, clone, barrel.parent);
         }
 
-        private void CloneOnONCollisionEnterEvent(Collider obj, Bullet clone)
+        private void CloneOnONCollisionEnterEvent(Collider obj, Bullet clone, Transform barrelParent)
         {
             if (obj.GetComponent<HealthModifier>() is { } healthModifier &&
-                obj.gameObject.layer != LayerMask.NameToLayer("Ally"))
+                obj.gameObject.layer != LayerMask.NameToLayer("Ally") && (
+                    barrelParent.gameObject.layer != LayerMask.NameToLayer("Ally") ||
+                    barrelParent.gameObject.layer != LayerMask.NameToLayer("Player")))
             {
                 healthModifier.TakeDamage(damage);
             }

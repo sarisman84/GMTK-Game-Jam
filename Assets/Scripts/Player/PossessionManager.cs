@@ -69,6 +69,7 @@ namespace Player
 
         private void FollowPossessor(Rigidbody obj)
         {
+            if (!obj) return;
             float dist = Vector3.Distance(transform.position, obj.transform.position);
 
             if (dist > minionMinSpace)

@@ -53,7 +53,7 @@ namespace Player
                 _rigidbody.velocity = Vector3.ClampMagnitude(_rigidbody.velocity, maxMovementSpeed);
             }
             else
-                _rigidbody.velocity = Vector3.Lerp(_rigidbody.velocity, Vector3.zero, 0.75f);
+                _rigidbody.velocity = Vector3.Lerp(_rigidbody.velocity, Vector3.zero, 0.55f);
         }
 
 
