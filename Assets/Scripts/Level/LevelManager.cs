@@ -29,7 +29,7 @@ namespace Level
             if (!GameMaster.SingletonAccess.GetPlayer())
             {
                 SceneManager.SetActiveScene(SceneManager.CreateScene("Player Scene"));
-                GameMaster.SingletonAccess.InitializePlayer(playerPrefab.GetComponentInChildren<PlayerController>(),
+                GameMaster.SingletonAccess.InitializePlayer(playerPrefab,
                     Vector3.zero);
             }
 
@@ -46,25 +46,61 @@ namespace Level
 
             if (newLevel >= currentLevels.Count) yield break;
 
-            _currentSublevel = currentLevels[newLevel].SelectRandom();
+            int newSubLevel = currentLevels[newLevel].SelectRandom();
             AsyncOperation op = SceneManager.LoadSceneAsync(
-                $"Scenes/Levels/{currentLevels[_currentLevel].subLevels[_currentSublevel].levelScene}",
+                $"Scenes/Levels/{currentLevels[newLevel].subLevels[newSubLevel].levelScene}",
                 LoadSceneMode.Additive);
             op.allowSceneActivation = true;
+
             yield return new WaitUntil(() => op.isDone);
 
+            SceneManager.SetActiveScene(
+                SceneManager.GetSceneByName(
+                    $"Scenes/Levels/{currentLevels[newLevel].subLevels[newSubLevel].levelScene}"));
+            Transform potentialPos =
+                GetGameObjectFromSceneOfTag(currentLevels[_currentLevel].SpawnPos(_currentSublevel), true);
+            Vector3 foundPosition = potentialPos ? potentialPos.position : Vector3.zero;
 
-            GameObject potentialPos = SceneManager.GetActiveScene().GetRootGameObjects().ToList()
-                .Find(g => g.CompareTag(currentLevels[_currentLevel].SpawnPos(_currentSublevel)));
-            Vector3 foundPosition = potentialPos ? potentialPos.transform.position : Vector3.zero;
-
+            GameObject exit = GetGameObjectFromSceneOfTag("Level/Exit", true)?.gameObject;
+            if (exit)
+            {
+                Detector dectector = exit.GetComponent<Detector>();
+                dectector.ONTriggerEnter.RemoveAllListeners();
+                dectector.ONTriggerEnter.AddListener((col) => TransitionToNextLevel(2f));
+            }
 
             GameMaster.SingletonAccess.GetPlayer().gameObject.SetActive(true);
             GameMaster.SingletonAccess.GetPlayer().transform.position = foundPosition;
 
-
             _currentLevel = newLevel;
             _isTransitioning = false;
+        }
+
+        private Transform GetGameObjectFromSceneOfTag(string inputTag, bool debug = false)
+        {
+            if (debug)
+            {
+                Debug.Log($"Searching for GameObjects in {SceneManager.GetActiveScene().name}");
+            }
+
+            foreach (var rootObj in SceneManager.GetActiveScene().GetRootGameObjects().ToList())
+            {
+                if (rootObj)
+                {
+                    Transform child = rootObj.transform.tag.Contains(inputTag) ? rootObj.transform : null;
+
+                    if (!child)
+                        child = rootObj.transform.FindChildOfTag(inputTag);
+                    if (child)
+                    {
+                        if (debug)
+                            Debug.Log($"Found a gameObject with the Inputed Tag {inputTag}. Returning!");
+                        return child;
+                    }
+                }
+            }
+
+            return null;
         }
 
         private IEnumerator ResetPreviousLevel()

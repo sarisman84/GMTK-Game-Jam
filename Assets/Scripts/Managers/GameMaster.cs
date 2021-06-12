@@ -13,27 +13,32 @@ namespace Managers
         {
             get
             {
-                _ins = !_ins
-                    ? FindObjectOfType<GameMaster>() is { } gm ? gm :
-                    new GameObject("Game Master").AddComponent<GameMaster>()
-                    : _ins;
-                _ins._playerController = FindObjectOfType<PlayerController>();
+                if (!_ins)
+                {
+                    _ins = FindObjectOfType<GameMaster>() is { } gm
+                        ? gm
+                        : new GameObject("Game Master").AddComponent<GameMaster>();
+                    _ins._playerController = FindObjectOfType<PlayerController>()?.gameObject;
+                }
+
+
                 return _ins;
             }
         }
 
-        private PlayerController _playerController;
+        private GameObject _playerController;
 
         public GameObject GetPlayer()
         {
             if (!_playerController)
                 return null;
-            return _playerController.gameObject;
+            return _playerController;
         }
 
-        public void InitializePlayer(PlayerController controller,Vector3 position)
+        public void InitializePlayer(GameObject controller, Vector3 position)
         {
             _playerController = ObjectPooler.DynamicInstantiate(controller, position, Quaternion.identity, 1);
+            _playerController = _playerController.GetComponentInChildren<PlayerController>().gameObject;
         }
 
         public T GetNearestObjectOfType<T>(GameObject center, float radius, LayerMask mask,

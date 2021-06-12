@@ -323,6 +323,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 8540808652944206157, guid: 2b9e1e741fbd2df438d833510332572c, type: 3}
   currentLevels:
+  - {fileID: 11400000, guid: 9987c5a0bd35de949b4bc3cc4ab3b499, type: 2}
   - {fileID: 11400000, guid: c00b224023ef2f74fb54d5b73b5a67e1, type: 2}
 --- !u!4 &1838473595
 Transform:

@@ -31,18 +31,19 @@ namespace Level
 
         public string SpawnPos(int subIndex)
         {
+            string baseTag = "Level/Spawn/";
             switch (subLevels[subIndex].endDirection)
             {
                 case EndDirection.West:
-                    return "WestSpawn";
+                    return baseTag + "West";
                 case EndDirection.East:
-                    return "EastSpawn";
+                    return baseTag + "East";
                 case EndDirection.North:
-                    return "NorthSpawn";
+                    return baseTag + "North";
                 case EndDirection.South:
-                    return "SouthSpawn";
+                    return baseTag + "South";
                 case EndDirection.Center:
-                    return "CenterSpawn";
+                    return baseTag + "Center";
             }
 
             return "";
