@@ -80,5 +80,24 @@ namespace Utility
                 monoBehaviour ? monoBehaviour.gameObject : component ? component.gameObject : null, position,
                 rotation, amm).GetComponent<T>();
         }
+
+        public static void RemoveObjectFromPool(GameObject gameObject)
+        {
+            GameObject objToRemove = null;
+            foreach (var pooledObjects in dictionaryOfPooledObjects)
+            {
+                foreach (var pooledObject in pooledObjects.Value)
+                {
+                    if (pooledObject.GetInstanceID() == gameObject.GetInstanceID())
+                        objToRemove = pooledObject;
+                }
+
+                if (objToRemove)
+                {
+                    pooledObjects.Value.Remove(objToRemove);
+                    break;
+                }
+            }
+        }
     }
 }

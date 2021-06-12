@@ -7,7 +7,7 @@ using Random = UnityEngine.Random;
 
 namespace Enemies.Testing
 {
-    public class TestingDummy : BaseEnemy
+    public class Enemy : BaseEnemy
     {
         public float speed = 5f;
         public float changeDirInIntervals = 2f;

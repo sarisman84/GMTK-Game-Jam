@@ -1,4 +1,5 @@
 ﻿using System;
+using Enemies;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -37,6 +38,11 @@ namespace General
 
         public void DestroyThis()
         {
+            if (gameObject.GetComponent<BaseEnemy>() is { } enemy)
+            {
+                enemy.IsFlaggedForReset = true;
+            }
+
             gameObject.SetActive(false);
         }
 

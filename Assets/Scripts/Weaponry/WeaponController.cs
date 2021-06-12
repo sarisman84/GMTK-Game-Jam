@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using Player.HUD;
 using UnityEngine;
+using Utility.Attributes;
 
 namespace Player
 {
     public class WeaponController : MonoBehaviour
     {
         public Transform barrel;
-        public List<WeaponSettings> weaponLibrary;
+        [Expose] public List<WeaponSettings> weaponLibrary;
         public float weaponSwapDelay = 0.25f;
 
         private int _currentWeapon = 0;

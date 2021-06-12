@@ -9,11 +9,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e7066d03c41478b82e2b3a1e264b611, type: 3}
-  m_Name: Default_Enemy
+  m_Script: {fileID: 11500000, guid: 029e1acced034398a656a1f9982abaec, type: 3}
+  m_Name: Triple-Shot
   m_EditorClassIdentifier: 
-  damage: 30
-  fireRate: 0.1
+  bulletSpeed: 15
+  fireRate: 0.5
   bulletPrefab: {fileID: 8162282660309796813, guid: fb4d371421769bb498b87411076fc161, type: 3}
   weaponIcon: {fileID: 0}
   weaponModel: {fileID: 6887800369199868406, guid: 6343e7a754561bf43b3de97e2e1fd0ef, type: 3}
+  ImpactEffect: {fileID: 11400000, guid: e6307c358e935d642b01050d5e9a7afa, type: 2}
+  bulletModifiers: []
+  ammOfBullets: 3
+  spreadBetweenBullets: 45

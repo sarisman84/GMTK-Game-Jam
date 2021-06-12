@@ -7,14 +7,14 @@ namespace Player
     public class Bullet : MonoBehaviour
     {
         private Rigidbody _rigidbody;
-        public float speed = 5f;
+
         public float lifeDuration = 5f;
         public Rigidbody Rigidbody => _rigidbody;
 
         public event Action<Bullet> ONFixedUpdateEvent;
         public event Action<Collider> ONCollisionEnterEvent;
-        
-        
+
+
         float currentDur = 0;
 
         private void Awake()
@@ -43,7 +43,6 @@ namespace Player
             ONCollisionEnterEvent?.Invoke(other.collider);
         }
 
-   
 
         private void OnDisable()
         {
@@ -52,7 +51,7 @@ namespace Player
             ONCollisionEnterEvent = null;
             _rigidbody.velocity = Vector3.zero;
             _rigidbody.angularVelocity = Vector3.zero;
-            
+            transform.localScale = Vector3.one;
         }
     }
 }
