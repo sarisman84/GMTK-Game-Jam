@@ -18,16 +18,36 @@ namespace Player
 
         private void Awake()
         {
-            CustomInput.ImportAsset(inputAsset, CustomInput.DirectionalKeys, "DirectionalShot", "Possess", "Fire");
+            CustomInput.ImportAsset(inputAsset,
+                CustomInput.DirectionalKeys,
+                "DirectionalShot",
+                "Possess",
+                "Fire",
+                "ScrollSelect",
+                "Select_One",
+                "Select_Two",
+                "Select_Three",
+                "Select_Four",
+                "Select_Five",
+                "Select_Six",
+                "Select_Seven",
+                "Select_Eight",
+                "Select_Nine");
             _rigidbody = GetComponent<Rigidbody>();
             _weaponController = GetComponent<WeaponController>();
             _possessionManager = GetComponent<PossessionManager>();
+            _possessionManager.ONPossessionEvent += enemy =>
+                _weaponController.AddWeaponToLibrary(enemy.GetComponent<WeaponController>().weaponLibrary[0]);
         }
 
         private void Update()
         {
             if (_weaponController)
             {
+                int val = (int) CustomInput.GetSingleDirectionInput("ScrollSelect");
+                val = val == 0 ? 0 : (int) Mathf.Sign(val);
+                if (val != 0)
+                    _weaponController.SelectWeapon(_weaponController.CurrentWeapon + val);
                 _weaponController.Aim(CustomInput.GetDirectionalInput("DirectionalShot"));
                 _weaponController.Shoot(CustomInput.GetButton("Fire"));
             }

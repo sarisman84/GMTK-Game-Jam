@@ -11,6 +11,9 @@ namespace Player
         public float fireRate;
         public Bullet bulletPrefab;
 
+        public Sprite weaponIcon;
+        public GameObject weaponModel;
+
 
         public virtual void OnShoot(Transform barrel)
         {

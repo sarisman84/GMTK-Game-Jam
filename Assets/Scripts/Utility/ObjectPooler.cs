@@ -57,6 +57,7 @@ namespace Utility
             int amm = 300)
         {
             GameObject foundObj = DynamicInstantiate(gameObject, null, amm);
+            if (!foundObj) return null;
             foundObj.transform.position = position;
             foundObj.transform.rotation = rotation;
             return foundObj;

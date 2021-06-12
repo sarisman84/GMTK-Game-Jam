@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e7066d03c41478b82e2b3a1e264b611, type: 3}
-  m_Name: Default
+  m_Name: Default_Enemy
   m_EditorClassIdentifier: 
-  damage: 50
-  fireRate: 0.2
-  bulletPrefab: {fileID: 1149102810902346992, guid: bacde7732ab3ba14b83a8cef21e8f645, type: 3}
+  damage: 30
+  fireRate: 0.1
+  bulletPrefab: {fileID: 8162282660309796813, guid: fb4d371421769bb498b87411076fc161, type: 3}
   weaponIcon: {fileID: 0}
-  weaponModel: {fileID: 8479321612364421246, guid: 722a2f073f780274ba85f7058f76846f, type: 3}
+  weaponModel: {fileID: 6887800369199868406, guid: 6343e7a754561bf43b3de97e2e1fd0ef, type: 3}

@@ -130,6 +130,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 988978515}
     m_Modifications:
+    - target: {fileID: 1772325600875603084, guid: 007af0ee780c09a4baed2ed8c901d4f9, type: 3}
+      propertyPath: weaponLibrary.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: 77bcb362a9eb9ae419d5ced76c3ed0db, type: 2}
     - target: {fileID: 8096020584464913836, guid: 007af0ee780c09a4baed2ed8c901d4f9, type: 3}
       propertyPath: m_RootOrder
       value: 4
@@ -187,6 +191,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 988978515}
     m_Modifications:
+    - target: {fileID: 1772325600875603084, guid: 007af0ee780c09a4baed2ed8c901d4f9, type: 3}
+      propertyPath: weaponLibrary.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: 77bcb362a9eb9ae419d5ced76c3ed0db, type: 2}
     - target: {fileID: 8096020584464913836, guid: 007af0ee780c09a4baed2ed8c901d4f9, type: 3}
       propertyPath: m_RootOrder
       value: 8
@@ -244,6 +252,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 988978515}
     m_Modifications:
+    - target: {fileID: 1772325600875603084, guid: 007af0ee780c09a4baed2ed8c901d4f9, type: 3}
+      propertyPath: weaponLibrary.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: 77bcb362a9eb9ae419d5ced76c3ed0db, type: 2}
     - target: {fileID: 8096020584464913836, guid: 007af0ee780c09a4baed2ed8c901d4f9, type: 3}
       propertyPath: m_RootOrder
       value: 10
@@ -306,6 +318,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 988978515}
     m_Modifications:
+    - target: {fileID: 1772325600875603084, guid: 007af0ee780c09a4baed2ed8c901d4f9, type: 3}
+      propertyPath: weaponLibrary.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: 77bcb362a9eb9ae419d5ced76c3ed0db, type: 2}
     - target: {fileID: 8096020584464913836, guid: 007af0ee780c09a4baed2ed8c901d4f9, type: 3}
       propertyPath: m_RootOrder
       value: 9
@@ -434,6 +450,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 988978515}
     m_Modifications:
+    - target: {fileID: 1772325600875603084, guid: 007af0ee780c09a4baed2ed8c901d4f9, type: 3}
+      propertyPath: weaponLibrary.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: 77bcb362a9eb9ae419d5ced76c3ed0db, type: 2}
     - target: {fileID: 8096020584464913836, guid: 007af0ee780c09a4baed2ed8c901d4f9, type: 3}
       propertyPath: m_RootOrder
       value: 3
@@ -578,6 +598,37 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!1 &806257006
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 806257007}
+  m_Layer: 0
+  m_Name: Model
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &806257007
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 806257006}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1427876160}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &828722074 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8096020584464913836, guid: 007af0ee780c09a4baed2ed8c901d4f9, type: 3}
@@ -856,6 +907,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 988978515}
     m_Modifications:
+    - target: {fileID: 1772325600875603084, guid: 007af0ee780c09a4baed2ed8c901d4f9, type: 3}
+      propertyPath: weaponLibrary.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: 77bcb362a9eb9ae419d5ced76c3ed0db, type: 2}
     - target: {fileID: 8096020584464913836, guid: 007af0ee780c09a4baed2ed8c901d4f9, type: 3}
       propertyPath: m_RootOrder
       value: 5
@@ -913,6 +968,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 988978515}
     m_Modifications:
+    - target: {fileID: 1772325600875603084, guid: 007af0ee780c09a4baed2ed8c901d4f9, type: 3}
+      propertyPath: weaponLibrary.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: 77bcb362a9eb9ae419d5ced76c3ed0db, type: 2}
     - target: {fileID: 8096020584464913836, guid: 007af0ee780c09a4baed2ed8c901d4f9, type: 3}
       propertyPath: m_RootOrder
       value: 6
@@ -970,6 +1029,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 988978515}
     m_Modifications:
+    - target: {fileID: 1772325600875603084, guid: 007af0ee780c09a4baed2ed8c901d4f9, type: 3}
+      propertyPath: weaponLibrary.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: 77bcb362a9eb9ae419d5ced76c3ed0db, type: 2}
     - target: {fileID: 8096020584464913836, guid: 007af0ee780c09a4baed2ed8c901d4f9, type: 3}
       propertyPath: m_RootOrder
       value: 11
@@ -1231,6 +1294,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1591594300}
+  - {fileID: 806257007}
   m_Father: {fileID: 1740693495}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1387,7 +1451,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.84375, y: 1}
+    m_SensorSize: {x: 1.962963, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -1419,6 +1483,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 988978515}
     m_Modifications:
+    - target: {fileID: 1772325600875603084, guid: 007af0ee780c09a4baed2ed8c901d4f9, type: 3}
+      propertyPath: weaponLibrary.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: 77bcb362a9eb9ae419d5ced76c3ed0db, type: 2}
     - target: {fileID: 8096020584464913836, guid: 007af0ee780c09a4baed2ed8c901d4f9, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -1484,6 +1552,7 @@ GameObject:
   - component: {fileID: 1740693501}
   - component: {fileID: 1740693502}
   - component: {fileID: 1740693503}
+  - component: {fileID: 1740693504}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1568,6 +1637,7 @@ MonoBehaviour:
   barrel: {fileID: 1427876160}
   weaponLibrary:
   - {fileID: 11400000, guid: f6ce430bc9d7d9d4aaf402eed1c256fb, type: 2}
+  weaponSwapDelay: 0.25
 --- !u!114 &1740693502
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1616,6 +1686,20 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &1740693504
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1740693494}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d4f5f2a81c54fe4bf936c56c81b61e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  iconDisplayer: {fileID: 0}
+  barrelDisplayer: {fileID: 806257007}
 --- !u!4 &1897218151 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8096020584464913836, guid: 007af0ee780c09a4baed2ed8c901d4f9, type: 3}
@@ -1628,6 +1712,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 988978515}
     m_Modifications:
+    - target: {fileID: 1772325600875603084, guid: 007af0ee780c09a4baed2ed8c901d4f9, type: 3}
+      propertyPath: weaponLibrary.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: 77bcb362a9eb9ae419d5ced76c3ed0db, type: 2}
     - target: {fileID: 8096020584464913836, guid: 007af0ee780c09a4baed2ed8c901d4f9, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -1695,6 +1783,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 988978515}
     m_Modifications:
+    - target: {fileID: 1772325600875603084, guid: 007af0ee780c09a4baed2ed8c901d4f9, type: 3}
+      propertyPath: weaponLibrary.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: 77bcb362a9eb9ae419d5ced76c3ed0db, type: 2}
     - target: {fileID: 8096020584464913836, guid: 007af0ee780c09a4baed2ed8c901d4f9, type: 3}
       propertyPath: m_RootOrder
       value: 7
@@ -1757,6 +1849,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 988978515}
     m_Modifications:
+    - target: {fileID: 1772325600875603084, guid: 007af0ee780c09a4baed2ed8c901d4f9, type: 3}
+      propertyPath: weaponLibrary.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: 77bcb362a9eb9ae419d5ced76c3ed0db, type: 2}
     - target: {fileID: 8096020584464913836, guid: 007af0ee780c09a4baed2ed8c901d4f9, type: 3}
       propertyPath: m_RootOrder
       value: 0
