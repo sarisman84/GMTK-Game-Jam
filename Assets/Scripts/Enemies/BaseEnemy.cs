@@ -12,6 +12,8 @@ namespace Enemies
 
         protected Rigidbody Rigidbody;
         protected WeaponController WeaponController;
+        
+        public bool IsFlaggedForReset { private get; set; }
 
         protected virtual void Awake()
         {
@@ -43,8 +45,13 @@ namespace Enemies
 
         protected virtual void OnDisable()
         {
-            ONOverridingFixedUpdate = null;
-            ONOverridingWeaponBehaviour = null;
+            if (IsFlaggedForReset)
+            {
+                ONOverridingFixedUpdate = null;
+                ONOverridingWeaponBehaviour = null;
+                IsFlaggedForReset = false;
+            }
+           
         }
 
         protected virtual void OnDestroy()
