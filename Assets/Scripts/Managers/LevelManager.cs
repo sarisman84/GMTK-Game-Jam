@@ -9,6 +9,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using Utility;
 using UnityEngine.SceneManagement;
+using Utility.Attributes;
 
 
 namespace Level
@@ -16,7 +17,7 @@ namespace Level
     public class LevelManager : MonoBehaviour
     {
         public GameObject playerPrefab;
-        public List<LevelSettings> currentLevels;
+        [Expose] public List<LevelSettings> currentLevels;
         public UnityEvent ONGameOver;
 
         private int _currentLevel;
@@ -27,22 +28,24 @@ namespace Level
         public void StartGame()
         {
             _currentLevel = 0;
-            if (!GameMaster.SingletonAccess.GetPlayer())
+            if (!GameMaster.SingletonAccess.PlayerObject)
             {
                 GameMaster.SingletonAccess.RegisterPlayerScene(SceneManager.CreateScene("Player Scene"));
                 SceneManager.SetActiveScene(GameMaster.SingletonAccess.PlayerScene);
                 GameMaster.SingletonAccess.InitializePlayer(playerPrefab,
                     Vector3.zero);
+                GameMaster.SingletonAccess.ONPlayerGameOver += OnGameOver;
             }
 
             StartCoroutine(SetCurrentLevelTo(_currentLevel, 2f));
         }
 
+
         private IEnumerator SetCurrentLevelTo(int newLevel, float delay)
         {
             yield return ResetPreviousLevel();
             GameMaster.SingletonAccess.Possessor.SetPossessionsActive(false);
-            GameMaster.SingletonAccess.GetPlayer()?.gameObject.SetActive(false);
+            GameMaster.SingletonAccess.PlayerObject.SetActive(false);
 
 
             yield return new WaitForSeconds(delay);
@@ -75,7 +78,7 @@ namespace Level
                 detector.ONTriggerEnter.RemoveAllListeners();
                 detector.ONTriggerEnter.AddListener((col) =>
                 {
-                    if (col.gameObject.GetInstanceID() == GameMaster.SingletonAccess.GetPlayer().GetInstanceID())
+                    if (col.gameObject.GetInstanceID() == GameMaster.SingletonAccess.PlayerObject.GetInstanceID())
                         TransitionToNextLevel(2f);
                 });
                 GameMaster.SingletonAccess.ClearUpdateEvents();
@@ -90,8 +93,8 @@ namespace Level
             GetComponentFromScene<EnemyGenerator>()?.Generate();
 
             GameMaster.SingletonAccess.Possessor.SetPossessionsActive(true);
-            GameMaster.SingletonAccess.GetPlayer().gameObject.SetActive(true);
-            GameMaster.SingletonAccess.GetPlayer().transform.position = foundPosition;
+            GameMaster.SingletonAccess.PlayerObject.gameObject.SetActive(true);
+            GameMaster.SingletonAccess.PlayerObject.transform.position = foundPosition;
             GameMaster.SingletonAccess.Possessor.TeleportPossessionsToPosition(foundPosition);
 
             _currentLevel = newLevel;
