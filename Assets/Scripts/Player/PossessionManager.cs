@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using Enemies;
 using Enemies.Testing;
 using Managers;
-using Unity.VisualScripting;
 using UnityEngine;
 using Utility;
 
@@ -16,7 +17,7 @@ namespace Player
 
 
         public List<GameObject> possessedEntities;
-
+        public event Action<BaseEnemy> ONPossessionEvent;
 
         private float _currentCooldown;
 
@@ -44,12 +45,14 @@ namespace Player
         private void OnBulletCollisionEnter(Collider obj, Bullet bullet)
         {
             if (obj.GetComponent<Bullet>() == null && obj.GetComponent<PlayerController>() == null &&
-                !possessedEntities.Contains(obj.gameObject) && obj.GetComponent<TestingDummy>() is { } testingDummy)
+                !possessedEntities.Contains(obj.gameObject) && obj.GetComponent<BaseEnemy>() is { } enemy)
             {
                 possessedEntities.Add(obj.gameObject);
-                testingDummy.ONOverridingFixedUpdate += FollowPossessor;
-                testingDummy.ONOverridingWeaponBehaviour += OverrideTargeting;
-                testingDummy.gameObject.layer = LayerMask.NameToLayer("Ally");
+                enemy.ONOverridingFixedUpdate += FollowPossessor;
+                enemy.ONOverridingWeaponBehaviour += OverrideTargeting;
+                enemy.gameObject.layer = LayerMask.NameToLayer("Ally");
+                
+                ONPossessionEvent?.Invoke(enemy);
             }
 
             bullet.gameObject.SetActive(false);
@@ -57,8 +60,8 @@ namespace Player
 
         private void OverrideTargeting(WeaponController weaponController, Transform owner)
         {
-            TestingDummy closestDummy =
-                GameMaster.SingletonAccess.GetNearestObjectOfType<TestingDummy>(owner.gameObject, 15f,
+            BaseEnemy closestDummy =
+                GameMaster.SingletonAccess.GetNearestObjectOfType<BaseEnemy>(owner.gameObject, 15f,
                     LayerMask.GetMask("Enemy"), possessedEntities);
             if (closestDummy)
             {

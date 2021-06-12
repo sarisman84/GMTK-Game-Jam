@@ -40,7 +40,7 @@ namespace Utility
                 {
                     foreach (var pooledObject in pool.Value)
                     {
-                        if (!pooledObject.activeSelf)
+                        if (pooledObject && !pooledObject.activeSelf)
                         {
                             pooledObject.SetActive(true);
                             return pooledObject;
@@ -57,6 +57,7 @@ namespace Utility
             int amm = 300)
         {
             GameObject foundObj = DynamicInstantiate(gameObject, null, amm);
+            if (!foundObj) return null;
             foundObj.transform.position = position;
             foundObj.transform.rotation = rotation;
             return foundObj;

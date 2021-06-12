@@ -61,9 +61,18 @@ public static class CustomInput
     public static bool GetButtonDown(string button)
     {
         InputAction input = GetAction(button);
-    
+
 
         return input?.ReadValue<float>() > 0 && input.triggered;
+    }
+
+    public static float GetSingleDirectionInput(string valInput)
+    {
+        InputAction input = GetAction(valInput);
+
+        if (input != null)
+            return input.ReadValue<float>();
+        return 0;
     }
 
 

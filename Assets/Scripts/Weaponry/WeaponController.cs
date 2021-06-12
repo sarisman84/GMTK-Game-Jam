@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Player.HUD;
 using UnityEngine;
 
 namespace Player
@@ -8,16 +9,29 @@ namespace Player
     {
         public Transform barrel;
         public List<WeaponSettings> weaponLibrary;
+        public float weaponSwapDelay = 0.25f;
 
         private int _currentWeapon = 0;
         private float _currentFireRate = 0;
+        private float _currDelay;
         private Camera _cam;
         private Plane _plane;
+        private WeaponDisplayer _displayer;
+
+
+        public int CurrentWeapon => _currentWeapon;
 
         private void Awake()
         {
             _cam = Camera.main;
             _plane = new Plane();
+            _displayer = GetComponent<WeaponDisplayer>();
+            SelectWeapon(_currentWeapon);
+        }
+
+        private void Update()
+        {
+            _currDelay += Time.deltaTime;
         }
 
         public void Aim(Vector2 mousePosition)
@@ -46,6 +60,29 @@ namespace Player
                 weaponLibrary[_currentWeapon].OnShoot(barrel);
                 _currentFireRate = 0;
             }
+        }
+
+
+        public void AddWeaponToLibrary(WeaponSettings weaponSettings)
+        {
+            if (weaponSettings == null) return;
+            if (_currDelay >= weaponSwapDelay)
+            {
+                if (!weaponLibrary.Contains(weaponSettings))
+                {
+                    weaponLibrary.Add(weaponSettings);
+                    _currentWeapon = weaponLibrary.Count - 1;
+                    _currDelay = 0;
+                }
+            }
+        }
+
+        public void SelectWeapon(int selection)
+        {
+            if (selection < 0 || selection >= weaponLibrary.Count) return;
+            if (_displayer)
+                _displayer.OnWeaponSelection();
+            _currentWeapon = selection;
         }
     }
 }
