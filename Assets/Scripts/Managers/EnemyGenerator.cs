@@ -34,7 +34,7 @@ namespace Managers
         {
             Vector3 onEdgeOfSphere = Random.onUnitSphere;
             onEdgeOfSphere = new Vector3(onEdgeOfSphere.x, 0, onEdgeOfSphere.z);
-            if (GameMaster.SingletonAccess.GetPlayer() is { } player)
+            if (GameMaster.SingletonAccess.PlayerObject is { } player)
             {
                 return player.transform.position + onEdgeOfSphere * spawnDistanceFromPlayer;
             }
@@ -44,7 +44,7 @@ namespace Managers
 
         private void OnDrawGizmos()
         {
-            if (GameMaster.SingletonAccess.GetPlayer() is { } player)
+            if (GameMaster.SingletonAccess.PlayerObject is { } player)
             {
                 Gizmos.DrawWireSphere(player.transform.position, spawnDistanceFromPlayer);
             }

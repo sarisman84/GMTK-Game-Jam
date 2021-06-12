@@ -1,4 +1,5 @@
 ﻿using System;
+using General;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -10,6 +11,7 @@ namespace Player
         private Rigidbody _rigidbody;
         private WeaponController _weaponController;
         private PossessionManager _possessionManager;
+        private HealthModifier _health;
 
         public Transform model;
         public InputActionAsset inputAsset;
@@ -36,6 +38,7 @@ namespace Player
             _rigidbody = GetComponent<Rigidbody>();
             _weaponController = GetComponent<WeaponController>();
             _possessionManager = GetComponent<PossessionManager>();
+            _health = GetComponent<HealthModifier>();
             _possessionManager.ONPossessionEvent += enemy =>
                 _weaponController.AddWeaponToLibrary(enemy.GetComponent<WeaponController>().weaponLibrary[0]);
         }
