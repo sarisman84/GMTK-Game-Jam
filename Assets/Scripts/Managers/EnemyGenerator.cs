@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Enemies;
+using Level;
 using UnityEngine;
 using Utility;
 using Random = UnityEngine.Random;
@@ -32,14 +33,41 @@ namespace Managers
 
         private Vector3 SpawnAroundPlayer()
         {
-            Vector3 onEdgeOfSphere = Random.onUnitSphere;
-            onEdgeOfSphere = new Vector3(onEdgeOfSphere.x, 0, onEdgeOfSphere.z);
-            if (GameMaster.SingletonAccess.PlayerObject is { } player)
+            Vector3 onEdgeOfSphere = Vector3.zero;
+
+            while (PositionIsInvalid(onEdgeOfSphere))
             {
-                return player.transform.position + onEdgeOfSphere * spawnDistanceFromPlayer;
+                if (GameMaster.SingletonAccess.PlayerObject is { } player)
+                {
+                    Vector3 foundResult = Random.onUnitSphere;
+                    onEdgeOfSphere = player.transform.position +
+                                     Vector3.ClampMagnitude(
+                                         new Vector3(foundResult.x, 0, foundResult.z),
+                                         spawnDistanceFromPlayer);
+                }
+                else
+                    break;
             }
 
-            return onEdgeOfSphere * spawnDistanceFromPlayer;
+            return onEdgeOfSphere;
+        }
+
+        private bool PositionIsInvalid(Vector3 onEdgeOfSphere)
+        {
+            Transform outOfBoundsBox = LevelManager.GetGameObjectFromSceneOfTag("Level/OutOfBounds");
+
+
+            Collider[] foundColliders = outOfBoundsBox.GetComponents<Collider>();
+
+            foreach (var foundCollider in foundColliders)
+            {
+                if (foundCollider.bounds.Contains(onEdgeOfSphere))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private void OnDrawGizmos()

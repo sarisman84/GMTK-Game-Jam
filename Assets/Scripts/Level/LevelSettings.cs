@@ -21,7 +21,7 @@ namespace Level
 
         public string levelName;
         public List<Level> subLevels;
-        public float timeRemainingBeforeGameOver;
+        public float timeRemaining;
 
 
         public int SelectRandom()
@@ -54,6 +54,13 @@ namespace Level
         {
             public string levelScene;
             public EndDirection endDirection;
+            public CountdownType countdownType;
+        }
+
+        public enum CountdownType
+        {
+            ToGameOver,
+            ToNextStage
         }
     }
 }

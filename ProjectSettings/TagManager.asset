@@ -10,6 +10,7 @@ TagManager:
   - Level/Spawn/North
   - Level/Spawn/South
   - Level/Spawn/Center
+  - Level/OutOfBounds
   layers:
   - Default
   - TransparentFX
@@ -19,7 +20,7 @@ TagManager:
   - UI
   - Enemy
   - Ally
-  - 
+  - Player
   - 
   - 
   - 
