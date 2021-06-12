@@ -37,7 +37,7 @@ namespace General
 
         public void DestroyThis()
         {
-            Destroy(gameObject);
+            gameObject.SetActive(false);
         }
 
         private void Awake()
