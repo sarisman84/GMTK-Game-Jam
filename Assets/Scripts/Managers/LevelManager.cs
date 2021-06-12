@@ -3,10 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
+using General;
 using Managers;
 using Player;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Rendering;
 using Utility;
 using UnityEngine.SceneManagement;
 using Utility.Attributes;
@@ -24,6 +27,8 @@ namespace Level
         private int _currentSublevel;
         private bool _isTransitioning;
 
+        private Coroutine currentCo;
+
 
         public void StartGame()
         {
@@ -34,10 +39,10 @@ namespace Level
                 SceneManager.SetActiveScene(GameMaster.SingletonAccess.PlayerScene);
                 GameMaster.SingletonAccess.InitializePlayer(playerPrefab,
                     Vector3.zero);
-                GameMaster.SingletonAccess.ONPlayerGameOver += OnGameOver;
+                GameMaster.SingletonAccess.ONPlayerGameOver += () => StartCoroutine(OnGameOver());
             }
 
-            StartCoroutine(SetCurrentLevelTo(_currentLevel, 2f));
+            currentCo = StartCoroutine(SetCurrentLevelTo(_currentLevel, 2f));
         }
 
 
@@ -51,10 +56,11 @@ namespace Level
             yield return new WaitForSeconds(delay);
             if (newLevel >= currentLevels.Count)
             {
-                OnGameOver();
+                yield return OnGameOver();
                 _isTransitioning = false;
                 yield break;
             }
+
 
             int newSubLevel = currentLevels[newLevel].SelectRandom();
             AsyncOperation op = SceneManager.LoadSceneAsync(
@@ -62,7 +68,9 @@ namespace Level
                 LoadSceneMode.Additive);
             op.allowSceneActivation = true;
 
-            yield return new WaitUntil(() => op.isDone);
+            yield return new WaitUntil(() => op.isDone && SceneManager.GetSceneByName(
+                $"Scenes/Levels/{currentLevels[newLevel].subLevels[newSubLevel].levelScene}").isLoaded);
+
 
             SceneManager.SetActiveScene(
                 SceneManager.GetSceneByName(
@@ -99,12 +107,30 @@ namespace Level
 
             _currentLevel = newLevel;
             _isTransitioning = false;
+            currentCo = null;
+            
+            while (true)
+            {
+                if (GameMaster.SingletonAccess.PlayerObject &&
+                    GameMaster.SingletonAccess.PlayerObject.GetComponent<HealthModifier>() is { } healthModifier &&
+                    healthModifier.IsFlaggedForDeath && !GameMaster.SingletonAccess.PlayerObject.activeSelf)
+                {
+                    yield return OnGameOver();
+                    break;
+                }
+
+                yield return new WaitForEndOfFrame();
+            }
         }
 
-        private void OnGameOver()
+        private IEnumerator OnGameOver()
         {
+            yield return ResetPreviousLevel();
             GameMaster.SingletonAccess.Possessor.ResetPossessions();
             ONGameOver?.Invoke();
+            _isTransitioning = false;
+            if (currentCo != null)
+                StopCoroutine(currentCo);
         }
 
         private Transform GetGameObjectFromSceneOfTag(string inputTag, bool debug = false)
@@ -164,9 +190,9 @@ namespace Level
 
         public void TransitionToNextLevel(float delay)
         {
-            if (!_isTransitioning)
+            if (!_isTransitioning && currentCo == null)
             {
-                StartCoroutine(SetCurrentLevelTo(_currentLevel + 1, delay));
+                currentCo = StartCoroutine(SetCurrentLevelTo(_currentLevel + 1, delay));
                 _isTransitioning = true;
             }
         }
