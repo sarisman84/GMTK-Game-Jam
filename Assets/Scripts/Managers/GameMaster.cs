@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Player;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Utility;
 
 namespace Managers
@@ -27,6 +28,7 @@ namespace Managers
         }
 
         private GameObject _playerController;
+        private Scene _playerScene;
 
         public GameObject GetPlayer()
         {
@@ -35,11 +37,20 @@ namespace Managers
             return _playerController;
         }
 
+        public PossessionManager Possessor => _playerController.GetComponent<PossessionManager>();
+
         public void InitializePlayer(GameObject controller, Vector3 position)
         {
             _playerController = ObjectPooler.DynamicInstantiate(controller, position, Quaternion.identity, 1);
             _playerController = _playerController.GetComponentInChildren<PlayerController>().gameObject;
         }
+
+        public void RegisterPlayerScene(Scene scene)
+        {
+            _playerScene = scene;
+        }
+
+        public Scene PlayerScene => _playerScene;
 
         public T GetNearestObjectOfType<T>(GameObject center, float radius, LayerMask mask,
             List<GameObject> blacklist = null) where T : MonoBehaviour
@@ -66,6 +77,14 @@ namespace Managers
             }
 
             return result;
+        }
+
+        public Vector3 GetRandomPositionAroundPoint(Vector3 point, float radius)
+        {
+            Vector3 randomResult = point + Random.onUnitSphere * (radius);
+            randomResult = new Vector3(Mathf.Clamp(randomResult.x, point.x - radius, point.x + radius), 0,
+                Mathf.Clamp(randomResult.z, point.z - radius, point.z + radius));
+            return randomResult;
         }
     }
 }

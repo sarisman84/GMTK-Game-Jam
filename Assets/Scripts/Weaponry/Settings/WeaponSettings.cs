@@ -33,6 +33,7 @@ namespace Player
                 obj.gameObject.layer != LayerMask.NameToLayer("Ally") && (
                     barrelParent.gameObject.layer != LayerMask.NameToLayer("Ally") ||
                     barrelParent.gameObject.layer != LayerMask.NameToLayer("Player")))
+
             {
                 healthModifier.TakeDamage(damage);
             }

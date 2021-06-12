@@ -28,7 +28,8 @@ namespace Level
             _currentLevel = 0;
             if (!GameMaster.SingletonAccess.GetPlayer())
             {
-                SceneManager.SetActiveScene(SceneManager.CreateScene("Player Scene"));
+                GameMaster.SingletonAccess.RegisterPlayerScene(SceneManager.CreateScene("Player Scene"));
+                SceneManager.SetActiveScene(GameMaster.SingletonAccess.PlayerScene);
                 GameMaster.SingletonAccess.InitializePlayer(playerPrefab,
                     Vector3.zero);
             }
@@ -39,6 +40,7 @@ namespace Level
         private IEnumerator SetCurrentLevelTo(int newLevel, float delay)
         {
             yield return ResetPreviousLevel();
+            GameMaster.SingletonAccess.Possessor.SetPossessionsActive(false);
             GameMaster.SingletonAccess.GetPlayer()?.gameObject.SetActive(false);
 
 
@@ -79,8 +81,10 @@ namespace Level
 
             GetComponentFromScene<EnemyGenerator>()?.Generate();
 
+            GameMaster.SingletonAccess.Possessor.SetPossessionsActive(true);
             GameMaster.SingletonAccess.GetPlayer().gameObject.SetActive(true);
             GameMaster.SingletonAccess.GetPlayer().transform.position = foundPosition;
+            GameMaster.SingletonAccess.Possessor.TeleportPossessionsToPosition(foundPosition);
 
             _currentLevel = newLevel;
             _isTransitioning = false;
@@ -88,6 +92,7 @@ namespace Level
 
         private void OnGameOver()
         {
+            GameMaster.SingletonAccess.Possessor.ResetPossessions();
             ONGameOver?.Invoke();
         }
 

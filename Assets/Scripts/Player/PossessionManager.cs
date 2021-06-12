@@ -4,6 +4,7 @@ using Enemies;
 using Enemies.Testing;
 using Managers;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Utility;
 
 namespace Player
@@ -20,6 +21,12 @@ namespace Player
         public event Action<BaseEnemy> ONPossessionEvent;
 
         private float _currentCooldown;
+        private Transform _parentForPossessed;
+
+        private void Start()
+        {
+            _parentForPossessed = new GameObject("Possessions").transform;
+        }
 
         public void ShootPossessionShot(bool input)
         {
@@ -51,8 +58,12 @@ namespace Player
                 enemy.ONOverridingFixedUpdate += FollowPossessor;
                 enemy.ONOverridingWeaponBehaviour += OverrideTargeting;
                 enemy.gameObject.layer = LayerMask.NameToLayer("Ally");
-                
+
                 ONPossessionEvent?.Invoke(enemy);
+                ObjectPooler.RemoveObjectFromPool(enemy.gameObject);
+                enemy.transform.parent = null;
+                SceneManager.MoveGameObjectToScene(enemy.gameObject, GameMaster.SingletonAccess.PlayerScene);
+                enemy.transform.SetParent(_parentForPossessed);
             }
 
             bullet.gameObject.SetActive(false);
@@ -66,7 +77,7 @@ namespace Player
             if (closestDummy)
             {
                 weaponController.Aim((closestDummy.transform.position - owner.position).normalized);
-                weaponController.Shoot(TestingDummy.IsInsideDetectionRange(closestDummy.gameObject, owner, 15f));
+                weaponController.Shoot(Enemy.IsInsideDetectionRange(closestDummy.gameObject, owner, 15f));
             }
         }
 
@@ -79,6 +90,34 @@ namespace Player
                 obj.velocity = (transform.position - obj.transform.position).normalized * (500f * Time.deltaTime);
             else
                 obj.velocity = Vector3.zero;
+        }
+
+        public void ResetPossessions()
+        {
+            foreach (var possessedEntity in possessedEntities)
+            {
+                Destroy(possessedEntity);
+            }
+
+            possessedEntities = new List<GameObject>();
+        }
+
+        public void TeleportPossessionsToPosition(Vector3 position)
+        {
+            foreach (var possessedEntity in possessedEntities)
+            {
+                possessedEntity.transform.position =
+                    GameMaster.SingletonAccess.GetRandomPositionAroundPoint(position, minionMinSpace);
+            }
+        }
+
+        public void SetPossessionsActive(bool state)
+        {
+            foreach (var possessedEntity in possessedEntities)
+            {
+                possessedEntity.GetComponent<BaseEnemy>().IsFlaggedForReset = false;
+                possessedEntity.SetActive(state);
+            }
         }
     }
 }
