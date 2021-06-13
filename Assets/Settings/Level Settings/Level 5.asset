@@ -16,5 +16,5 @@ MonoBehaviour:
   subLevels:
   - levelScene: Level 5
     endDirection: 3
-    countdownType: 0
+    countdownType: 1
   timeRemaining: 60
