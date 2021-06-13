@@ -7,7 +7,7 @@ using UnityEngine.Events;
 public class Detector : MonoBehaviour
 {
     public UnityEvent<Collider> ONTriggerEnter;
-    public int requiredAmmToEnableDetector = 1;
+    public int additionalPossessionsRequired = 1;
 
     private void OnTriggerEnter(Collider other)
     {

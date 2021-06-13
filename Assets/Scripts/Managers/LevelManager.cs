@@ -143,6 +143,7 @@ namespace Level
             {
                 Detector detector = exit.GetComponent<Detector>();
                 detector.ONTriggerEnter.RemoveAllListeners();
+                detector.additionalPossessionsRequired += GameMaster.singletonAccess.possessor.possessedEntities.Count;
                 detector.ONTriggerEnter.AddListener((col) =>
                 {
                     if (col.gameObject.GetInstanceID() == GameMaster.singletonAccess.playerObject.GetInstanceID())
@@ -153,11 +154,12 @@ namespace Level
                 {
                     if (detector)
                         detector.gameObject.SetActive(GameMaster.singletonAccess.possessor.possessedEntities.Count >=
-                                                      detector.requiredAmmToEnableDetector);
+                                                      detector.additionalPossessionsRequired);
                 };
             }
 
             GetComponentFromScene<EnemyGenerator>()?.Generate();
+            
             GameMaster.singletonAccess.possessor.SetPossessionsActive(true);
             GameMaster.singletonAccess.playerObject.gameObject.SetActive(true);
             GameMaster.singletonAccess.playerObject.transform.position = foundPosition;

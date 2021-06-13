@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Enemies;
+using General;
 using Level;
 using UnityEngine;
 using Utility;
@@ -32,8 +33,10 @@ namespace Managers
         {
             while (true)
             {
-                ObjectPooler.DynamicInstantiate(numberOfEnemies[PickARandomEnemy()], _spawnPos,
+                BaseEnemy enemy = ObjectPooler.DynamicInstantiate(numberOfEnemies[PickARandomEnemy()], _spawnPos,
                     Quaternion.identity);
+                enemy.GetComponent<HealthModifier>().onDeath.AddListener(() =>
+                    GameMaster.singletonAccess.possessor.AdditionToCurrentKillCount = 1);
                 yield return new WaitForSeconds(Random.Range(minSpawnRate, maxSpawnRate));
             }
         }
