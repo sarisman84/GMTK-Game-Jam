@@ -15,6 +15,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Survive
       objectReference: {fileID: 0}
+    - target: {fileID: 3766025831231850346, guid: cf9ea526ccf625a49aae71d60b30cb3a, type: 3}
+      propertyPath: m_TagString
+      value: Untagged
+      objectReference: {fileID: 0}
     - target: {fileID: 8514815684025505809, guid: cf9ea526ccf625a49aae71d60b30cb3a, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
