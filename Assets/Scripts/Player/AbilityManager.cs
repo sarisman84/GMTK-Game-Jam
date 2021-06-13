@@ -34,4 +34,13 @@ public class AbilityManager : MonoBehaviour
             currentCd = 0;
         }
     }
+
+    private void OnDisable()
+    {
+        foreach (var currentAbility in currentAbilities)
+        {
+            currentAbility.Reset();
+        }
+        currentCd = 1000000f;
+    }
 }

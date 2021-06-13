@@ -185,6 +185,7 @@ namespace Level
             GameMaster.singletonAccess.possessor.ResetPossessions();
             GameMaster.singletonAccess.playerHealth.DestroyThis();
             GameMaster.singletonAccess.playerWeaponManager.ResetWeaponLibrary();
+            GameMaster.singletonAccess.playerCompass.DisableTracker = true;
             ONGameOver?.Invoke();
             _isTransitioning = false;
             if (currentCo != null)

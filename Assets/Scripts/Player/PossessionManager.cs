@@ -74,7 +74,7 @@ namespace Player
         {
             BaseEnemy closestDummy =
                 GameMaster.singletonAccess.GetNearestObjectOfType(owner.gameObject, 15f,
-                    LayerMask.GetMask("Enemy"), possessedEntities);
+                    possessedEntities, "Enemy");
             if (closestDummy)
             {
                 weaponController.Aim((closestDummy.transform.position - owner.position).normalized);

@@ -26,10 +26,10 @@ namespace Weaponry.Settings.Bullet_Modifier
         {
             GameObject foundObj =
                 GameMaster.singletonAccess.GetNearestObjectOfType<BaseEnemy>(bullet.gameObject,
-                    detectionRange,
+                    detectionRange, null,
                     bullet.currentTarget == typeof(PlayerController)
-                        ? LayerMask.GetMask("Ally", "Player")
-                        : LayerMask.NameToLayer("Enemy"))?.gameObject;
+                        ? new[] {"Ally", "Player"}
+                        : new[] {"Enemy"})?.gameObject;
 
             if (foundObj)
             {

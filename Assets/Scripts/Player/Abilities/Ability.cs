@@ -8,5 +8,6 @@ namespace Player.HUD.Abilities
         public float cooldown;
         public ParticleSystem abilityFX;
         public abstract IEnumerator Activate(PlayerController playerController);
+        public abstract void Reset();
     }
 }

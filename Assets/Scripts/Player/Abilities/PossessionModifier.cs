@@ -16,13 +16,14 @@ namespace Player.HUD.Abilities
         public float damageBuff, movementSpeedBuff;
         [Space] public float instantHealAmm;
 
+        private List<ParticleSystem> fx;
 
         public override IEnumerator Activate(PlayerController playerController)
         {
             List<BaseEnemy> currentPossesedEnemies = playerController.PossessionManager.possessedEntities;
             List<float> oldMovementSpeed = new List<float>();
             List<float> oldDamageBuff = new List<float>();
-            List<ParticleSystem> fx = new List<ParticleSystem>();
+            fx = new List<ParticleSystem>();
             ApplyEffect(currentPossesedEnemies, (enemy, index) =>
             {
                 oldMovementSpeed.Add(enemy.MovementSpeed);
@@ -70,6 +71,20 @@ namespace Player.HUD.Abilities
                 var targetEnemy = targetEnemies[i];
                 method?.Invoke(targetEnemy, i);
             }
+        }
+
+        public override void Reset()
+        {
+            foreach (var pFX in fx)
+            {
+                if (pFX)
+                {
+                    pFX.Stop();
+                    pFX.gameObject.SetActive(false);
+                }
+            }
+
+            fx = new List<ParticleSystem>();
         }
     }
 }

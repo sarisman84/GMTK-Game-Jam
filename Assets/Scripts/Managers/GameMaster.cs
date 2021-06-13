@@ -56,12 +56,13 @@ namespace Managers
         }
 
 
-        public T GetNearestObjectOfType<T>(GameObject center, float radius, LayerMask mask,
-            List<T> blacklist = null) where T : MonoBehaviour
+        public T GetNearestObjectOfType<T>(GameObject center, float radius,
+            List<T> blacklist = null, params string[] mask) where T : MonoBehaviour
         {
             if (blacklist == null)
                 blacklist = new List<T>();
-            Collider[] foundElements = Physics.OverlapSphere(center.transform.position, radius, mask);
+            Debug.Log($"Checking nearby area with {LayerMask.GetMask(mask)}");
+            Collider[] foundElements = Physics.OverlapSphere(center.transform.position, radius, LayerMask.GetMask(mask));
             if (foundElements == null) return null;
             float minDist = float.MaxValue;
             T result = null;
