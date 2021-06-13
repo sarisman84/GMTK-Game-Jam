@@ -18,3 +18,6 @@ MonoBehaviour:
     endDirection: 3
     countdownType: 0
   timeRemaining: 300
+  abilitiesToGiveToPlayerOnLevelEntry:
+  - {fileID: 11400000, guid: 7e475eddabe8b184588c38fecb6b6460, type: 2}
+  - {fileID: 11400000, guid: 16754afd20806af4faf5c9362586098c, type: 2}

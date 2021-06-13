@@ -208,11 +208,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0258f5b94b4ff5c49bf7381fd212b56d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentAbilities:
-  - {fileID: 11400000, guid: 9c4dbdafcc44d1e428ef51d8db20f3a1, type: 2}
-  - {fileID: 11400000, guid: 17fd0104c1c537f45a87f861b16e4b71, type: 2}
-  - {fileID: 11400000, guid: 16754afd20806af4faf5c9362586098c, type: 2}
-  - {fileID: 11400000, guid: 7e475eddabe8b184588c38fecb6b6460, type: 2}
+  currentAbilities: []
+  currentCd: 0
 --- !u!114 &4632106847292846312
 MonoBehaviour:
   m_ObjectHideFlags: 0

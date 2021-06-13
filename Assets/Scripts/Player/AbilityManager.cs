@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Managers;
 using Player;
 using Player.HUD.Abilities;
 using UnityEngine;
@@ -37,10 +38,26 @@ public class AbilityManager : MonoBehaviour
 
     private void OnDisable()
     {
+        if (GameMaster.singletonAccess.playerHealth.IsFlaggedForDeath)
+        {
+            ManualReset();
+        }
+    }
+
+    public void AddAbility(Ability abilityToGiveToPlayer)
+    {
+        if (!abilityToGiveToPlayer) return;
+        currentAbilities.Add(abilityToGiveToPlayer);
+    }
+
+    public void ManualReset()
+    {
         foreach (var currentAbility in currentAbilities)
         {
             currentAbility.Reset();
         }
+
+        currentAbilities = new List<Ability>();
         currentCd = 1000000f;
     }
 }

@@ -43,6 +43,7 @@ namespace Managers
         public HealthModifier playerHealth => _playerController.GetComponent<HealthModifier>();
         public ExitFinder playerCompass => _playerController.GetComponent<ExitFinder>();
         public WeaponController playerWeaponManager => _playerController.GetComponent<WeaponController>();
+        public AbilityManager abilityManager => _playerController.GetComponent<AbilityManager>();
 
         public void InitializePlayer(GameObject controller, Vector3 position)
         {
