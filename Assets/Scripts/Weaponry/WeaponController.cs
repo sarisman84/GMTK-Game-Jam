@@ -17,7 +17,7 @@ namespace Player
         private float _currDelay;
         private Camera _cam;
         private Plane _plane;
-        private WeaponDisplayer _displayer;
+        public WeaponDisplayer displayer;
         public Type CurTarget { get; private set; }
 
 
@@ -27,8 +27,7 @@ namespace Player
         {
             _cam = Camera.main;
             _plane = new Plane();
-            _displayer = GetComponent<WeaponDisplayer>();
-            SelectWeapon(_currentWeapon);
+         
         }
 
         private void Update()
@@ -73,7 +72,7 @@ namespace Player
                 if (!weaponLibrary.Contains(weaponSettings))
                 {
                     weaponLibrary.Add(weaponSettings);
-                    _currentWeapon = weaponLibrary.Count - 1;
+                    SelectWeapon(weaponLibrary.Count - 1);
                     _currDelay = 0;
                 }
             }
@@ -82,9 +81,10 @@ namespace Player
         public void SelectWeapon(int selection)
         {
             if (selection < 0 || selection >= weaponLibrary.Count) return;
-            if (_displayer)
-                _displayer.OnWeaponSelection();
+
             _currentWeapon = selection;
+            if (displayer)
+                displayer.OnWeaponSelection(weaponLibrary[_currentWeapon]);
         }
 
         public void SetDesiredTarget(Type target)
@@ -94,10 +94,17 @@ namespace Player
 
         public void ResetWeaponLibrary()
         {
+            if (displayer)
+                displayer.Reset();
             WeaponSettings firstWeapon = weaponLibrary[0];
             weaponLibrary = new List<WeaponSettings>();
             weaponLibrary.Add(firstWeapon);
             _currentWeapon = 0;
+        }
+
+        private void OnEnable()
+        {
+            SelectWeapon(_currentWeapon);
         }
     }
 }

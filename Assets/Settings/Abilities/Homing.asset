@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2753063ec7784bc5a15cdb68095a3814, type: 3}
   m_Name: Homing
   m_EditorClassIdentifier: 
+  icon: {fileID: 21300000, guid: 1973d38f66f0cf04985ece90ee71f3e4, type: 3}
   cooldown: 20
   abilityFX: {fileID: 6757548500812899094, guid: fb8759a0074db4041ba5e18665589254, type: 3}
   Modifier: {fileID: 11400000, guid: 66afb06674cbfc142943f5113a538fd1, type: 2}

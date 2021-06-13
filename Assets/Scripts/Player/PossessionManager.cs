@@ -13,15 +13,20 @@ namespace Player
     {
         public Bullet bulletPrefab;
         public Transform barrel;
-        public float cooldown = 3f;
         public float minionMinSpace = 2f;
-
+        public float ammOfKillsRequired = 5f;
 
         public List<BaseEnemy> possessedEntities;
         public event Action<BaseEnemy> ONPossessionEvent;
 
-        private float _currentCooldown;
+        private float _currentKillcount;
         private Transform _parentForPossessed;
+
+
+        public float AdditionToCurrentKillCount
+        {
+            set => _currentKillcount += value;
+        }
 
         private void Start()
         {
@@ -30,9 +35,7 @@ namespace Player
 
         public void ShootPossessionShot(bool input)
         {
-            _currentCooldown += Time.deltaTime;
-
-            if (input && _currentCooldown >= cooldown)
+            if (input && _currentKillcount >= ammOfKillsRequired)
             {
                 var transform1 = barrel.transform;
 
@@ -44,7 +47,7 @@ namespace Player
 
 
                 clone.ONCollisionEnterEvent += collider1 => OnBulletCollisionEnter(collider1, clone);
-                _currentCooldown = 0;
+                _currentKillcount = 0;
             }
         }
 

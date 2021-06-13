@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40eefe7bd3c9431ea99a7fcd42e49f73, type: 3}
   m_Name: Barrier
   m_EditorClassIdentifier: 
+  icon: {fileID: 21300000, guid: fe169dd8aaa4b0044ac19acbb194308a, type: 3}
   cooldown: 18
   abilityFX: {fileID: 4664418717341218792, guid: 4acbe71b1dab27a478b110ef435f308e, type: 3}
   barrierRadius: 15

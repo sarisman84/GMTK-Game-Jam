@@ -48,7 +48,11 @@ namespace Player.HUD.Abilities
                 cd += Time.deltaTime;
                 yield return new WaitForEndOfFrame();
                 ApplyEffect(currentPossesedEnemies,
-                    (enemy, i) => { fx[i].transform.position = enemy.transform.position; });
+                    (enemy, i) =>
+                    {
+                        if (i >= fx.Count) return;
+                        fx[i].transform.position = enemy.transform.position;
+                    });
             }
 
             ApplyEffect(currentPossesedEnemies, (enemy, index) =>
