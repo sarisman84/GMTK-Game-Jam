@@ -106,7 +106,7 @@ namespace Level
             GameMaster.singletonAccess.playerCompass.DisableTracker = true;
             GameMaster.singletonAccess.possessor.SetPossessionsActive(false);
             GameMaster.singletonAccess.playerObject.SetActive(false);
-         
+
             int newSubLevel = 0;
             yield return new WaitForSeconds(delay);
             if (newLevel < currentLevels.Count)
@@ -139,11 +139,13 @@ namespace Level
             Vector3 foundPosition = potentialPos ? potentialPos.position : Vector3.zero;
 
             GameObject exit = GetGameObjectFromActiveSceneWithTag("Level/Exit", true)?.gameObject;
+            GameObject instruction = GetGameObjectFromActiveSceneWithTag("Level/Instruction")?.gameObject;
             if (exit)
             {
                 Detector detector = exit.GetComponent<Detector>();
                 detector.ONTriggerEnter.RemoveAllListeners();
-                detector.additionalPossessionsRequired += GameMaster.singletonAccess.possessor.possessedEntities.Count;
+                detector.currentPossessionRequired = detector.additionalPossessionsRequired;
+                detector.currentPossessionRequired += GameMaster.singletonAccess.possessor.possessedEntities.Count;
                 detector.ONTriggerEnter.AddListener((col) =>
                 {
                     if (col.gameObject.GetInstanceID() == GameMaster.singletonAccess.playerObject.GetInstanceID())
@@ -154,12 +156,17 @@ namespace Level
                 {
                     if (detector)
                         detector.gameObject.SetActive(GameMaster.singletonAccess.possessor.possessedEntities.Count >=
-                                                      detector.additionalPossessionsRequired);
+                                                      detector.currentPossessionRequired);
+                    if (instruction)
+                    {
+                        instruction.GetComponent<TMP_Text>().text =
+                            $"Required possessions: {detector.currentPossessionRequired}";
+                    }
                 };
             }
 
             GetComponentFromScene<EnemyGenerator>()?.Generate();
-            
+
             GameMaster.singletonAccess.possessor.SetPossessionsActive(true);
             GameMaster.singletonAccess.playerObject.gameObject.SetActive(true);
             GameMaster.singletonAccess.playerObject.transform.position = foundPosition;
@@ -202,7 +209,7 @@ namespace Level
             GameMaster.singletonAccess.playerHealth.DestroyThis();
             GameMaster.singletonAccess.playerWeaponManager.ResetWeaponLibrary();
             GameMaster.singletonAccess.abilityManager.ManualReset();
-      
+
             GameMaster.singletonAccess.playerCompass.DisableTracker = true;
             ONGameOver?.Invoke();
             hasStarted = false;
