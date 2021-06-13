@@ -10,7 +10,7 @@ namespace Player
         public int ammOfBullets = 3;
         public float spreadBetweenBullets = 45f;
 
-        public override void OnShoot(Transform barrel)
+        public override void OnShoot(Transform barrel, WeaponController controller)
         {
             for (int i = 0; i < ammOfBullets; i++)
             {
@@ -19,6 +19,7 @@ namespace Player
                 Bullet clone = ObjectPooler.DynamicInstantiate(bulletPrefab,
                     barrel.transform.position + (barrel.forward.normalized * 3f),
                     Quaternion.Euler(0, angle, 0));
+                clone.currentTarget = controller.CurTarget;
 
                 foreach (var bulletModifier in bulletModifiers)
                 {

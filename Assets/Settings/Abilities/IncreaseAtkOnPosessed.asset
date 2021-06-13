@@ -9,12 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7872ab5797734030903ab2339495166c, type: 3}
-  m_Name: Test
+  m_Script: {fileID: 11500000, guid: ca5c78e006f64322aa5182bc7a4e4d3c, type: 3}
+  m_Name: IncreaseAtkOnPosessed
   m_EditorClassIdentifier: 
-  levelName: Test
-  subLevels:
-  - levelScene: Test_Level1
-    endDirection: 3
-    countdownType: 0
-  timeRemaining: 300
+  cooldown: 20
+  abilityFX: {fileID: 6757548500812899094, guid: fb8759a0074db4041ba5e18665589254, type: 3}
+  buffDuration: 15
+  damageBuff: 15
+  movementSpeedBuff: 5
+  instantHealAmm: 0

@@ -14,11 +14,15 @@ namespace Enemies
         protected WeaponController WeaponController;
         
         public bool IsFlaggedForReset { private get; set; }
+        public float MovementSpeed { get; set; }
+
+        public WeaponController WeaponManager => WeaponController;
 
         protected virtual void Awake()
         {
             Rigidbody = GetComponent<Rigidbody>();
             WeaponController = GetComponent<WeaponController>();
+            WeaponController.SetDesiredTarget(typeof(PlayerController));
         }
 
         protected abstract void DefaultWeaponBehaviour();

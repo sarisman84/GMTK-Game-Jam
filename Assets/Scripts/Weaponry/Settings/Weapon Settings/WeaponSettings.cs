@@ -19,6 +19,6 @@ namespace Player
         [Expose] public ImpactEffect ImpactEffect;
         [Expose] public List<BulletModifier> bulletModifiers;
 
-        public abstract void OnShoot(Transform barrel);
+        public abstract void OnShoot(Transform barrel, WeaponController controller);
     }
 }

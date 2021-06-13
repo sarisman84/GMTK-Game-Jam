@@ -17,4 +17,4 @@ MonoBehaviour:
   - levelScene: Test_Level5
     endDirection: 2
     countdownType: 1
-  timeRemaining: 120
+  timeRemaining: 30

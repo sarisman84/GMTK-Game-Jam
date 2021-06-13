@@ -6,10 +6,11 @@ namespace Player
     [CreateAssetMenu(fileName = "New Single Shot", menuName = "GMTK/Weapons/Create/Single Shot", order = 0)]
     public class SingleShot : WeaponSettings
     {
-        public override void OnShoot(Transform barrel)
+        public override void OnShoot(Transform barrel, WeaponController controller)
         {
             Bullet clone = ObjectPooler.DynamicInstantiate(bulletPrefab,
                 barrel.transform.position + (barrel.forward.normalized * 3f), barrel.transform.rotation);
+            clone.currentTarget = controller.CurTarget;
             foreach (var bulletModifier in bulletModifiers)
             {
                 bulletModifier.ModifyBullet(clone);

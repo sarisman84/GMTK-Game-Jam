@@ -10,6 +10,7 @@ namespace Player
 
         public float lifeDuration = 5f;
         public Rigidbody Rigidbody => _rigidbody;
+        public Type currentTarget { get; set; }
 
         public event Action<Bullet> ONFixedUpdateEvent;
         public event Action<Collider> ONCollisionEnterEvent;
