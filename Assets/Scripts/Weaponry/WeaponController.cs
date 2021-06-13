@@ -18,6 +18,7 @@ namespace Player
         private Camera _cam;
         private Plane _plane;
         private WeaponDisplayer _displayer;
+        public Type CurTarget { get; private set; }
 
 
         public int CurrentWeapon => _currentWeapon;
@@ -58,7 +59,7 @@ namespace Player
 
             if (input && _currentFireRate >= weaponLibrary[_currentWeapon].fireRate)
             {
-                weaponLibrary[_currentWeapon].OnShoot(barrel);
+                weaponLibrary[_currentWeapon].OnShoot(barrel, this);
                 _currentFireRate = 0;
             }
         }
@@ -84,6 +85,11 @@ namespace Player
             if (_displayer)
                 _displayer.OnWeaponSelection();
             _currentWeapon = selection;
+        }
+
+        public void SetDesiredTarget(Type target)
+        {
+            CurTarget = target;
         }
     }
 }

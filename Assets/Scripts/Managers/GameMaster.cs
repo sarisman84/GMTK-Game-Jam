@@ -56,10 +56,10 @@ namespace Managers
 
 
         public T GetNearestObjectOfType<T>(GameObject center, float radius, LayerMask mask,
-            List<GameObject> blacklist = null) where T : MonoBehaviour
+            List<T> blacklist = null) where T : MonoBehaviour
         {
             if (blacklist == null)
-                blacklist = new List<GameObject>();
+                blacklist = new List<T>();
             Collider[] foundElements = Physics.OverlapSphere(center.transform.position, radius, mask);
             if (foundElements == null) return null;
             float minDist = float.MaxValue;
@@ -68,7 +68,7 @@ namespace Managers
             {
                 if (foundElement.GetComponent<T>() is { } foundElementOfType &&
                     foundElementOfType.gameObject.GetInstanceID() != center.GetInstanceID() &&
-                    !blacklist.Contains(foundElementOfType.gameObject))
+                    !blacklist.Contains(foundElementOfType))
                 {
                     float dist = Vector3.Distance(foundElementOfType.transform.position, center.transform.position);
                     if (dist < minDist)

@@ -86,6 +86,20 @@ public static class CustomInput
         return input.ReadValue<Vector2>();
     }
 
+    public static int GetKeyDown(params string[] key)
+    {
+        for (var index = 0; index < key.Length; index++)
+        {
+            var variable = key[index];
+            if (GetButton(variable))
+            {
+                return index;
+            }
+        }
+
+        return -1;
+    }
+
 
     private static InputAction GetAction(string id)
     {
