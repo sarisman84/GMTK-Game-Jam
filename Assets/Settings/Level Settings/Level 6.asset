@@ -17,4 +17,6 @@ MonoBehaviour:
   - levelScene: Level 6
     endDirection: 2
     countdownType: 0
-  timeRemaining: 120
+  timeRemaining: 90
+  abilitiesToGiveToPlayerOnLevelEntry:
+  - {fileID: 11400000, guid: 9c4dbdafcc44d1e428ef51d8db20f3a1, type: 2}

@@ -10,11 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7872ab5797734030903ab2339495166c, type: 3}
-  m_Name: Level 9
+  m_Name: Level 9 Corridor
   m_EditorClassIdentifier: 
   levelName: Level 9
   subLevels:
   - levelScene: Level 9
     endDirection: 2
     countdownType: 1
-  timeRemaining: 60
+  timeRemaining: 90
+  abilitiesToGiveToPlayerOnLevelEntry: []
