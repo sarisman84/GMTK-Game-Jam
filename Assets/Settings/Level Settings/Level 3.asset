@@ -15,5 +15,6 @@ MonoBehaviour:
   levelName: Level 3
   subLevels:
   - levelScene: Level 3
-    endDirection: 3
-  timeRemainingBeforeGameOver: 300
+    endDirection: 2
+    countdownType: 0
+  timeRemaining: 90

@@ -16,4 +16,5 @@ MonoBehaviour:
   subLevels:
   - levelScene: Level 2
     endDirection: 0
-  timeRemainingBeforeGameOver: 300
+    countdownType: 0
+  timeRemaining: 90
