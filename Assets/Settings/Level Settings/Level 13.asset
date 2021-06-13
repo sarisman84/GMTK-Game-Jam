@@ -18,4 +18,5 @@ MonoBehaviour:
     endDirection: 0
     countdownType: 1
   timeRemaining: 180
-  abilitiesToGiveToPlayerOnLevelEntry: []
+  abilitiesToGiveToPlayerOnLevelEntry:
+  - {fileID: 11400000, guid: 7b2bfd5749525a64891fcfad109bcd29, type: 2}

@@ -11,6 +11,7 @@ TagManager:
   - Level/Spawn/South
   - Level/Spawn/Center
   - Level/OutOfBounds
+  - Level/Instructions
   layers:
   - Default
   - TransparentFX

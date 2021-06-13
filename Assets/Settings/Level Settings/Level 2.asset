@@ -17,4 +17,5 @@ MonoBehaviour:
   - levelScene: Level 2
     endDirection: 1
     countdownType: 0
-  timeRemaining: 90
+  timeRemaining: 120
+  abilitiesToGiveToPlayerOnLevelEntry: []
