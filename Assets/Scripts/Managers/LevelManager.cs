@@ -82,12 +82,12 @@ namespace Level
         }
 
 
-        private bool HasTimeRanOut(int newLevel, int newSubLevel)
+        private bool HasTimeRanOut(int newLevel, int newSubLevel, LevelSettings.CountdownType type)
         {
             LevelSettings settings = currentLevels[newLevel];
 
             LevelSettings.Level level = settings.subLevels[newSubLevel];
-            return level.countdownType == LevelSettings.CountdownType.ToGameOver && _hasTimeRanOut &&
+            return level.countdownType == type && _hasTimeRanOut &&
                    GameMaster.singletonAccess.playerObject.activeSelf;
         }
 
@@ -103,9 +103,10 @@ namespace Level
         private IEnumerator SetCurrentLevelTo(int newLevel, float delay)
         {
             yield return ResetPreviousLevel();
+            GameMaster.singletonAccess.playerCompass.DisableTracker = true;
             GameMaster.singletonAccess.possessor.SetPossessionsActive(false);
             GameMaster.singletonAccess.playerObject.SetActive(false);
-            GameMaster.singletonAccess.playerCompass.DisableTracker = true;
+         
             int newSubLevel = 0;
             yield return new WaitForSeconds(delay);
             if (newLevel < currentLevels.Count)
@@ -172,12 +173,18 @@ namespace Level
                 if (GameMaster.singletonAccess.playerObject &&
                     GameMaster.singletonAccess.playerObject.GetComponent<HealthModifier>() is { } healthModifier &&
                     healthModifier.IsFlaggedForDeath && !GameMaster.singletonAccess.playerObject.activeSelf ||
-                    HasTimeRanOut(newLevel, newSubLevel))
+                    HasTimeRanOut(_currentLevel, _currentSublevel, LevelSettings.CountdownType.ToGameOver))
                 {
                     yield return OnGameOver();
                     _hasTimeRanOut = true;
                     _currentCountdown = 0;
                     GameMaster.singletonAccess.playerCompass.DisableTracker = true;
+                    yield break;
+                }
+
+                if (HasTimeRanOut(_currentLevel, _currentSublevel, LevelSettings.CountdownType.ToNextStage))
+                {
+                    TransitionToNextLevel(0.5f);
                     yield break;
                 }
 

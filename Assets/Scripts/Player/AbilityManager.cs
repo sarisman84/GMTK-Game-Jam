@@ -38,10 +38,11 @@ public class AbilityManager : MonoBehaviour
 
     private void OnDisable()
     {
-        if (GameMaster.singletonAccess.playerHealth.IsFlaggedForDeath)
-        {
-            ManualReset();
-        }
+        if (GameMaster.singletonAccess.playerHealth)
+            if (GameMaster.singletonAccess.playerHealth.IsFlaggedForDeath)
+            {
+                ManualReset();
+            }
     }
 
     public void AddAbility(Ability abilityToGiveToPlayer)

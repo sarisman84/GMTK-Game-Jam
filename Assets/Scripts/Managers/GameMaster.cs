@@ -40,7 +40,10 @@ namespace Managers
 
         public GameObject playerObject => _playerController;
         public PossessionManager possessor => _playerController.GetComponent<PossessionManager>();
-        public HealthModifier playerHealth => _playerController.GetComponent<HealthModifier>();
+
+        public HealthModifier playerHealth =>
+            _playerController ? _playerController.GetComponent<HealthModifier>() : null;
+
         public ExitFinder playerCompass => _playerController.GetComponent<ExitFinder>();
         public WeaponController playerWeaponManager => _playerController.GetComponent<WeaponController>();
         public AbilityManager abilityManager => _playerController.GetComponent<AbilityManager>();
@@ -63,7 +66,8 @@ namespace Managers
             if (blacklist == null)
                 blacklist = new List<T>();
             Debug.Log($"Checking nearby area with {LayerMask.GetMask(mask)}");
-            Collider[] foundElements = Physics.OverlapSphere(center.transform.position, radius, LayerMask.GetMask(mask));
+            Collider[] foundElements =
+                Physics.OverlapSphere(center.transform.position, radius, LayerMask.GetMask(mask));
             if (foundElements == null) return null;
             float minDist = float.MaxValue;
             T result = null;
