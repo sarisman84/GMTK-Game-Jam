@@ -17,7 +17,7 @@ namespace Player
         public float minionMinSpace = 2f;
 
 
-        public List<GameObject> possessedEntities;
+        public List<BaseEnemy> possessedEntities;
         public event Action<BaseEnemy> ONPossessionEvent;
 
         private float _currentCooldown;
@@ -51,9 +51,11 @@ namespace Player
         private void OnBulletCollisionEnter(Collider obj, Bullet bullet)
         {
             if (obj.GetComponent<Bullet>() == null && obj.GetComponent<PlayerController>() == null &&
-                !possessedEntities.Contains(obj.gameObject) && obj.GetComponent<BaseEnemy>() is { } enemy)
+                obj.GetComponent<BaseEnemy>() is { } enemy &&
+                !possessedEntities.Contains(enemy))
             {
-                possessedEntities.Add(obj.gameObject);
+                possessedEntities.Add(enemy);
+                enemy.WeaponManager.SetDesiredTarget(typeof(BaseEnemy));
                 enemy.ONOverridingFixedUpdate += FollowPossessor;
                 enemy.ONOverridingWeaponBehaviour += OverrideTargeting;
                 enemy.gameObject.layer = LayerMask.NameToLayer("Ally");
@@ -71,7 +73,7 @@ namespace Player
         private void OverrideTargeting(WeaponController weaponController, Transform owner)
         {
             BaseEnemy closestDummy =
-                GameMaster.singletonAccess.GetNearestObjectOfType<BaseEnemy>(owner.gameObject, 15f,
+                GameMaster.singletonAccess.GetNearestObjectOfType(owner.gameObject, 15f,
                     LayerMask.GetMask("Enemy"), possessedEntities);
             if (closestDummy)
             {
@@ -98,7 +100,7 @@ namespace Player
                 Destroy(possessedEntity);
             }
 
-            possessedEntities = new List<GameObject>();
+            possessedEntities = new List<BaseEnemy>();
         }
 
         public void TeleportPossessionsToPosition(Vector3 position)
@@ -115,7 +117,7 @@ namespace Player
             foreach (var possessedEntity in possessedEntities)
             {
                 possessedEntity.GetComponent<BaseEnemy>().IsFlaggedForReset = false;
-                possessedEntity.SetActive(state);
+                possessedEntity.gameObject.SetActive(state);
             }
         }
     }

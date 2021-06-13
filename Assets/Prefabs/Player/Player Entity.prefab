@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6393662441435727820}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -47,7 +47,9 @@ GameObject:
   - component: {fileID: 6393662442790377821}
   - component: {fileID: 6393662442790377820}
   - component: {fileID: 6393662442790381219}
-  m_Layer: 0
+  - component: {fileID: 1762668268502993389}
+  - component: {fileID: 4632106847292846312}
+  m_Layer: 8
   m_Name: Player Entity
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -194,6 +196,37 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   iconDisplayer: {fileID: 0}
   barrelDisplayer: {fileID: 6393662441435727820}
+--- !u!114 &1762668268502993389
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6393662442790377813}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0258f5b94b4ff5c49bf7381fd212b56d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentAbilities:
+  - {fileID: 11400000, guid: 9c4dbdafcc44d1e428ef51d8db20f3a1, type: 2}
+  - {fileID: 11400000, guid: 17fd0104c1c537f45a87f861b16e4b71, type: 2}
+  - {fileID: 11400000, guid: 16754afd20806af4faf5c9362586098c, type: 2}
+  - {fileID: 11400000, guid: 7e475eddabe8b184588c38fecb6b6460, type: 2}
+--- !u!114 &4632106847292846312
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6393662442790377813}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0688af30863c9d4ea97af44d2ebc85e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pointerModel: {fileID: 0}
+  pointerHUD: {fileID: 0}
 --- !u!1 &6393662442942745496
 GameObject:
   m_ObjectHideFlags: 0
@@ -205,7 +238,7 @@ GameObject:
   - component: {fileID: 6393662442942745503}
   - component: {fileID: 6393662442942745500}
   - component: {fileID: 6393662442942745501}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -289,7 +322,7 @@ GameObject:
   - component: {fileID: 6393662443006313697}
   - component: {fileID: 6393662443006313698}
   - component: {fileID: 6393662443006313699}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -383,7 +416,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6393662443098058723}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Barrel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
