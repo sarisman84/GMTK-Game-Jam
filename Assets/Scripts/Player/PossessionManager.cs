@@ -97,7 +97,7 @@ namespace Player
         {
             foreach (var possessedEntity in possessedEntities)
             {
-                Destroy(possessedEntity);
+                Destroy(possessedEntity.gameObject);
             }
 
             possessedEntities = new List<BaseEnemy>();

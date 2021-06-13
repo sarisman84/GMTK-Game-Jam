@@ -91,5 +91,13 @@ namespace Player
         {
             CurTarget = target;
         }
+
+        public void ResetWeaponLibrary()
+        {
+            WeaponSettings firstWeapon = weaponLibrary[0];
+            weaponLibrary = new List<WeaponSettings>();
+            weaponLibrary.Add(firstWeapon);
+            _currentWeapon = 0;
+        }
     }
 }

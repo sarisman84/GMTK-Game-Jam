@@ -184,6 +184,7 @@ namespace Level
             yield return ResetPreviousLevel();
             GameMaster.singletonAccess.possessor.ResetPossessions();
             GameMaster.singletonAccess.playerHealth.DestroyThis();
+            GameMaster.singletonAccess.playerWeaponManager.ResetWeaponLibrary();
             ONGameOver?.Invoke();
             _isTransitioning = false;
             if (currentCo != null)
