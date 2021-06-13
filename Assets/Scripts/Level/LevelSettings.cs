@@ -53,6 +53,7 @@ namespace Level
 
         public Ability GetRandomAbility()
         {
+            if (abilitiesToGiveToPlayerOnLevelEntry.Count == 0) return null;
             return abilitiesToGiveToPlayerOnLevelEntry[Random.Range(0, abilitiesToGiveToPlayerOnLevelEntry.Count)];
         }
 
