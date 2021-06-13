@@ -45,7 +45,7 @@ namespace Managers
             bool runOnce = true;
             while (PositionIsInvalid(onEdgeOfSphere) || runOnce)
             {
-                if (GameMaster.SingletonAccess.PlayerObject is { } player)
+                if (GameMaster.singletonAccess.playerObject is { } player)
                 {
                     Vector2 foundResult = Random.insideUnitCircle.normalized * spawnDistanceFromPlayer;
                     onEdgeOfSphere = player.transform.position + new Vector3(foundResult.x, 0, foundResult.y);
@@ -60,7 +60,7 @@ namespace Managers
 
         private bool PositionIsInvalid(Vector3 onEdgeOfSphere)
         {
-            Transform outOfBoundsBox = LevelManager.GetGameObjectFromSceneOfTag("Level/OutOfBounds");
+            Transform outOfBoundsBox = LevelManager.GetGameObjectFromActiveSceneWithTag("Level/OutOfBounds");
 
             if (!outOfBoundsBox) return false;
             Collider[] foundColliders = outOfBoundsBox.GetComponents<Collider>();
@@ -79,7 +79,7 @@ namespace Managers
 
         private void OnDrawGizmos()
         {
-            if (GameMaster.SingletonAccess.PlayerObject is { } player)
+            if (GameMaster.singletonAccess.playerObject is { } player)
             {
                 Gizmos.color = Color.red;
                 Gizmos.DrawWireSphere(player.transform.position, spawnDistanceFromPlayer);

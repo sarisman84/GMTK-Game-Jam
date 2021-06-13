@@ -29,7 +29,7 @@ public class AsteroidField : MonoBehaviour
 
 
             asteroid.Rigidbody.AddForce(
-                (GameMaster.SingletonAccess.PlayerObject.transform.position - asteroid.transform.position).normalized *
+                (GameMaster.singletonAccess.playerObject.transform.position - asteroid.transform.position).normalized *
                 Random.Range(15, 100), ForceMode.Impulse);
 
             yield return new WaitForSeconds(Random.Range(minSpawnRate, maxSpawnRate));

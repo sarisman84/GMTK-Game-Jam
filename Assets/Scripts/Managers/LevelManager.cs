@@ -22,7 +22,7 @@ namespace Level
     public class LevelManager : MonoBehaviour
     {
         public GameObject playerPrefab;
-        public TMP_Text timerDisplayer;
+        public TMP_Text _timerDisplayer;
         [Expose] public List<LevelSettings> currentLevels;
         public UnityEvent ONGameOver;
 
@@ -39,16 +39,16 @@ namespace Level
 
         public void StartGame()
         {
-            if (!timerDisplayer)
-                throw new NullReferenceException($"Missing Time Displayer. Check the {gameObject.name}'s Inspector");
+            if (!_timerDisplayer)
+                throw new NullReferenceException($"Missing Time Displayer. Check the Inspector of {gameObject.name}");
             _currentLevel = 0;
-            if (!GameMaster.SingletonAccess.PlayerObject)
+            if (!GameMaster.singletonAccess.playerObject)
             {
-                GameMaster.SingletonAccess.RegisterPlayerScene(SceneManager.CreateScene("Player Scene"));
-                SceneManager.SetActiveScene(GameMaster.SingletonAccess.PlayerScene);
-                GameMaster.SingletonAccess.InitializePlayer(playerPrefab,
+                GameMaster.singletonAccess.RegisterPlayerScene(SceneManager.CreateScene("Player Scene"));
+                SceneManager.SetActiveScene(GameMaster.singletonAccess.playerScene);
+                GameMaster.singletonAccess.InitializePlayer(playerPrefab,
                     Vector3.zero);
-                GameMaster.SingletonAccess.ONPlayerGameOver += () => StartCoroutine(OnGameOver());
+                GameMaster.singletonAccess.ONPlayerGameOver += () => StartCoroutine(OnGameOver());
             }
 
             currentCo = StartCoroutine(SetCurrentLevelTo(_currentLevel, 0.5f));
@@ -61,12 +61,12 @@ namespace Level
             _showTimer = (_currentCountdown <= 61 ||
                           currentLevels[_currentLevel].subLevels[_currentSublevel].countdownType ==
                           LevelSettings.CountdownType.ToNextStage) &&
-                         GameMaster.SingletonAccess.PlayerObject.activeSelf;
+                         GameMaster.singletonAccess.playerObject.activeSelf && !_hasTimeRanOut;
 
             if (_showTimer)
                 DisplayCountdown();
             else
-                timerDisplayer.text = "";
+                _timerDisplayer.text = "";
         }
 
         private bool CountdownTime()
@@ -79,16 +79,17 @@ namespace Level
         private bool HasTimeRanOut(int newLevel, int newSubLevel)
         {
             LevelSettings settings = currentLevels[newLevel];
+
             LevelSettings.Level level = settings.subLevels[newSubLevel];
             return level.countdownType == LevelSettings.CountdownType.ToGameOver && _hasTimeRanOut &&
-                   GameMaster.SingletonAccess.PlayerObject.activeSelf;
+                   GameMaster.singletonAccess.playerObject.activeSelf;
         }
 
         public Vector2Int DisplayCountdown()
         {
             int minutes = Mathf.FloorToInt(_currentCountdown / 60f);
             int seconds = Mathf.FloorToInt(_currentCountdown % 60f);
-            timerDisplayer.text = $"{minutes:00}:{seconds:00}";
+            _timerDisplayer.text = $"{minutes:00}:{seconds:00}";
             return new Vector2Int(minutes, seconds);
         }
 
@@ -96,9 +97,9 @@ namespace Level
         private IEnumerator SetCurrentLevelTo(int newLevel, float delay)
         {
             yield return ResetPreviousLevel();
-            GameMaster.SingletonAccess.Possessor.SetPossessionsActive(false);
-            GameMaster.SingletonAccess.PlayerObject.SetActive(false);
-
+            GameMaster.singletonAccess.possessor.SetPossessionsActive(false);
+            GameMaster.singletonAccess.playerObject.SetActive(false);
+            GameMaster.singletonAccess.playerCompass.DisableTracker = true;
             int newSubLevel = 0;
             yield return new WaitForSeconds(delay);
             if (newLevel < currentLevels.Count)
@@ -107,70 +108,69 @@ namespace Level
                 _currentCountdown = currentLevels[newLevel].timeRemaining;
             }
 
-
-            if (newLevel >= currentLevels.Count || HasTimeRanOut(newLevel, newSubLevel))
+            if (newLevel >= currentLevels.Count)
             {
                 yield return OnGameOver();
                 _isTransitioning = false;
                 yield break;
             }
 
-
             AsyncOperation op = SceneManager.LoadSceneAsync(
                 $"Scenes/Levels/{currentLevels[newLevel].subLevels[newSubLevel].levelScene}",
                 LoadSceneMode.Additive);
-            op.allowSceneActivation = true;
 
+            op.allowSceneActivation = true;
             yield return new WaitUntil(() => op.isDone && SceneManager.GetSceneByName(
                 $"Scenes/Levels/{currentLevels[newLevel].subLevels[newSubLevel].levelScene}").isLoaded);
-
-
             SceneManager.SetActiveScene(
                 SceneManager.GetSceneByName(
                     $"Scenes/Levels/{currentLevels[newLevel].subLevels[newSubLevel].levelScene}"));
+
             Transform potentialPos =
-                GetGameObjectFromSceneOfTag(currentLevels[_currentLevel].SpawnPos(_currentSublevel), true);
+                GetGameObjectFromActiveSceneWithTag(currentLevels[_currentLevel].SpawnPos(_currentSublevel), true);
+
             Vector3 foundPosition = potentialPos ? potentialPos.position : Vector3.zero;
 
-            GameObject exit = GetGameObjectFromSceneOfTag("Level/Exit", true)?.gameObject;
+            GameObject exit = GetGameObjectFromActiveSceneWithTag("Level/Exit", true)?.gameObject;
             if (exit)
             {
                 Detector detector = exit.GetComponent<Detector>();
                 detector.ONTriggerEnter.RemoveAllListeners();
                 detector.ONTriggerEnter.AddListener((col) =>
                 {
-                    if (col.gameObject.GetInstanceID() == GameMaster.SingletonAccess.PlayerObject.GetInstanceID())
+                    if (col.gameObject.GetInstanceID() == GameMaster.singletonAccess.playerObject.GetInstanceID())
                         TransitionToNextLevel(0.5f);
                 });
-                GameMaster.SingletonAccess.ClearUpdateEvents();
-                GameMaster.SingletonAccess.ONUpdate += () =>
+                GameMaster.singletonAccess.ClearUpdateEvents();
+                GameMaster.singletonAccess.ONUpdate += () =>
                 {
                     if (detector)
-                        detector.gameObject.SetActive(GameMaster.SingletonAccess.Possessor.possessedEntities.Count >=
+                        detector.gameObject.SetActive(GameMaster.singletonAccess.possessor.possessedEntities.Count >=
                                                       detector.requiredAmmToEnableDetector);
                 };
             }
 
             GetComponentFromScene<EnemyGenerator>()?.Generate();
-
-            GameMaster.SingletonAccess.Possessor.SetPossessionsActive(true);
-            GameMaster.SingletonAccess.PlayerObject.gameObject.SetActive(true);
-            GameMaster.SingletonAccess.PlayerObject.transform.position = foundPosition;
-            GameMaster.SingletonAccess.Possessor.TeleportPossessionsToPosition(foundPosition);
-
+            GameMaster.singletonAccess.possessor.SetPossessionsActive(true);
+            GameMaster.singletonAccess.playerObject.gameObject.SetActive(true);
+            GameMaster.singletonAccess.playerObject.transform.position = foundPosition;
+            GameMaster.singletonAccess.possessor.TeleportPossessionsToPosition(foundPosition);
+            GameMaster.singletonAccess.playerCompass.DisableTracker =
+                currentLevels[newLevel].subLevels[newSubLevel].countdownType == LevelSettings.CountdownType.ToNextStage;
             _currentLevel = newLevel;
             _isTransitioning = false;
             currentCo = null;
-
             while (true)
             {
-                if (GameMaster.SingletonAccess.PlayerObject &&
-                    GameMaster.SingletonAccess.PlayerObject.GetComponent<HealthModifier>() is { } healthModifier &&
-                    healthModifier.IsFlaggedForDeath && !GameMaster.SingletonAccess.PlayerObject.activeSelf)
+                if (GameMaster.singletonAccess.playerObject &&
+                    GameMaster.singletonAccess.playerObject.GetComponent<HealthModifier>() is { } healthModifier &&
+                    healthModifier.IsFlaggedForDeath && !GameMaster.singletonAccess.playerObject.activeSelf ||
+                    HasTimeRanOut(newLevel, newSubLevel))
                 {
                     yield return OnGameOver();
                     _hasTimeRanOut = true;
                     _currentCountdown = 0;
+                    GameMaster.singletonAccess.playerCompass.DisableTracker = true;
                     break;
                 }
 
@@ -182,14 +182,15 @@ namespace Level
         private IEnumerator OnGameOver()
         {
             yield return ResetPreviousLevel();
-            GameMaster.SingletonAccess.Possessor.ResetPossessions();
+            GameMaster.singletonAccess.possessor.ResetPossessions();
+            GameMaster.singletonAccess.playerHealth.DestroyThis();
             ONGameOver?.Invoke();
             _isTransitioning = false;
             if (currentCo != null)
                 StopCoroutine(currentCo);
         }
 
-        public static Transform GetGameObjectFromSceneOfTag(string inputTag, bool debug = false)
+        public static Transform GetGameObjectFromActiveSceneWithTag(string inputTag, bool debug = false)
         {
             if (debug)
             {
@@ -201,7 +202,6 @@ namespace Level
                 if (rootObj)
                 {
                     Transform child = rootObj.transform.tag.Contains(inputTag) ? rootObj.transform : null;
-
                     if (!child)
                         child = rootObj.transform.FindChildOfTag(inputTag);
                     if (child)
