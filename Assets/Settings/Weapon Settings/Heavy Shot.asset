@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bulletSpeed: 5
   fireRate: 0.5
-  bulletPrefab: {fileID: 1149102810902346992, guid: bacde7732ab3ba14b83a8cef21e8f645, type: 3}
+  bulletPrefab: {fileID: 4593921180563528194, guid: 041083658fa580e4aa77911075b6c846, type: 3}
   weaponIcon: {fileID: 0}
   weaponModel: {fileID: 8479321612364421246, guid: 722a2f073f780274ba85f7058f76846f, type: 3}
   ImpactEffect: {fileID: 11400000, guid: e6307c358e935d642b01050d5e9a7afa, type: 2}

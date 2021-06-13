@@ -61,7 +61,7 @@ namespace Player
                 ONPossessionEvent?.Invoke(enemy);
                 ObjectPooler.RemoveObjectFromPool(enemy.gameObject);
                 enemy.transform.parent = null;
-                SceneManager.MoveGameObjectToScene(enemy.gameObject, GameMaster.SingletonAccess.PlayerScene);
+                SceneManager.MoveGameObjectToScene(enemy.gameObject, GameMaster.singletonAccess.playerScene);
                 enemy.transform.SetParent(_parentForPossessed);
             }
 
@@ -71,7 +71,7 @@ namespace Player
         private void OverrideTargeting(WeaponController weaponController, Transform owner)
         {
             BaseEnemy closestDummy =
-                GameMaster.SingletonAccess.GetNearestObjectOfType<BaseEnemy>(owner.gameObject, 15f,
+                GameMaster.singletonAccess.GetNearestObjectOfType<BaseEnemy>(owner.gameObject, 15f,
                     LayerMask.GetMask("Enemy"), possessedEntities);
             if (closestDummy)
             {
@@ -106,7 +106,7 @@ namespace Player
             foreach (var possessedEntity in possessedEntities)
             {
                 possessedEntity.transform.position =
-                    GameMaster.SingletonAccess.GetRandomPositionAroundPoint(position, minionMinSpace);
+                    GameMaster.singletonAccess.GetRandomPositionAroundPoint(position, minionMinSpace);
             }
         }
 

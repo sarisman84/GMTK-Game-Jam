@@ -15,9 +15,16 @@ namespace Managers
         public float spawnDistanceFromPlayer = 20f;
         public float minSpawnRate = 0.5f, maxSpawnRate = 2f;
 
+        private Vector3 _spawnPos;
+
         public void Generate()
         {
             StartCoroutine(InstantiateEnemiesOverTime());
+        }
+
+        private void Update()
+        {
+            _spawnPos = SpawnAroundPlayer();
         }
 
 
@@ -25,7 +32,7 @@ namespace Managers
         {
             while (true)
             {
-                ObjectPooler.DynamicInstantiate(numberOfEnemies[PickARandomEnemy()], SpawnAroundPlayer(),
+                ObjectPooler.DynamicInstantiate(numberOfEnemies[PickARandomEnemy()], _spawnPos,
                     Quaternion.identity);
                 yield return new WaitForSeconds(Random.Range(minSpawnRate, maxSpawnRate));
             }
@@ -35,15 +42,14 @@ namespace Managers
         {
             Vector3 onEdgeOfSphere = Vector3.zero;
 
-            while (PositionIsInvalid(onEdgeOfSphere))
+            bool runOnce = true;
+            while (PositionIsInvalid(onEdgeOfSphere) || runOnce)
             {
-                if (GameMaster.SingletonAccess.PlayerObject is { } player)
+                if (GameMaster.singletonAccess.playerObject is { } player)
                 {
-                    Vector3 foundResult = Random.onUnitSphere;
-                    onEdgeOfSphere = player.transform.position +
-                                     Vector3.ClampMagnitude(
-                                         new Vector3(foundResult.x, 0, foundResult.z),
-                                         spawnDistanceFromPlayer);
+                    Vector2 foundResult = Random.insideUnitCircle.normalized * spawnDistanceFromPlayer;
+                    onEdgeOfSphere = player.transform.position + new Vector3(foundResult.x, 0, foundResult.y);
+                    runOnce = false;
                 }
                 else
                     break;
@@ -54,11 +60,12 @@ namespace Managers
 
         private bool PositionIsInvalid(Vector3 onEdgeOfSphere)
         {
-            Transform outOfBoundsBox = LevelManager.GetGameObjectFromSceneOfTag("Level/OutOfBounds");
+            Transform outOfBoundsBox = LevelManager.GetGameObjectFromActiveSceneWithTag("Level/OutOfBounds");
 
-
+            if (!outOfBoundsBox) return false;
             Collider[] foundColliders = outOfBoundsBox.GetComponents<Collider>();
 
+            if (foundColliders == null) return false;
             foreach (var foundCollider in foundColliders)
             {
                 if (foundCollider.bounds.Contains(onEdgeOfSphere))
@@ -72,9 +79,13 @@ namespace Managers
 
         private void OnDrawGizmos()
         {
-            if (GameMaster.SingletonAccess.PlayerObject is { } player)
+            if (GameMaster.singletonAccess.playerObject is { } player)
             {
+                Gizmos.color = Color.red;
                 Gizmos.DrawWireSphere(player.transform.position, spawnDistanceFromPlayer);
+
+                Gizmos.color = Color.magenta;
+                Gizmos.DrawSphere(_spawnPos, 1);
             }
         }
 

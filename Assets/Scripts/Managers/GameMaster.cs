@@ -13,7 +13,7 @@ namespace Managers
     {
         private static GameMaster _ins;
 
-        public static GameMaster SingletonAccess
+        public static GameMaster singletonAccess
         {
             get
             {
@@ -32,12 +32,16 @@ namespace Managers
 
         private GameObject _playerController;
         private Scene _playerScene;
+        public Scene playerScene => _playerScene;
+
         public event Action ONUpdate;
         public event Action ONPlayerGameOver;
 
 
-        public GameObject PlayerObject => _playerController;
-        public PossessionManager Possessor => _playerController.GetComponent<PossessionManager>();
+        public GameObject playerObject => _playerController;
+        public PossessionManager possessor => _playerController.GetComponent<PossessionManager>();
+        public HealthModifier playerHealth => _playerController.GetComponent<HealthModifier>();
+        public ExitFinder playerCompass => _playerController.GetComponent<ExitFinder>();
 
         public void InitializePlayer(GameObject controller, Vector3 position)
         {
@@ -50,7 +54,6 @@ namespace Managers
             _playerScene = scene;
         }
 
-        public Scene PlayerScene => _playerScene;
 
         public T GetNearestObjectOfType<T>(GameObject center, float radius, LayerMask mask,
             List<GameObject> blacklist = null) where T : MonoBehaviour
@@ -95,8 +98,6 @@ namespace Managers
         private void Update()
         {
             ONUpdate?.Invoke();
-
-          
         }
     }
 }
