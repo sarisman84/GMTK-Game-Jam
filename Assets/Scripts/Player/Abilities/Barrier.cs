@@ -10,11 +10,11 @@ namespace Player.HUD.Abilities
     {
         public float barrierRadius = 15f;
         public float barrierDuration = 3f;
+        private ParticleSystem fx;
 
         public override IEnumerator Activate(PlayerController playerController)
         {
-            ParticleSystem fx =
-                ObjectPooler.DynamicInstantiate(abilityFX, playerController.transform.parent);
+            fx = ObjectPooler.DynamicInstantiate(abilityFX, playerController.transform.parent);
             ParticleSystem.ShapeModule module = fx.shape;
             module.radius = barrierRadius;
             float cd = 0;
@@ -28,8 +28,7 @@ namespace Player.HUD.Abilities
             }
 
             module.radius = 1;
-            fx.Stop();
-            fx.gameObject.SetActive(false);
+            Reset();
         }
 
         private IEnumerator ClearNearbyBullets(Vector3 transformPosition)
@@ -46,6 +45,16 @@ namespace Player.HUD.Abilities
             }
 
             yield return null;
+        }
+
+        public override void Reset()
+        {
+            if (fx)
+            {
+                fx.Stop();
+                fx.gameObject.SetActive(false);
+                fx = null;
+            }
         }
     }
 }

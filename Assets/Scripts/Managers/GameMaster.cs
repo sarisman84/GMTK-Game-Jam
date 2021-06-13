@@ -40,9 +40,13 @@ namespace Managers
 
         public GameObject playerObject => _playerController;
         public PossessionManager possessor => _playerController.GetComponent<PossessionManager>();
-        public HealthModifier playerHealth => _playerController.GetComponent<HealthModifier>();
+
+        public HealthModifier playerHealth =>
+            _playerController ? _playerController.GetComponent<HealthModifier>() : null;
+
         public ExitFinder playerCompass => _playerController.GetComponent<ExitFinder>();
         public WeaponController playerWeaponManager => _playerController.GetComponent<WeaponController>();
+        public AbilityManager abilityManager => _playerController.GetComponent<AbilityManager>();
 
         public void InitializePlayer(GameObject controller, Vector3 position)
         {
@@ -56,12 +60,14 @@ namespace Managers
         }
 
 
-        public T GetNearestObjectOfType<T>(GameObject center, float radius, LayerMask mask,
-            List<T> blacklist = null) where T : MonoBehaviour
+        public T GetNearestObjectOfType<T>(GameObject center, float radius,
+            List<T> blacklist = null, params string[] mask) where T : MonoBehaviour
         {
             if (blacklist == null)
                 blacklist = new List<T>();
-            Collider[] foundElements = Physics.OverlapSphere(center.transform.position, radius, mask);
+            Debug.Log($"Checking nearby area with {LayerMask.GetMask(mask)}");
+            Collider[] foundElements =
+                Physics.OverlapSphere(center.transform.position, radius, LayerMask.GetMask(mask));
             if (foundElements == null) return null;
             float minDist = float.MaxValue;
             T result = null;

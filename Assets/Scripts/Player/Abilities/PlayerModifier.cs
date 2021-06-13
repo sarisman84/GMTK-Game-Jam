@@ -11,7 +11,7 @@ namespace Player.HUD.Abilities
         public float buffDuration;
         public float damageBuff, movementSpeedBuff;
         [Space] public float instantHealAmm;
-
+        private ParticleSystem fx;
 
         public override IEnumerator Activate(PlayerController playerController)
         {
@@ -35,7 +35,7 @@ namespace Player.HUD.Abilities
                 damageOnImpact.damage += damageBuff;
             }
 
-            ParticleSystem fx =
+            fx =
                 ObjectPooler.DynamicInstantiate(abilityFX, playerController.transform.parent);
             fx.Play();
             float cd = 0;
@@ -54,8 +54,17 @@ namespace Player.HUD.Abilities
             playerController.currentMaxMovementSpeed = oldMaxMovementSpeed;
             playerController.currentAccelerationSpeed = oldaccelerationSpeed;
 
-            fx.Stop();
-            fx.gameObject.SetActive(false);
+            Reset();
+        }
+
+        public override void Reset()
+        {
+            if (fx)
+            {
+                fx.Stop();
+                fx.gameObject.SetActive(false);
+                fx = null;
+            }
         }
     }
 }

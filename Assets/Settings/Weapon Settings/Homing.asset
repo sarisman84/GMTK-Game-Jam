@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eebc52c2a10d4b7094ceca2b1a6f4d5d, type: 3}
   m_Name: Homing
   m_EditorClassIdentifier: 
-  detectionRange: 5
+  detectionRange: 15
   turningSpeed: 0.5

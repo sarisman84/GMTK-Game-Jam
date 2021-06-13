@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Player.HUD.Abilities;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
@@ -22,6 +23,7 @@ namespace Level
         public string levelName;
         public List<Level> subLevels;
         public float timeRemaining;
+        public List<Ability> abilitiesToGiveToPlayerOnLevelEntry;
 
 
         public int SelectRandom()
@@ -47,6 +49,11 @@ namespace Level
             }
 
             return "";
+        }
+
+        public Ability GetRandomAbility()
+        {
+            return abilitiesToGiveToPlayerOnLevelEntry[Random.Range(0, abilitiesToGiveToPlayerOnLevelEntry.Count)];
         }
 
         [Serializable]

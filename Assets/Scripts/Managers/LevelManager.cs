@@ -35,23 +35,29 @@ namespace Level
         private bool _hasTimeRanOut = false;
         private bool _showTimer = false;
         private float _currentCountdown = float.MaxValue;
+        private bool hasStarted = false;
 
 
         public void StartGame()
         {
-            if (!_timerDisplayer)
-                throw new NullReferenceException($"Missing Time Displayer. Check the Inspector of {gameObject.name}");
-            _currentLevel = 0;
-            if (!GameMaster.singletonAccess.playerObject)
+            if (!hasStarted)
             {
-                GameMaster.singletonAccess.RegisterPlayerScene(SceneManager.CreateScene("Player Scene"));
-                SceneManager.SetActiveScene(GameMaster.singletonAccess.playerScene);
-                GameMaster.singletonAccess.InitializePlayer(playerPrefab,
-                    Vector3.zero);
-                GameMaster.singletonAccess.ONPlayerGameOver += () => StartCoroutine(OnGameOver());
-            }
+                if (!_timerDisplayer)
+                    throw new NullReferenceException(
+                        $"Missing Time Displayer. Check the Inspector of {gameObject.name}");
+                _currentLevel = 0;
+                if (!GameMaster.singletonAccess.playerObject)
+                {
+                    GameMaster.singletonAccess.RegisterPlayerScene(SceneManager.CreateScene("Player Scene"));
+                    SceneManager.SetActiveScene(GameMaster.singletonAccess.playerScene);
+                    GameMaster.singletonAccess.InitializePlayer(playerPrefab,
+                        Vector3.zero);
+                    GameMaster.singletonAccess.ONPlayerGameOver += () => StartCoroutine(OnGameOver());
+                }
 
-            currentCo = StartCoroutine(SetCurrentLevelTo(_currentLevel, 0.5f));
+                currentCo = StartCoroutine(SetCurrentLevelTo(_currentLevel, 0.5f));
+                hasStarted = true;
+            }
         }
 
         private void Update()
@@ -76,12 +82,12 @@ namespace Level
         }
 
 
-        private bool HasTimeRanOut(int newLevel, int newSubLevel)
+        private bool HasTimeRanOut(int newLevel, int newSubLevel, LevelSettings.CountdownType type)
         {
             LevelSettings settings = currentLevels[newLevel];
 
             LevelSettings.Level level = settings.subLevels[newSubLevel];
-            return level.countdownType == LevelSettings.CountdownType.ToGameOver && _hasTimeRanOut &&
+            return level.countdownType == type && _hasTimeRanOut &&
                    GameMaster.singletonAccess.playerObject.activeSelf;
         }
 
@@ -97,9 +103,10 @@ namespace Level
         private IEnumerator SetCurrentLevelTo(int newLevel, float delay)
         {
             yield return ResetPreviousLevel();
+            GameMaster.singletonAccess.playerCompass.DisableTracker = true;
             GameMaster.singletonAccess.possessor.SetPossessionsActive(false);
             GameMaster.singletonAccess.playerObject.SetActive(false);
-            GameMaster.singletonAccess.playerCompass.DisableTracker = true;
+         
             int newSubLevel = 0;
             yield return new WaitForSeconds(delay);
             if (newLevel < currentLevels.Count)
@@ -155,6 +162,7 @@ namespace Level
             GameMaster.singletonAccess.playerObject.gameObject.SetActive(true);
             GameMaster.singletonAccess.playerObject.transform.position = foundPosition;
             GameMaster.singletonAccess.possessor.TeleportPossessionsToPosition(foundPosition);
+            GameMaster.singletonAccess.abilityManager.AddAbility(currentLevels[newLevel].GetRandomAbility());
             GameMaster.singletonAccess.playerCompass.DisableTracker =
                 currentLevels[newLevel].subLevels[newSubLevel].countdownType == LevelSettings.CountdownType.ToNextStage;
             _currentLevel = newLevel;
@@ -165,13 +173,19 @@ namespace Level
                 if (GameMaster.singletonAccess.playerObject &&
                     GameMaster.singletonAccess.playerObject.GetComponent<HealthModifier>() is { } healthModifier &&
                     healthModifier.IsFlaggedForDeath && !GameMaster.singletonAccess.playerObject.activeSelf ||
-                    HasTimeRanOut(newLevel, newSubLevel))
+                    HasTimeRanOut(_currentLevel, _currentSublevel, LevelSettings.CountdownType.ToGameOver))
                 {
                     yield return OnGameOver();
                     _hasTimeRanOut = true;
                     _currentCountdown = 0;
                     GameMaster.singletonAccess.playerCompass.DisableTracker = true;
-                    break;
+                    yield break;
+                }
+
+                if (HasTimeRanOut(_currentLevel, _currentSublevel, LevelSettings.CountdownType.ToNextStage))
+                {
+                    TransitionToNextLevel(0.5f);
+                    yield break;
                 }
 
 
@@ -185,7 +199,10 @@ namespace Level
             GameMaster.singletonAccess.possessor.ResetPossessions();
             GameMaster.singletonAccess.playerHealth.DestroyThis();
             GameMaster.singletonAccess.playerWeaponManager.ResetWeaponLibrary();
+            GameMaster.singletonAccess.abilityManager.ManualReset();
+            GameMaster.singletonAccess.playerCompass.DisableTracker = true;
             ONGameOver?.Invoke();
+            hasStarted = false;
             _isTransitioning = false;
             if (currentCo != null)
                 StopCoroutine(currentCo);
