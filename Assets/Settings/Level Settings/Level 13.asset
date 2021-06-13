@@ -13,5 +13,8 @@ MonoBehaviour:
   m_Name: Level 13
   m_EditorClassIdentifier: 
   levelName: Level 13
-  subLevels: []
-  timeRemaining: 120
+  subLevels:
+  - levelScene: Level 13
+    endDirection: 0
+    countdownType: 0
+  timeRemaining: 180
