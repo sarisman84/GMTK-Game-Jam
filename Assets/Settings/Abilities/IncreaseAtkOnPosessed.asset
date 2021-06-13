@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca5c78e006f64322aa5182bc7a4e4d3c, type: 3}
   m_Name: IncreaseAtkOnPosessed
   m_EditorClassIdentifier: 
+  icon: {fileID: 21300000, guid: 76e35c93ea4c85346bc26e31f99893c9, type: 3}
   cooldown: 20
   abilityFX: {fileID: 6757548500812899094, guid: fb8759a0074db4041ba5e18665589254, type: 3}
   buffDuration: 15

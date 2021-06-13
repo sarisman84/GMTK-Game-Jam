@@ -134,6 +134,7 @@ MonoBehaviour:
   weaponLibrary:
   - {fileID: 11400000, guid: f6ce430bc9d7d9d4aaf402eed1c256fb, type: 2}
   weaponSwapDelay: 0.25
+  displayer: {fileID: 6393662442790381219}
 --- !u!114 &6393662442790377821
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -209,6 +210,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentAbilities: []
+  Display: {fileID: 0}
   currentCd: 0
 --- !u!114 &4632106847292846312
 MonoBehaviour:

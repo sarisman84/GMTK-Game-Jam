@@ -9,7 +9,7 @@ using UnityEngine;
 public class AbilityManager : MonoBehaviour
 {
     public List<Ability> currentAbilities;
-
+    public AbilityDisplay Display;
 
     private Coroutine currentAbilityUsed;
 
@@ -48,7 +48,11 @@ public class AbilityManager : MonoBehaviour
     public void AddAbility(Ability abilityToGiveToPlayer)
     {
         if (!abilityToGiveToPlayer) return;
+
+
         currentAbilities.Add(abilityToGiveToPlayer);
+        if (Display)
+            Display.UpdateIcons(currentAbilities);
     }
 
     public void ManualReset()
@@ -58,6 +62,8 @@ public class AbilityManager : MonoBehaviour
             currentAbility.Reset();
         }
 
+        if (Display)
+            Display.Reset();
         currentAbilities = new List<Ability>();
         currentCd = 1000000f;
     }

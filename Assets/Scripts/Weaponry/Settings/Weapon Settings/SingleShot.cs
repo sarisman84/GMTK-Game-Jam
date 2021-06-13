@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Managers;
+using UnityEngine;
 using Utility;
 
 namespace Player
@@ -25,6 +26,7 @@ namespace Player
             {
                 ImpactEffect.OnImpactEffect(collider, clone, barrel.parent);
                 clone.gameObject.SetActive(false);
+                GameMaster.singletonAccess.possessor.AdditionToCurrentKillCount = 1;
             };
         }
     }

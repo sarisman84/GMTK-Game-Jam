@@ -200,6 +200,7 @@ namespace Level
             GameMaster.singletonAccess.playerHealth.DestroyThis();
             GameMaster.singletonAccess.playerWeaponManager.ResetWeaponLibrary();
             GameMaster.singletonAccess.abilityManager.ManualReset();
+      
             GameMaster.singletonAccess.playerCompass.DisableTracker = true;
             ONGameOver?.Invoke();
             hasStarted = false;
