@@ -4,6 +4,7 @@ using Enemies;
 using Enemies.Testing;
 using Managers;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using Utility;
 
@@ -22,6 +23,8 @@ namespace Player
         private float _currentKillcount;
         private Transform _parentForPossessed;
 
+        public UnityEvent<float> ONKillCountUpdate;
+
 
         public float AdditionToCurrentKillCount
         {
@@ -31,6 +34,11 @@ namespace Player
         private void Start()
         {
             _parentForPossessed = new GameObject("Possessions").transform;
+        }
+
+        private void Update()
+        {
+            ONKillCountUpdate?.Invoke(_currentKillcount / 5);
         }
 
         public void ShootPossessionShot(bool input)
