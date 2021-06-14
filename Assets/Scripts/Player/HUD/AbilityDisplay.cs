@@ -26,10 +26,7 @@ public class AbilityDisplay : MonoBehaviour
 
     public void Reset()
     {
-        foreach (var currentAbilityIcon in currentAbilityIcons)
-        {
-            currentAbilityIcon.gameObject.SetActive(false);
-        }
+        SetActive(false);
     }
 
     public void SetActive(bool value)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Enemies;
+using Level.Asteroids;
 using Player.HUD.Abilities;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -30,7 +31,6 @@ namespace Level
             return levelsToUse[Random.Range(0, levelsToUse.Count)];
         }
 
-        
 
         public Ability GetRandomAbility()
         {
@@ -43,9 +43,13 @@ namespace Level
         {
             [Header("Music Settings")] public AudioClip musicClip;
 
-            [Header("Enemy Spawn Settings")] public List<BaseEnemy> numberOfEnemies;
-            public float spawnDistanceFromPlayer;
-            public float minSpawnRate, maxSpawnRate;
+            [Header("Asteroid Field Settings")] public bool spawnAsteroids;
+            public List<Asteroid> uniqueAsteroids;
+            public float asteroidSpawnDistanceFromPlayer;
+            public float minAsteroidSpawnRate, maxAsteroidSpawnRate;
+            [Header("Enemy Spawn Settings")] public List<BaseEnemy> uniqueEnemies;
+            public float enemySpawnDistanceFromPlayer;
+            public float minEnemySpawnRate, maxEnemySpawnRate;
 
             [Header("Settings")] public float timeRemaining;
             public string levelScene;
@@ -56,7 +60,7 @@ namespace Level
             {
                 return SceneManager.GetSceneByName(levelScene);
             }
-            
+
             public string SpawnPos()
             {
                 string baseTag = "Level/Spawn/";

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Managers;
 using Player;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using Utility;
@@ -282,7 +283,9 @@ namespace Level
         #region New Code
 
         public GameObject playerPrefab;
+
         [Header("Menu Settings")] public AudioClip menuMusic;
+        public Canvas timeDisplayPrefab;
 
         [Header("Level Settings")] [Space] [Expose]
         public List<LevelSettings> currentLevelSettings;
@@ -295,6 +298,7 @@ namespace Level
         private MusicPlayer _musicPlayer;
         private TimeDisplayer _timeDisplayer;
         private EnemyGenerator _enemyGenerator;
+        private AsteroidField _asteroidGenerator;
 
         private PlayerController _player;
         private int _currentLevel;
@@ -303,6 +307,7 @@ namespace Level
         private Scene _gameManagers;
         private Scene _mainMenu;
         private Coroutine _loadLevelCoroutine;
+
 
         private void Awake()
         {
@@ -322,113 +327,20 @@ namespace Level
 
         private void Update()
         {
-            if (_timeDisplayer)
+            if (_timeDisplayer && _player && _timeDisplayer.TimeCounter != null)
             {
-                if (_timeDisplayer.TimeCounter.HasRanOutOfTime() ||
+                if (_timeDisplayer.TimeCounter.HasRanOutOfTime(_selectedLevels[_currentLevel].timerType ==
+                                                               LevelSettings.CountdownType.GameOverOnZero) ||
                     (!_player.gameObject.activeSelf && _player.HealthManager.IsFlaggedForDeath))
                 {
-                    OnGameOver();
-                }
-            }
-        }
-
-        private IEnumerator LoadLevel(int newLevelIndex)
-        {
-            onLevelTransitionEnter?.Invoke();
-            _enemyGenerator.StopGenerating();
-
-
-            yield return UnloadPreviousLevel(_currentLevel);
-            _player.AbilityManager.DisruptAbilities();
-            _player.AbilityManager.ResetCd();
-            _player.AbilityManager.display.SetActive(false);
-            _player.DisableController(false);
-
-            if (newLevelIndex >= _selectedLevels.Count)
-            {
-                yield return OnGameComplete();
-            }
-
-
-            var selectedLevel = _selectedLevels[newLevelIndex];
-            selectedLevel.FetchScene().SetSceneActive(true);
-            _enemyGenerator.Generate(selectedLevel.numberOfEnemies);
-            _musicPlayer.Play(selectedLevel.musicClip);
-            _timeDisplayer.BeginCounting(selectedLevel.timeRemaining, selectedLevel.timerType);
-
-            Vector3 pos = FetchGameObjectWithTagFromScene(selectedLevel.FetchScene(), selectedLevel.SpawnPos())
-                .transform.position;
-            _player.AbilityManager.AddAbility(currentLevelSettings[newLevelIndex].GetRandomAbility());
-            yield return _player.TeleportPlayerToPos(pos);
-            _player.AbilityManager.display.SetActive(true);
-
-
-            onLevelTransitionExit?.Invoke();
-            yield return FindAndSetup(newLevelIndex, "Level/Exit", "Level/Instructions");
-        }
-
-        private IEnumerator FindAndSetup(int newLevelIndex, params string[] input)
-        {
-            Detector foundDetector = null;
-            foreach (var variable in input)
-            {
-                GameObject foundElement =
-                    FetchGameObjectWithTagFromScene(_selectedLevels[newLevelIndex].FetchScene(), variable);
-
-                if (foundElement)
-                    switch (variable)
+                    if (_loadLevelCoroutine != null)
                     {
-                        case "Level/Exit":
-                            foundDetector = foundElement.GetComponent<Detector>();
-                            foundDetector.ONTriggerEnter.RemoveAllListeners();
-                            foundDetector.currentPossessionRequired = foundDetector.additionalPossessionsRequired;
-                            foundDetector.currentPossessionRequired +=
-                                _player.PossessionManager.possessedEntities.Count;
-                            foundDetector.ONTriggerEnter.AddListener((col) =>
-                            {
-                                if (col.gameObject.GetInstanceID() ==
-                                    _player.gameObject.GetInstanceID())
-                                    TransitionToNextLevel();
-                            });
-                            GameMaster.singletonAccess.ClearUpdateEvents();
-                            _player.UpdateExitTracker(foundDetector);
-                            break;
-
-                        case "Level/Instruction":
-                            if (foundDetector)
-                                foundElement.GetComponent<TMP_Text>().text =
-                                    $"Required possessions: {foundDetector.currentPossessionRequired}";
-
-                            break;
+                        StopCoroutine(_loadLevelCoroutine);
                     }
 
-                yield return new WaitForSeconds(0.5f);
+                    StartCoroutine(OnGameOver());
+                }
             }
-
-
-            yield return null;
-        }
-
-        private void TransitionToNextLevel()
-        {
-            StartCoroutine(LoadLevel(_currentLevel + 1));
-        }
-
-        private IEnumerator OnGameComplete()
-        {
-            onGameCompletion?.Invoke();
-            yield break;
-        }
-
-        private void OnGameOver()
-        {
-            onGameOver?.Invoke();
-        }
-
-        private IEnumerator UnloadPreviousLevel(int currentLevel)
-        {
-            _selectedLevels[currentLevel].FetchScene().SetSceneActive(false);
-            yield return new WaitForSeconds(1f);
         }
 
         private IEnumerator Setup()
@@ -454,12 +366,152 @@ namespace Level
             _musicPlayer = new GameObject("Music Player").AddComponent<MusicPlayer>();
             _timeDisplayer = new GameObject("Time Displayer").AddComponent<TimeDisplayer>();
             _enemyGenerator = new GameObject("Enemy Spawner").AddComponent<EnemyGenerator>();
+            _asteroidGenerator = new GameObject("Asteroid Field").AddComponent<AsteroidField>();
+            _timeDisplayer.Setup(timeDisplayPrefab);
 
             _player = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity)
                 .GetComponentInChildren<PlayerController>();
-            _player.DisableController(false);
+            _player.SetControllerActive(false, false);
+            _musicPlayer.Play(menuMusic);
             yield return null;
         }
+
+        private IEnumerator LoadLevel(int newLevelIndex)
+        {
+            yield return ResetGame();
+
+            if (newLevelIndex >= _selectedLevels.Count)
+            {
+                yield return OnGameComplete();
+            }
+
+
+            var selectedLevel = _selectedLevels[newLevelIndex];
+            selectedLevel.FetchScene().SetSceneActive(true);
+
+            _enemyGenerator.Generate(selectedLevel.FetchScene(), selectedLevel.uniqueEnemies,
+                selectedLevel.minEnemySpawnRate, selectedLevel.maxEnemySpawnRate,
+                selectedLevel.enemySpawnDistanceFromPlayer,
+                _player.HealthManager);
+
+            if (selectedLevel.spawnAsteroids)
+                _asteroidGenerator.Generate(selectedLevel.FetchScene(), selectedLevel.uniqueAsteroids,
+                    selectedLevel.minAsteroidSpawnRate, selectedLevel.maxAsteroidSpawnRate,
+                    selectedLevel.asteroidSpawnDistanceFromPlayer, _player);
+
+            _musicPlayer.Play(selectedLevel.musicClip);
+            _timeDisplayer.BeginCounting(selectedLevel.timeRemaining);
+
+            Vector3 pos = FetchGameObjectWithTagFromScene(selectedLevel.FetchScene(), selectedLevel.SpawnPos())
+                .transform.position;
+            _player.SetControllerActive(true, false);
+            _player.AbilityManager.AddAbility(currentLevelSettings[newLevelIndex].GetRandomAbility());
+            yield return _player.TeleportPlayerToPos(pos);
+            _player.AbilityManager.display.SetActive(true);
+
+
+            onLevelTransitionExit?.Invoke();
+            yield return FindAndSetup(newLevelIndex, "Level/Exit", "Level/Instructions");
+            _currentLevel = newLevelIndex;
+        }
+
+        private IEnumerator ResetGame()
+        {
+            onLevelTransitionEnter?.Invoke();
+            _enemyGenerator.StopGenerating();
+            _asteroidGenerator.StopGenerating();
+            _timeDisplayer.Reset();
+            ClearBullets();
+            _player.AbilityManager.DisruptAbilities();
+            _player.AbilityManager.ResetCd();
+            _player.AbilityManager.display.SetActive(false);
+            _player.ManualUpdateExitTracker(null);
+            _player.SetControllerActive(false, false);
+
+            yield return UnloadPreviousLevel(_currentLevel);
+        }
+
+        private void ClearBullets()
+        {
+            foreach (var bullet in FindObjectsOfType<Bullet>())
+            {
+                bullet.gameObject.SetActive(false);
+            }
+        }
+
+        private IEnumerator OnGameComplete()
+        {
+            yield return ResetGame();
+            yield return TransitionToMainMenu();
+            onGameCompletion?.Invoke();
+        }
+
+        private IEnumerator OnGameOver()
+        {
+            yield return ResetGame();
+            yield return TransitionToMainMenu();
+            onGameOver?.Invoke();
+        }
+
+
+        private IEnumerator FindAndSetup(int newLevelIndex, params string[] input)
+        {
+            Detector foundDetector = null;
+            foreach (var variable in input)
+            {
+                GameObject foundElement =
+                    FetchGameObjectWithTagFromScene(_selectedLevels[newLevelIndex].FetchScene(), variable);
+
+                if (foundElement)
+                    switch (variable)
+                    {
+                        case "Level/Exit":
+                            foundDetector = foundElement.GetComponent<Detector>();
+                            foundDetector.ONTriggerEnter.RemoveAllListeners();
+                            foundDetector.currentPossessionRequired = foundDetector.additionalPossessionsRequired;
+                            foundDetector.currentPossessionRequired +=
+                                _player.PossessionManager.possessedEntities.Count;
+                            foundDetector.ResetEvents();
+                            foundDetector.ONTriggerEnter.AddListener((col) =>
+                            {
+                                if (col.gameObject.GetInstanceID() ==
+                                    _player.gameObject.GetInstanceID() &&
+                                    _player.PossessionManager.possessedEntities.Count >=
+                                    foundDetector.currentPossessionRequired)
+                                    TransitionToNextLevel();
+                            });
+
+                            if (_selectedLevels[newLevelIndex].timerType == LevelSettings.CountdownType.GameOverOnZero)
+                                _player.UpdateExitTracker(foundDetector);
+                            break;
+
+                        case "Level/Instructions":
+                            if (foundDetector)
+                                foundElement.GetComponent<TMP_Text>().text =
+                                    $"Required possessions: {foundDetector.currentPossessionRequired}";
+
+                            break;
+                    }
+
+                yield return new WaitForSeconds(0.5f);
+            }
+
+
+            yield return null;
+        }
+
+        private void TransitionToNextLevel()
+        {
+            StartCoroutine(LoadLevel(_currentLevel + 1));
+        }
+
+
+        private IEnumerator UnloadPreviousLevel(int currentLevel)
+        {
+            _selectedLevels[currentLevel].FetchScene().SetSceneActive(false);
+            yield return null;
+        }
+
 
         private IEnumerator TransitionToMainMenu()
         {
@@ -468,6 +520,8 @@ namespace Level
             yield return new WaitForSeconds(1f);
         }
 
+
+        #region Helper Methods
 
         public static GameObject FetchGameObjectWithTagFromScene(Scene scene, string tag, bool debug = false)
         {
@@ -494,6 +548,8 @@ namespace Level
 
             return null;
         }
+
+        #endregion
 
         #endregion
     }

@@ -15,6 +15,9 @@ namespace Player
         private PossessionManager _possessionManager;
         private AbilityManager _abilityManager;
         private HealthModifier _health;
+        private ExitFinder _exitFinder;
+
+        private Coroutine _tracker;
 
         public Transform model;
         public InputActionAsset inputAsset;
@@ -28,6 +31,8 @@ namespace Player
         public AbilityManager AbilityManager => _abilityManager;
         public float currentAccelerationSpeed { get; set; }
         public float currentMaxMovementSpeed { get; set; }
+        
+        
 
         private void Awake()
         {
@@ -52,6 +57,7 @@ namespace Player
             _possessionManager = GetComponent<PossessionManager>();
             _health = GetComponent<HealthModifier>();
             _abilityManager = GetComponent<AbilityManager>();
+            _exitFinder = GetComponent<ExitFinder>();
 
             _possessionManager.ONPossessionEvent += enemy =>
                 _weaponController.AddWeaponToLibrary(enemy.GetComponent<WeaponController>().weaponLibrary[0]);
@@ -117,26 +123,57 @@ namespace Player
             CustomInput.SetInputActive(false);
         }
 
-        public void DisableController(bool isFlaggedForDeath)
+        public void SetControllerActive(bool state, bool isFlaggedForDeath)
         {
+            _exitFinder.SetActive(state);
+            _weaponController.displayer.SetActive(state);
+            _possessionManager.SetUIActive(state);
+            _possessionManager.SetPossessionsActive(state);
+            _abilityManager.display.SetActive(state);
             if (isFlaggedForDeath)
             {
                 _health.DestroyThis();
                 return;
             }
 
-            gameObject.SetActive(false);
+
+            gameObject.SetActive(state);
         }
 
         public IEnumerator TeleportPlayerToPos(Vector3 pos)
         {
+            gameObject.transform.position = pos;
             PossessionManager.TeleportPossessionsToPosition(pos);
             yield return null;
         }
 
         public void UpdateExitTracker(Detector foundDetector)
         {
-            
+            if(_tracker != null)
+                StopCoroutine(_tracker);
+            _tracker = StartCoroutine(UpdateTracker(foundDetector));
+        }
+
+        public void ManualUpdateExitTracker(Detector foundDetector)
+        {
+            if (!_exitFinder) return;
+            _exitFinder.SetTarget(foundDetector);
+        }
+
+        private IEnumerator UpdateTracker(Detector foundDetector)
+        {
+            if (!_exitFinder) yield break;
+            _exitFinder.SetTarget(null);
+
+            while (true)
+            {
+                _exitFinder.SetTarget(
+                    _possessionManager.possessedEntities.Count >= foundDetector.currentPossessionRequired
+                        ? foundDetector
+                        : null);
+
+                yield return new WaitForEndOfFrame();
+            }
         }
     }
 }

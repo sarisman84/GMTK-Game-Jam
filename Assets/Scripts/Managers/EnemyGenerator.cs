@@ -1,16 +1,20 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Enemies;
 using General;
 using Level;
+using Player;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Utility;
 using Random = UnityEngine.Random;
 
 namespace Managers
 {
-    public class EnemyGenerator : MonoBehaviour
+    public class EnemyGenerator : Generator
     {
         private IEnumerator InstantiateEnemiesOverTime()
         {
@@ -24,44 +28,13 @@ namespace Managers
             }
         }
 
-        // public Vector3 SpawnAroundPlayer()
-        // {
-        //     Vector3 onEdgeOfSphere = Vector3.zero;
-        //
-        //     bool runOnce = true;
-        //     while (PositionIsInvalid(onEdgeOfSphere) || runOnce)
-        //     {
-        //         if (GameMaster.singletonAccess.playerObject is { } player)
-        //         {
-        //             Vector2 foundResult = Random.insideUnitCircle.normalized * spawnDistanceFromPlayer;
-        //             onEdgeOfSphere = player.transform.position + new Vector3(foundResult.x, 0, foundResult.y);
-        //             runOnce = false;
-        //         }
-        //         else
-        //             break;
-        //     }
-        //
-        //     return onEdgeOfSphere;
-        // }
+        private HealthModifier _target;
 
-        // private bool PositionIsInvalid(Vector3 onEdgeOfSphere)
-        // {
-        //     Transform outOfBoundsBox = LevelManager.GetGameObjectFromActiveSceneWithTag("Level/OutOfBounds");
-        //
-        //     if (!outOfBoundsBox) return false;
-        //     Collider[] foundColliders = outOfBoundsBox.GetComponents<Collider>();
-        //
-        //     if (foundColliders == null) return false;
-        //     foreach (var foundCollider in foundColliders)
-        //     {
-        //         if (foundCollider.bounds.Contains(onEdgeOfSphere))
-        //         {
-        //             return true;
-        //         }
-        //     }
-        //
-        //     return false;
-        // }
+        public void SetTarget(HealthModifier target)
+        {
+            _target = target;
+        }
+
 
         // private void OnDrawGizmos()
         // {
@@ -80,14 +53,46 @@ namespace Managers
         // {
         //     return Random.Range(0, numberOfEnemies.Count);
         // }
-        public void StopGenerating()
+
+     
+
+        protected override IEnumerator StartGenerating<T>(Scene currentScene, List<T> uniqueElements,
+            float minSpawnRate, float maxSpawnRate, float spawnDistFromPlayer)
         {
-            
+            List<BaseEnemy> uniqueEnemyList = uniqueElements.OfType<BaseEnemy>().ToList();
+            while (true)
+            {
+                BaseEnemy chosenEnemy =
+                    ObjectPooler.DynamicInstantiate(uniqueEnemyList[Random.Range(0, uniqueEnemyList.Count)],
+                        SpawnAroundPlayer(currentScene, spawnDistFromPlayer), Quaternion.identity);
+                chosenEnemy.target = _target.gameObject;
+                chosenEnemy.ONOverridingDeathEvent +=
+                    () =>
+                    {
+                        if (_target.GetComponent<PlayerController>() is { } player)
+                            if (chosenEnemy.WeaponManager.CurTarget == typeof(PlayerController))
+                                player.PossessionManager.AdditionToCurrentKillCount = 1;
+                    };
+
+
+                yield return new WaitForSeconds(Random.Range(minSpawnRate, maxSpawnRate));
+            }
         }
 
-        public void Generate(List<BaseEnemy> numberOfEnemies)
+        public new void StopGenerating()
         {
-         
+            if (generator != null)
+                StopCoroutine(generator);
+            ClearEntities<BaseEnemy>();
         }
+
+        public void Generate(Scene currentScene, List<BaseEnemy> numberOfEnemies, float minAmm, float maxAmm,
+            float spawnDistFromPlayer, HealthModifier target)
+        {
+            SetTarget(target);
+            Generate(currentScene, numberOfEnemies, minAmm, maxAmm, spawnDistFromPlayer);
+        }
+
+       
     }
 }

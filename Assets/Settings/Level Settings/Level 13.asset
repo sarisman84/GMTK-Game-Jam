@@ -14,11 +14,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levelsToUse:
   - musicClip: {fileID: 8300000, guid: 2c3f93e3e2eec5740bbd6e2cc7216d57, type: 3}
-    numberOfEnemies:
+    spawnAsteroids: 1
+    uniqueAsteroids:
+    - {fileID: 373686184906693621, guid: e9865d8f9d1fd454c8d4531ea61ade2a, type: 3}
+    - {fileID: 7442108977315867838, guid: 76f44b4b5e663df418640761973c3b80, type: 3}
+    - {fileID: 3759616941599356842, guid: abb90b7dd0b070644a189c08f25352a2, type: 3}
+    - {fileID: 5491412522055898879, guid: 61d9902eb36caa943a020cfdeaa7cd41, type: 3}
+    asteroidSpawnDistanceFromPlayer: 25
+    minAsteroidSpawnRate: 2
+    maxAsteroidSpawnRate: 5
+    uniqueEnemies:
     - {fileID: 8096020584464913808, guid: 007af0ee780c09a4baed2ed8c901d4f9, type: 3}
-    spawnDistanceFromPlayer: 20
-    minSpawnRate: 0.8
-    maxSpawnRate: 1
+    enemySpawnDistanceFromPlayer: 25
+    minEnemySpawnRate: 0.5
+    maxEnemySpawnRate: 0.7
     timeRemaining: 300
     levelScene: Level 13
     levelExitDirection: 4

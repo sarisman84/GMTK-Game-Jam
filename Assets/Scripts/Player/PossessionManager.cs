@@ -24,6 +24,8 @@ namespace Player
         private Transform _parentForPossessed;
 
         public UnityEvent<float> ONKillCountUpdate;
+        public UnityEvent ONDisableEvent;
+        public UnityEvent ONEnableEvent;
 
 
         public float AdditionToCurrentKillCount
@@ -41,6 +43,17 @@ namespace Player
             ONKillCountUpdate?.Invoke(_currentKillcount / 5);
         }
 
+        public void SetUIActive(bool state)
+        {
+            if (state)
+            {
+                ONEnableEvent?.Invoke();
+                return;
+            }
+
+            ONDisableEvent?.Invoke();
+        }
+
         public void ShootPossessionShot(bool input)
         {
             if (input && _currentKillcount >= ammOfKillsRequired)
@@ -48,8 +61,8 @@ namespace Player
                 var transform1 = barrel.transform;
 
                 Bullet clone = ObjectPooler.DynamicInstantiate(bulletPrefab,
-                    transform1.position + (barrel.forward.normalized * 3f), transform1.rotation);
-
+                    transform1.position + (barrel.forward.normalized * (3f + 5f)), transform1.rotation);
+                clone.transform.localScale = Vector3.one * 5f;
                 clone.ONFixedUpdateEvent += bullet =>
                     bullet.Rigidbody.velocity = bullet.transform.forward * (50 * 100f * Time.fixedDeltaTime);
 
@@ -69,16 +82,22 @@ namespace Player
                 enemy.WeaponManager.SetDesiredTarget(typeof(BaseEnemy));
                 enemy.ONOverridingFixedUpdate += FollowPossessor;
                 enemy.ONOverridingWeaponBehaviour += OverrideTargeting;
+                enemy.ONOverridingDeathEvent += () => ClearPossession(enemy);
                 enemy.gameObject.layer = LayerMask.NameToLayer("Ally");
 
                 ONPossessionEvent?.Invoke(enemy);
                 ObjectPooler.RemoveObjectFromPool(enemy.gameObject);
                 enemy.transform.parent = null;
-                SceneManager.MoveGameObjectToScene(enemy.gameObject, GameMaster.singletonAccess.playerScene);
                 enemy.transform.SetParent(_parentForPossessed);
             }
 
             bullet.gameObject.SetActive(false);
+        }
+
+        private void ClearPossession(BaseEnemy baseEnemy)
+        {
+            baseEnemy.gameObject.layer = LayerMask.NameToLayer("Enemy");
+            possessedEntities.Remove(baseEnemy);
         }
 
         private void OverrideTargeting(WeaponController weaponController, Transform owner)

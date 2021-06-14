@@ -55,7 +55,12 @@ namespace Player.HUD
 
         public void Reset()
         {
-            iconDisplayer.transform.parent.gameObject.SetActive(false);
+            SetActive(false);
+        }
+
+        public void SetActive(bool state)
+        {
+            iconDisplayer.transform.parent.gameObject.SetActive(state);
         }
     }
 }
