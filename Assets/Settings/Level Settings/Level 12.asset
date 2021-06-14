@@ -12,10 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7872ab5797734030903ab2339495166c, type: 3}
   m_Name: Level 12
   m_EditorClassIdentifier: 
-  levelName: Level 12
-  subLevels:
-  - levelScene: Level 12
-    endDirection: 2
-    countdownType: 0
-  timeRemaining: 70
+  levelsToUse:
+  - musicClip: {fileID: 8300000, guid: 19cc38395c49bb44795e7b9a129c77fd, type: 3}
+    numberOfEnemies:
+    - {fileID: 8096020584464913808, guid: 007af0ee780c09a4baed2ed8c901d4f9, type: 3}
+    spawnDistanceFromPlayer: 20
+    minSpawnRate: 1
+    maxSpawnRate: 2
+    timeRemaining: 70
+    levelScene: Level 12
+    levelExitDirection: 3
+    timerType: 0
   abilitiesToGiveToPlayerOnLevelEntry: []

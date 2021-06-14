@@ -18,24 +18,24 @@ public class ExitFinder : MonoBehaviour
     {
     }
 
-    private void Update()
-    {
-        if (!_exit)
-        {
-            _exit = LevelManager.GetGameObjectFromActiveSceneWithTag("Level/Exit")?.gameObject;
-            pointerHUD.enabled = false;
-        }
-        else
-        {
-            pointerHUD.enabled = _exit.activeSelf && !DisableTracker;
-
-
-            if (pointerHUD.enabled)
-            {
-                Vector3 dir = _exit.transform.position - GameMaster.singletonAccess.playerObject.transform.position;
-                dir = new Vector3(dir.normalized.x, 0, dir.normalized.z);
-                pointerModel.transform.rotation = Quaternion.LookRotation(dir, Vector3.up);
-            }
-        }
-    }
+    // private void Update()
+    // {
+    //     if (!_exit)
+    //     {
+    //         _exit = LevelManager.GetGameObjectFromActiveSceneWithTag("Level/Exit")?.gameObject;
+    //         pointerHUD.enabled = false;
+    //     }
+    //     else
+    //     {
+    //         pointerHUD.enabled = _exit.activeSelf && !DisableTracker;
+    //
+    //
+    //         if (pointerHUD.enabled)
+    //         {
+    //             Vector3 dir = _exit.transform.position - GameMaster.singletonAccess.playerObject.transform.position;
+    //             dir = new Vector3(dir.normalized.x, 0, dir.normalized.z);
+    //             pointerModel.transform.rotation = Quaternion.LookRotation(dir, Vector3.up);
+    //         }
+    //     }
+    // }
 }

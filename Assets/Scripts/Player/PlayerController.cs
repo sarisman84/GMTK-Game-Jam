@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using Enemies;
 using General;
 using UnityEngine;
@@ -24,6 +25,7 @@ namespace Player
         public WeaponController WeaponManager => _weaponController;
         public PossessionManager PossessionManager => _possessionManager;
         public HealthModifier HealthManager => _health;
+        public AbilityManager AbilityManager => _abilityManager;
         public float currentAccelerationSpeed { get; set; }
         public float currentMaxMovementSpeed { get; set; }
 
@@ -53,7 +55,7 @@ namespace Player
 
             _possessionManager.ONPossessionEvent += enemy =>
                 _weaponController.AddWeaponToLibrary(enemy.GetComponent<WeaponController>().weaponLibrary[0]);
-            
+
 
             currentAccelerationSpeed = accelerationSpeed;
             currentMaxMovementSpeed = maxMovementSpeed;
@@ -113,6 +115,28 @@ namespace Player
         private void OnDisable()
         {
             CustomInput.SetInputActive(false);
+        }
+
+        public void DisableController(bool isFlaggedForDeath)
+        {
+            if (isFlaggedForDeath)
+            {
+                _health.DestroyThis();
+                return;
+            }
+
+            gameObject.SetActive(false);
+        }
+
+        public IEnumerator TeleportPlayerToPos(Vector3 pos)
+        {
+            PossessionManager.TeleportPossessionsToPosition(pos);
+            yield return null;
+        }
+
+        public void UpdateExitTracker(Detector foundDetector)
+        {
+            
         }
     }
 }

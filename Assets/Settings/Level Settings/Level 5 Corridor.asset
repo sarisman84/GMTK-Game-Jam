@@ -12,9 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7872ab5797734030903ab2339495166c, type: 3}
   m_Name: Level 5 Corridor
   m_EditorClassIdentifier: 
-  levelName: Level 5
-  subLevels:
-  - levelScene: Level 5
-    endDirection: 3
-    countdownType: 1
-  timeRemaining: 60
+  levelsToUse:
+  - musicClip: {fileID: 8300000, guid: 35afbce2f3b2d0942aa26f8d4cadc3d0, type: 3}
+    numberOfEnemies:
+    - {fileID: 0}
+    spawnDistanceFromPlayer: 20
+    minSpawnRate: 2
+    maxSpawnRate: 3
+    timeRemaining: 60
+    levelScene: Level 5
+    levelExitDirection: 2
+    timerType: 1
+  abilitiesToGiveToPlayerOnLevelEntry: []

@@ -12,10 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7872ab5797734030903ab2339495166c, type: 3}
   m_Name: Level 7
   m_EditorClassIdentifier: 
-  levelName: Level 7
-  subLevels:
-  - levelScene: Level 7
-    endDirection: 4
-    countdownType: 0
-  timeRemaining: 90
+  levelsToUse:
+  - musicClip: {fileID: 8300000, guid: 51361ff00d426d248a5b512d621fdfc3, type: 3}
+    numberOfEnemies:
+    - {fileID: 8096020584464913808, guid: 007af0ee780c09a4baed2ed8c901d4f9, type: 3}
+    spawnDistanceFromPlayer: 20
+    minSpawnRate: 1
+    maxSpawnRate: 3
+    timeRemaining: 90
+    levelScene: Level 7
+    levelExitDirection: 4
+    timerType: 0
   abilitiesToGiveToPlayerOnLevelEntry: []

@@ -1188,6 +1188,10 @@ PrefabInstance:
       propertyPath: Display
       value: 
       objectReference: {fileID: 521043806031911853}
+    - target: {fileID: 1762668268502993389, guid: 67575e0385d03be4d85e02cc315324f1, type: 3}
+      propertyPath: display
+      value: 
+      objectReference: {fileID: 521043806031911853}
     - target: {fileID: 4632106847292846312, guid: 67575e0385d03be4d85e02cc315324f1, type: 3}
       propertyPath: pointerHUD
       value: 
