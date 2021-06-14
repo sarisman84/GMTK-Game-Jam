@@ -9,30 +9,30 @@ using UnityEngine;
 public class AbilityManager : MonoBehaviour
 {
     public List<Ability> currentAbilities;
-    public AbilityDisplay Display;
+    public AbilityDisplay display;
 
-    private Coroutine currentAbilityUsed;
+    private Coroutine _currentAbilityUsed;
 
-    public float currentCd;
+    private float _currentCd;
 
     private void Awake()
     {
-        currentCd = 1000000f;
+        ResetCd();
     }
 
     private void Update()
     {
-        currentCd += Time.deltaTime;
+        _currentCd += Time.deltaTime;
     }
 
     public void UseCurrentAbility(PlayerController playerController, int getKeyDown)
     {
         Debug.Log(getKeyDown);
         if (getKeyDown >= currentAbilities.Count || getKeyDown < 0) return;
-        if (currentCd >= currentAbilities[getKeyDown].cooldown)
+        if (_currentCd >= currentAbilities[getKeyDown].cooldown)
         {
             StartCoroutine(currentAbilities[getKeyDown].Activate(playerController));
-            currentCd = 0;
+            _currentCd = 0;
         }
     }
 
@@ -51,8 +51,8 @@ public class AbilityManager : MonoBehaviour
 
 
         currentAbilities.Add(abilityToGiveToPlayer);
-        if (Display)
-            Display.UpdateIcons(currentAbilities);
+        if (display)
+            display.UpdateIcons(currentAbilities);
     }
 
     public void ManualReset()
@@ -62,9 +62,17 @@ public class AbilityManager : MonoBehaviour
             currentAbility.Reset();
         }
 
-        if (Display)
-            Display.Reset();
+        if (display)
+            display.Reset();
         currentAbilities = new List<Ability>();
-        currentCd = 1000000f;
+    }
+
+    public void DisruptAbilities()
+    {
+    }
+
+    public void ResetCd()
+    {
+        _currentCd = float.MaxValue;
     }
 }

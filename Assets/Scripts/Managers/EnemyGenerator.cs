@@ -1,101 +1,98 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Enemies;
 using General;
 using Level;
+using Player;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Utility;
 using Random = UnityEngine.Random;
 
 namespace Managers
 {
-    public class EnemyGenerator : MonoBehaviour
+    public class EnemyGenerator : Generator
     {
-        public List<BaseEnemy> numberOfEnemies = new();
-        public float spawnDistanceFromPlayer = 20f;
-        public float minSpawnRate = 0.5f, maxSpawnRate = 2f;
-
-        private Vector3 _spawnPos;
-
-        public void Generate()
-        {
-            StartCoroutine(InstantiateEnemiesOverTime());
-        }
-
-        private void Update()
-        {
-            _spawnPos = SpawnAroundPlayer();
-        }
-
-
         private IEnumerator InstantiateEnemiesOverTime()
         {
             while (true)
             {
-                BaseEnemy enemy = ObjectPooler.DynamicInstantiate(numberOfEnemies[PickARandomEnemy()], _spawnPos,
-                    Quaternion.identity);
-                enemy.GetComponent<HealthModifier>().onDeath.AddListener(() =>
-                    GameMaster.singletonAccess.possessor.AdditionToCurrentKillCount = 1);
+                // BaseEnemy enemy = ObjectPooler.DynamicInstantiate(numberOfEnemies[PickARandomEnemy()], _spawnPos,
+                //     Quaternion.identity);
+                // enemy.GetComponent<HealthModifier>().onDeath.AddListener(() =>
+                //     GameMaster.singletonAccess.possessor.AdditionToCurrentKillCount = 1);
+                yield return new WaitForSeconds(0);
+            }
+        }
+
+        private HealthModifier _target;
+
+        public void SetTarget(HealthModifier target)
+        {
+            _target = target;
+        }
+
+
+        // private void OnDrawGizmos()
+        // {
+        //     if (GameMaster.singletonAccess.playerObject is { } player)
+        //     {
+        //         Gizmos.color = Color.red;
+        //         Gizmos.DrawWireSphere(player.transform.position, spawnDistanceFromPlayer);
+        //
+        //         Gizmos.color = Color.magenta;
+        //         Gizmos.DrawSphere(_spawnPos, 1);
+        //     }
+        // }
+        //
+        //
+        // private int PickARandomEnemy()
+        // {
+        //     return Random.Range(0, numberOfEnemies.Count);
+        // }
+
+     
+
+        protected override IEnumerator StartGenerating<T>(Scene currentScene, List<T> uniqueElements,
+            float minSpawnRate, float maxSpawnRate, float spawnDistFromPlayer)
+        {
+            List<BaseEnemy> uniqueEnemyList = uniqueElements.OfType<BaseEnemy>().ToList();
+            while (true)
+            {
+                BaseEnemy chosenEnemy =
+                    ObjectPooler.DynamicInstantiate(uniqueEnemyList[Random.Range(0, uniqueEnemyList.Count)],
+                        SpawnAroundPlayer(currentScene, spawnDistFromPlayer), Quaternion.identity);
+                chosenEnemy.target = _target.gameObject;
+                chosenEnemy.ONOverridingDeathEvent +=
+                    () =>
+                    {
+                        if (_target.GetComponent<PlayerController>() is { } player)
+                            if (chosenEnemy.WeaponManager.CurTarget == typeof(PlayerController))
+                                player.PossessionManager.AdditionToCurrentKillCount = 1;
+                    };
+
+
                 yield return new WaitForSeconds(Random.Range(minSpawnRate, maxSpawnRate));
             }
         }
 
-        private Vector3 SpawnAroundPlayer()
+        public new void StopGenerating()
         {
-            Vector3 onEdgeOfSphere = Vector3.zero;
-
-            bool runOnce = true;
-            while (PositionIsInvalid(onEdgeOfSphere) || runOnce)
-            {
-                if (GameMaster.singletonAccess.playerObject is { } player)
-                {
-                    Vector2 foundResult = Random.insideUnitCircle.normalized * spawnDistanceFromPlayer;
-                    onEdgeOfSphere = player.transform.position + new Vector3(foundResult.x, 0, foundResult.y);
-                    runOnce = false;
-                }
-                else
-                    break;
-            }
-
-            return onEdgeOfSphere;
+            if (generator != null)
+                StopCoroutine(generator);
+            ClearEntities<BaseEnemy>();
         }
 
-        private bool PositionIsInvalid(Vector3 onEdgeOfSphere)
+        public void Generate(Scene currentScene, List<BaseEnemy> numberOfEnemies, float minAmm, float maxAmm,
+            float spawnDistFromPlayer, HealthModifier target)
         {
-            Transform outOfBoundsBox = LevelManager.GetGameObjectFromActiveSceneWithTag("Level/OutOfBounds");
-
-            if (!outOfBoundsBox) return false;
-            Collider[] foundColliders = outOfBoundsBox.GetComponents<Collider>();
-
-            if (foundColliders == null) return false;
-            foreach (var foundCollider in foundColliders)
-            {
-                if (foundCollider.bounds.Contains(onEdgeOfSphere))
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            SetTarget(target);
+            Generate(currentScene, numberOfEnemies, minAmm, maxAmm, spawnDistFromPlayer);
         }
 
-        private void OnDrawGizmos()
-        {
-            if (GameMaster.singletonAccess.playerObject is { } player)
-            {
-                Gizmos.color = Color.red;
-                Gizmos.DrawWireSphere(player.transform.position, spawnDistanceFromPlayer);
-
-                Gizmos.color = Color.magenta;
-                Gizmos.DrawSphere(_spawnPos, 1);
-            }
-        }
-
-
-        private int PickARandomEnemy()
-        {
-            return Random.Range(0, numberOfEnemies.Count);
-        }
+       
     }
 }

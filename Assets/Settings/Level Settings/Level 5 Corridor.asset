@@ -12,9 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7872ab5797734030903ab2339495166c, type: 3}
   m_Name: Level 5 Corridor
   m_EditorClassIdentifier: 
-  levelName: Level 5
-  subLevels:
-  - levelScene: Level 5
-    endDirection: 3
-    countdownType: 1
-  timeRemaining: 60
+  levelsToUse:
+  - musicClip: {fileID: 8300000, guid: 51361ff00d426d248a5b512d621fdfc3, type: 3}
+    spawnAsteroids: 0
+    uniqueAsteroids: []
+    asteroidSpawnDistanceFromPlayer: 0
+    minAsteroidSpawnRate: 0
+    maxAsteroidSpawnRate: 0
+    uniqueEnemies:
+    - {fileID: 8096020584464913808, guid: 007af0ee780c09a4baed2ed8c901d4f9, type: 3}
+    enemySpawnDistanceFromPlayer: 25
+    minEnemySpawnRate: 0.85
+    maxEnemySpawnRate: 1
+    timeRemaining: 60
+    levelScene: Level 5
+    levelExitDirection: 2
+    timerType: 1
+  abilitiesToGiveToPlayerOnLevelEntry: []

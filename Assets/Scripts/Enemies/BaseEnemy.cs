@@ -1,4 +1,5 @@
 ﻿using System;
+using General;
 using Player;
 using UnityEngine;
 
@@ -9,20 +10,25 @@ namespace Enemies
     {
         public Action<Rigidbody> ONOverridingFixedUpdate;
         public Action<WeaponController, Transform> ONOverridingWeaponBehaviour;
+        public Action ONOverridingDeathEvent;
 
         protected Rigidbody Rigidbody;
         protected WeaponController WeaponController;
-        
+        protected HealthModifier HealthModifier;
+
         public bool IsFlaggedForReset { private get; set; }
         public float MovementSpeed { get; set; }
 
         public WeaponController WeaponManager => WeaponController;
+        public GameObject target { get; set; }
+
 
         protected virtual void Awake()
         {
             Rigidbody = GetComponent<Rigidbody>();
             WeaponController = GetComponent<WeaponController>();
             WeaponController.SetDesiredTarget(typeof(PlayerController));
+            HealthModifier = GetComponent<HealthModifier>();
         }
 
         protected abstract void DefaultWeaponBehaviour();
@@ -49,13 +55,18 @@ namespace Enemies
 
         protected virtual void OnDisable()
         {
+            if (HealthModifier.IsFlaggedForDeath)
+            {
+                ONOverridingDeathEvent?.Invoke();
+            }
+
             if (IsFlaggedForReset)
             {
                 ONOverridingFixedUpdate = null;
                 ONOverridingWeaponBehaviour = null;
                 IsFlaggedForReset = false;
+                ONOverridingDeathEvent = null;
             }
-           
         }
 
         protected virtual void OnDestroy()

@@ -18,9 +18,12 @@ namespace Enemies.Testing
 
         protected override void DefaultWeaponBehaviour()
         {
-            WeaponController.Aim((GameMaster.singletonAccess.playerObject.transform.position - transform.position)
-                .normalized);
-            WeaponController.Shoot(IsInsideDetectionRange(GameMaster.singletonAccess.playerObject, transform, 15f));
+            if (target)
+            {
+                WeaponController.Aim((target.transform.position - transform.position)
+                    .normalized);
+                WeaponController.Shoot(IsInsideDetectionRange(target, transform, 15f));
+            }
         }
 
         protected override void DefaultRigidbodyBehaviour()
