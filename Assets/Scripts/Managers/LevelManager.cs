@@ -322,6 +322,7 @@ namespace Level
                 StopCoroutine(_loadLevelCoroutine);
             }
 
+            _player.FullReset();
             _loadLevelCoroutine = StartCoroutine(LoadLevel(_currentLevel));
         }
 
@@ -339,6 +340,11 @@ namespace Level
                     }
 
                     StartCoroutine(OnGameOver());
+                }
+                else if (_timeDisplayer.TimeCounter.HasRanOutOfTime(_selectedLevels[_currentLevel].timerType ==
+                                                                    LevelSettings.CountdownType.ProgressOnZero))
+                {
+                    TransitionToNextLevel();
                 }
             }
         }
@@ -389,21 +395,23 @@ namespace Level
             var selectedLevel = _selectedLevels[newLevelIndex];
             selectedLevel.FetchScene().SetSceneActive(true);
 
-            _enemyGenerator.Generate(selectedLevel.FetchScene(), selectedLevel.uniqueEnemies,
+            _enemyGenerator.Generate(_player, selectedLevel.FetchScene(), selectedLevel.uniqueEnemies,
                 selectedLevel.minEnemySpawnRate, selectedLevel.maxEnemySpawnRate,
                 selectedLevel.enemySpawnDistanceFromPlayer,
                 _player.HealthManager);
 
             if (selectedLevel.spawnAsteroids)
-                _asteroidGenerator.Generate(selectedLevel.FetchScene(), selectedLevel.uniqueAsteroids,
+                _asteroidGenerator.Generate(_player, selectedLevel.FetchScene(), selectedLevel.uniqueAsteroids,
                     selectedLevel.minAsteroidSpawnRate, selectedLevel.maxAsteroidSpawnRate,
                     selectedLevel.asteroidSpawnDistanceFromPlayer, _player);
 
             _musicPlayer.Play(selectedLevel.musicClip);
             _timeDisplayer.BeginCounting(selectedLevel.timeRemaining);
 
-            Vector3 pos = FetchGameObjectWithTagFromScene(selectedLevel.FetchScene(), selectedLevel.SpawnPos())
-                .transform.position;
+            Vector3 pos = Vector3.zero;
+            if (FetchGameObjectWithTagFromScene(selectedLevel.FetchScene(), selectedLevel.SpawnPos()) is
+                { } foundSpawnPos)
+                pos = foundSpawnPos.transform.position;
             _player.SetControllerActive(true, false);
             _player.AbilityManager.AddAbility(currentLevelSettings[newLevelIndex].GetRandomAbility());
             yield return _player.TeleportPlayerToPos(pos);
@@ -481,14 +489,14 @@ namespace Level
                                     TransitionToNextLevel();
                             });
 
-                            if (_selectedLevels[newLevelIndex].timerType == LevelSettings.CountdownType.GameOverOnZero)
-                                _player.UpdateExitTracker(foundDetector);
+                       
+                                _player.UpdateExitTracker(foundDetector, () => _selectedLevels[newLevelIndex].timerType == LevelSettings.CountdownType.GameOverOnZero);
                             break;
 
                         case "Level/Instructions":
                             if (foundDetector)
                                 foundElement.GetComponent<TMP_Text>().text =
-                                    $"Required possessions: {foundDetector.currentPossessionRequired}";
+                                    $"Required possessions to progress to the next level: {foundDetector.currentPossessionRequired}";
 
                             break;
                     }

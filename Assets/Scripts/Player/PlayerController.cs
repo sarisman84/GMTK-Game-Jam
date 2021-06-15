@@ -130,6 +130,8 @@ namespace Player
             _possessionManager.SetUIActive(state);
             _possessionManager.SetPossessionsActive(state);
             _abilityManager.display.SetActive(state);
+            _health.display.SetActive(state);
+
             if (isFlaggedForDeath)
             {
                 _health.DestroyThis();
@@ -147,11 +149,12 @@ namespace Player
             yield return null;
         }
 
-        public void UpdateExitTracker(Detector foundDetector)
+        public void UpdateExitTracker(Detector foundDetector, Func<bool> displayCondition)
         {
             if(_tracker != null)
                 StopCoroutine(_tracker);
             _tracker = StartCoroutine(UpdateTracker(foundDetector));
+            _exitFinder.ExitFinderCondition = displayCondition;
         }
 
         public void ManualUpdateExitTracker(Detector foundDetector)
@@ -174,6 +177,15 @@ namespace Player
 
                 yield return new WaitForEndOfFrame();
             }
+        }
+
+        public void FullReset()
+        {
+           _possessionManager.ResetPossessions();
+           _abilityManager.FullReset();
+           _health.ResetHealth();
+           _weaponController.ResetWeaponLibrary();
+           
         }
     }
 }

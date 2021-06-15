@@ -41,7 +41,7 @@ public class AbilityManager : MonoBehaviour
         if (GameMaster.singletonAccess.playerHealth)
             if (GameMaster.singletonAccess.playerHealth.IsFlaggedForDeath)
             {
-                ManualReset();
+                FullReset();
             }
     }
 
@@ -55,7 +55,10 @@ public class AbilityManager : MonoBehaviour
             display.UpdateIcons(currentAbilities);
     }
 
-    public void ManualReset()
+    /// <summary>
+    /// Removes all abilities and resets the ability displayer.
+    /// </summary>
+    public void FullReset()
     {
         foreach (var currentAbility in currentAbilities)
         {

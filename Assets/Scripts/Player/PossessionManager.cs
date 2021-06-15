@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using Enemies;
 using Enemies.Testing;
+using General;
 using Managers;
+using Player.HUD;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
@@ -28,9 +30,19 @@ namespace Player
         public UnityEvent ONEnableEvent;
 
 
+        private PossessionDisplay _display;
+
+        public PossessionDisplay display => _display;
+
+
         public float AdditionToCurrentKillCount
         {
             set => _currentKillcount += value;
+        }
+
+        private void Awake()
+        {
+            _display = GetComponent<PossessionDisplay>();
         }
 
         private void Start()
@@ -45,6 +57,7 @@ namespace Player
 
         public void SetUIActive(bool state)
         {
+            _display.SetActive(state);
             if (state)
             {
                 ONEnableEvent?.Invoke();
@@ -84,11 +97,13 @@ namespace Player
                 enemy.ONOverridingWeaponBehaviour += OverrideTargeting;
                 enemy.ONOverridingDeathEvent += () => ClearPossession(enemy);
                 enemy.gameObject.layer = LayerMask.NameToLayer("Ally");
-
+                enemy.GetComponent<HealthModifier>().ResetHealth();
                 ONPossessionEvent?.Invoke(enemy);
                 ObjectPooler.RemoveObjectFromPool(enemy.gameObject);
                 enemy.transform.parent = null;
                 enemy.transform.SetParent(_parentForPossessed);
+                display.UpdatePossesionDisplay(possessedEntities);
+              
             }
 
             bullet.gameObject.SetActive(false);
@@ -123,6 +138,9 @@ namespace Player
                 obj.velocity = Vector3.zero;
         }
 
+        /// <summary>
+        /// Destroys all possessions and resets the possession list.
+        /// </summary>
         public void ResetPossessions()
         {
             foreach (var possessedEntity in possessedEntities)
@@ -131,6 +149,7 @@ namespace Player
             }
 
             possessedEntities = new List<BaseEnemy>();
+            display.UpdatePossesionDisplay(possessedEntities);
         }
 
         public void TeleportPossessionsToPosition(Vector3 position)
@@ -149,6 +168,7 @@ namespace Player
                 possessedEntity.GetComponent<BaseEnemy>().IsFlaggedForReset = false;
                 possessedEntity.gameObject.SetActive(state);
             }
+            
         }
     }
 }

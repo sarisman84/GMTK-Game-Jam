@@ -22,7 +22,7 @@ public class AsteroidField : Generator
     {
         _playerController = player;
     }
-    
+
     public new void StopGenerating()
     {
         if (generator != null)
@@ -30,7 +30,8 @@ public class AsteroidField : Generator
         ClearEntities<Asteroid>();
     }
 
-    protected override IEnumerator StartGenerating<T>(Scene currentScene, List<T> uniqueElements, float minSpawnRate,
+    protected override IEnumerator StartGenerating<T>(PlayerController playerController, Scene currentScene,
+        List<T> uniqueElements, float minSpawnRate,
         float maxSpawnRate,
         float spawnDistFromPlayer)
     {
@@ -39,7 +40,7 @@ public class AsteroidField : Generator
         {
             Asteroid asteroid = ObjectPooler.DynamicInstantiate(
                 uniqueAsteroids[Random.Range(0, uniqueAsteroids.Count)],
-                SpawnAroundPlayer(currentScene, spawnDistFromPlayer), transform.rotation);
+                SpawnAroundPlayer(currentScene, playerController, spawnDistFromPlayer), transform.rotation);
 
 
             asteroid.Rigidbody.AddForce(
@@ -50,10 +51,11 @@ public class AsteroidField : Generator
         }
     }
 
-    public void Generate(Scene currentScene, List<Asteroid> uniqueAsteroids, float minAmm, float maxAmm,
+    public void Generate(PlayerController playerController, Scene currentScene, List<Asteroid> uniqueAsteroids,
+        float minAmm, float maxAmm,
         float spawnDistFromPlayer, PlayerController target)
     {
         SetTarget(target);
-        Generate(currentScene, uniqueAsteroids, minAmm, maxAmm, spawnDistFromPlayer);
+        Generate(playerController, currentScene, uniqueAsteroids, minAmm, maxAmm, spawnDistFromPlayer);
     }
 }

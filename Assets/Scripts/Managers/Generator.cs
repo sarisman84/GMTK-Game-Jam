@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Level;
+using Player;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -10,15 +11,16 @@ namespace Managers
     {
         protected Coroutine generator;
 
-        public virtual void Generate<T>(Scene currentScene, List<T> uniqueElements, float minSpawnRate,
+        public virtual void Generate<T>(PlayerController player, Scene currentScene, List<T> uniqueElements, float minSpawnRate,
             float maxSpawnRate, float spawnDistFromPlayer) where T : MonoBehaviour
         {
             StopGenerating();
-            generator = StartCoroutine(StartGenerating(currentScene, uniqueElements, minSpawnRate, maxSpawnRate,
+            generator = StartCoroutine(StartGenerating(player,currentScene, uniqueElements, minSpawnRate, maxSpawnRate,
                 spawnDistFromPlayer));
         }
 
-        protected abstract IEnumerator StartGenerating<T>(Scene currentScene, List<T> uniqueElements,
+        protected abstract IEnumerator StartGenerating<T>(PlayerController playerController, Scene currentScene,
+            List<T> uniqueElements,
             float minSpawnRate, float maxSpawnRate, float spawnDistFromPlayer) where T : MonoBehaviour;
 
         public void StopGenerating()
@@ -47,22 +49,16 @@ namespace Managers
             return false;
         }
 
-        public Vector3 SpawnAroundPlayer(Scene currentScene, float spawnDistanceFromPlayer)
+        public Vector3 SpawnAroundPlayer(Scene currentScene, PlayerController player, float spawnDistanceFromPlayer)
         {
-            Vector3 onEdgeOfSphere = Vector3.zero;
+            Vector2 foundResult = Random.insideUnitCircle.normalized * spawnDistanceFromPlayer;
+            Vector3 onEdgeOfSphere = player.transform.position + new Vector3(foundResult.x, 0, foundResult.y);
 
-            bool runOnce = true;
-            while (PositionIsInvalid(onEdgeOfSphere, currentScene) || runOnce)
+            if (PositionIsInvalid(onEdgeOfSphere, currentScene))
             {
-                if (GameMaster.singletonAccess.playerObject is { } player)
-                {
-                    Vector2 foundResult = Random.insideUnitCircle.normalized * spawnDistanceFromPlayer;
-                    onEdgeOfSphere = player.transform.position + new Vector3(foundResult.x, 0, foundResult.y);
-                    runOnce = false;
-                }
-                else
-                    break;
+                onEdgeOfSphere = SpawnAroundPlayer(currentScene, player, spawnDistanceFromPlayer);
             }
+
 
             return onEdgeOfSphere;
         }

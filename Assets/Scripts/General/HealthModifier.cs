@@ -1,5 +1,6 @@
 ﻿using System;
 using Enemies;
+using Player.HUD;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -13,18 +14,28 @@ namespace General
         private float currentHealth;
         public bool IsFlaggedForDeath { get; private set; }
 
+        private HealthDisplay _display;
+
+        public HealthDisplay display => _display;
+
+        private void Awake()
+        {
+            _display = GetComponent<HealthDisplay>();
+            ResetHealth();
+        }
+
 
         public void Heal(float amm)
         {
             currentHealth += amm;
             currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
-            onHealthChanged?.Invoke(currentHealth);
+            InvokeHealthChangedEvent(onHealthChanged, _display);
         }
 
         public void TakeDamage(float amm)
         {
             currentHealth -= amm;
-            onHealthChanged?.Invoke(currentHealth);
+            InvokeHealthChangedEvent(onHealthChanged, _display);
 
             if (currentHealth <= 0)
             {
@@ -33,9 +44,18 @@ namespace General
             }
         }
 
+        private void InvokeHealthChangedEvent(UnityEvent<float> unityEvent, HealthDisplay _display)
+        {
+            if (_display)
+                unityEvent?.Invoke(_display.FormatHealth(currentHealth, maxHealth));
+            else
+                unityEvent?.Invoke(currentHealth);
+        }
+
         public void ResetHealth()
         {
             currentHealth = maxHealth;
+            InvokeHealthChangedEvent(onHealthChanged, _display);
         }
 
         public void DestroyThis()
@@ -49,10 +69,6 @@ namespace General
             ResetHealth();
         }
 
-        private void Awake()
-        {
-            ResetHealth();
-        }
 
         private void OnEnable()
         {

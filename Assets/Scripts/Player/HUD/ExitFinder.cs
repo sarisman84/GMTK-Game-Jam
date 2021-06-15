@@ -11,7 +11,13 @@ public class ExitFinder : MonoBehaviour
     public GameObject pointerModel;
     public RawImage pointerHUD;
     private Vector3 _exit;
+    public Func<bool> ExitFinderCondition;
 
+
+    private void Awake()
+    {
+        ExitFinderCondition = () => true;
+    }
 
     private void Update()
     {
@@ -30,13 +36,13 @@ public class ExitFinder : MonoBehaviour
             SetActive(false);
             return;
         }
-        
+
         SetActive(true);
         _exit = foundDetector.transform.position;
     }
 
     public void SetActive(bool state)
     {
-        pointerHUD.enabled = state;
+        pointerHUD.enabled = state && ExitFinderCondition != null && ExitFinderCondition.Invoke();
     }
 }

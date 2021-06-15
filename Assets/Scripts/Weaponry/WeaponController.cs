@@ -92,6 +92,10 @@ namespace Player
             CurTarget = target;
         }
 
+        
+        /// <summary>
+        /// Clears the current weapon library as well as resets the weapon displayer.
+        /// </summary>
         public void ResetWeaponLibrary()
         {
             if (displayer)
@@ -100,6 +104,7 @@ namespace Player
             weaponLibrary = new List<WeaponSettings>();
             weaponLibrary.Add(firstWeapon);
             _currentWeapon = 0;
+            SelectWeapon(_currentWeapon);
         }
 
         private void OnEnable()

@@ -54,9 +54,9 @@ namespace Managers
         //     return Random.Range(0, numberOfEnemies.Count);
         // }
 
-     
 
-        protected override IEnumerator StartGenerating<T>(Scene currentScene, List<T> uniqueElements,
+        protected override IEnumerator StartGenerating<T>(PlayerController playerController, Scene currentScene,
+            List<T> uniqueElements,
             float minSpawnRate, float maxSpawnRate, float spawnDistFromPlayer)
         {
             List<BaseEnemy> uniqueEnemyList = uniqueElements.OfType<BaseEnemy>().ToList();
@@ -64,7 +64,7 @@ namespace Managers
             {
                 BaseEnemy chosenEnemy =
                     ObjectPooler.DynamicInstantiate(uniqueEnemyList[Random.Range(0, uniqueEnemyList.Count)],
-                        SpawnAroundPlayer(currentScene, spawnDistFromPlayer), Quaternion.identity);
+                        SpawnAroundPlayer(currentScene, playerController, spawnDistFromPlayer), Quaternion.identity);
                 chosenEnemy.target = _target.gameObject;
                 chosenEnemy.ONOverridingDeathEvent +=
                     () =>
@@ -86,13 +86,12 @@ namespace Managers
             ClearEntities<BaseEnemy>();
         }
 
-        public void Generate(Scene currentScene, List<BaseEnemy> numberOfEnemies, float minAmm, float maxAmm,
+        public void Generate(PlayerController playerController, Scene currentScene, List<BaseEnemy> numberOfEnemies,
+            float minAmm, float maxAmm,
             float spawnDistFromPlayer, HealthModifier target)
         {
             SetTarget(target);
-            Generate(currentScene, numberOfEnemies, minAmm, maxAmm, spawnDistFromPlayer);
+            Generate(playerController, currentScene, numberOfEnemies, minAmm, maxAmm, spawnDistFromPlayer);
         }
-
-       
     }
 }
