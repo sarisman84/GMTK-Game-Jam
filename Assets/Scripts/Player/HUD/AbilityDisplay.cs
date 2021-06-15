@@ -26,9 +26,14 @@ public class AbilityDisplay : MonoBehaviour
 
     public void Reset()
     {
+        SetActive(false);
+    }
+
+    public void SetActive(bool value)
+    {
         foreach (var currentAbilityIcon in currentAbilityIcons)
         {
-            currentAbilityIcon.gameObject.SetActive(false);
+            currentAbilityIcon.gameObject.SetActive(value);
         }
     }
 }

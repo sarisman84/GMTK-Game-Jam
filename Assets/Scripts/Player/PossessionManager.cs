@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using Enemies;
 using Enemies.Testing;
+using General;
 using Managers;
+using Player.HUD;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using Utility;
 
@@ -22,15 +25,46 @@ namespace Player
         private float _currentKillcount;
         private Transform _parentForPossessed;
 
+        public UnityEvent<float> ONKillCountUpdate;
+        public UnityEvent ONDisableEvent;
+        public UnityEvent ONEnableEvent;
+
+
+        private PossessionDisplay _display;
+
+        public PossessionDisplay display => _display;
+
 
         public float AdditionToCurrentKillCount
         {
             set => _currentKillcount += value;
         }
 
+        private void Awake()
+        {
+            _display = GetComponent<PossessionDisplay>();
+        }
+
         private void Start()
         {
             _parentForPossessed = new GameObject("Possessions").transform;
+        }
+
+        private void Update()
+        {
+            ONKillCountUpdate?.Invoke(_currentKillcount / 5);
+        }
+
+        public void SetUIActive(bool state)
+        {
+            _display.SetActive(state);
+            if (state)
+            {
+                ONEnableEvent?.Invoke();
+                return;
+            }
+
+            ONDisableEvent?.Invoke();
         }
 
         public void ShootPossessionShot(bool input)
@@ -40,8 +74,8 @@ namespace Player
                 var transform1 = barrel.transform;
 
                 Bullet clone = ObjectPooler.DynamicInstantiate(bulletPrefab,
-                    transform1.position + (barrel.forward.normalized * 3f), transform1.rotation);
-
+                    transform1.position + (barrel.forward.normalized * (3f + 5f)), transform1.rotation);
+                clone.transform.localScale = Vector3.one * 5f;
                 clone.ONFixedUpdateEvent += bullet =>
                     bullet.Rigidbody.velocity = bullet.transform.forward * (50 * 100f * Time.fixedDeltaTime);
 
@@ -61,16 +95,24 @@ namespace Player
                 enemy.WeaponManager.SetDesiredTarget(typeof(BaseEnemy));
                 enemy.ONOverridingFixedUpdate += FollowPossessor;
                 enemy.ONOverridingWeaponBehaviour += OverrideTargeting;
+                enemy.ONOverridingDeathEvent += () => ClearPossession(enemy);
                 enemy.gameObject.layer = LayerMask.NameToLayer("Ally");
-
+                enemy.GetComponent<HealthModifier>().ResetHealth();
                 ONPossessionEvent?.Invoke(enemy);
                 ObjectPooler.RemoveObjectFromPool(enemy.gameObject);
                 enemy.transform.parent = null;
-                SceneManager.MoveGameObjectToScene(enemy.gameObject, GameMaster.singletonAccess.playerScene);
                 enemy.transform.SetParent(_parentForPossessed);
+                display.UpdatePossesionDisplay(possessedEntities);
+              
             }
 
             bullet.gameObject.SetActive(false);
+        }
+
+        private void ClearPossession(BaseEnemy baseEnemy)
+        {
+            baseEnemy.gameObject.layer = LayerMask.NameToLayer("Enemy");
+            possessedEntities.Remove(baseEnemy);
         }
 
         private void OverrideTargeting(WeaponController weaponController, Transform owner)
@@ -96,6 +138,9 @@ namespace Player
                 obj.velocity = Vector3.zero;
         }
 
+        /// <summary>
+        /// Destroys all possessions and resets the possession list.
+        /// </summary>
         public void ResetPossessions()
         {
             foreach (var possessedEntity in possessedEntities)
@@ -104,6 +149,7 @@ namespace Player
             }
 
             possessedEntities = new List<BaseEnemy>();
+            display.UpdatePossesionDisplay(possessedEntities);
         }
 
         public void TeleportPossessionsToPosition(Vector3 position)
@@ -122,6 +168,7 @@ namespace Player
                 possessedEntity.GetComponent<BaseEnemy>().IsFlaggedForReset = false;
                 possessedEntity.gameObject.SetActive(state);
             }
+            
         }
     }
 }

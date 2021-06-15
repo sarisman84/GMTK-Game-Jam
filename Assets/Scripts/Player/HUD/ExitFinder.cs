@@ -10,32 +10,39 @@ public class ExitFinder : MonoBehaviour
 {
     public GameObject pointerModel;
     public RawImage pointerHUD;
-    private GameObject _exit;
+    private Vector3 _exit;
+    public Func<bool> ExitFinderCondition;
 
-    public bool DisableTracker { set; private get; }
 
-    private void Start()
+    private void Awake()
     {
+        ExitFinderCondition = () => true;
     }
 
     private void Update()
     {
-        if (!_exit)
+        if (pointerHUD.enabled)
         {
-            _exit = LevelManager.GetGameObjectFromActiveSceneWithTag("Level/Exit")?.gameObject;
-            pointerHUD.enabled = false;
+            Vector3 dir = _exit - transform.position;
+            dir = new Vector3(dir.normalized.x, 0, dir.normalized.z);
+            pointerModel.transform.rotation = Quaternion.LookRotation(dir, Vector3.up);
         }
-        else
+    }
+
+    public void SetTarget(Detector foundDetector)
+    {
+        if (!foundDetector)
         {
-            pointerHUD.enabled = _exit.activeSelf && !DisableTracker;
-
-
-            if (pointerHUD.enabled)
-            {
-                Vector3 dir = _exit.transform.position - GameMaster.singletonAccess.playerObject.transform.position;
-                dir = new Vector3(dir.normalized.x, 0, dir.normalized.z);
-                pointerModel.transform.rotation = Quaternion.LookRotation(dir, Vector3.up);
-            }
+            SetActive(false);
+            return;
         }
+
+        SetActive(true);
+        _exit = foundDetector.transform.position;
+    }
+
+    public void SetActive(bool state)
+    {
+        pointerHUD.enabled = state && ExitFinderCondition != null && ExitFinderCondition.Invoke();
     }
 }

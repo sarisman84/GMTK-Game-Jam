@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using Enemies;
+using Level.Asteroids;
 using Player.HUD.Abilities;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -20,36 +22,15 @@ namespace Level
             Center
         }
 
-        public string levelName;
-        public List<Level> subLevels;
-        public float timeRemaining;
+        public List<Level> levelsToUse;
         public List<Ability> abilitiesToGiveToPlayerOnLevelEntry;
 
 
-        public int SelectRandom()
+        public Level SelectRandom()
         {
-            return Random.Range(0, subLevels.Count);
+            return levelsToUse[Random.Range(0, levelsToUse.Count)];
         }
 
-        public string SpawnPos(int subIndex)
-        {
-            string baseTag = "Level/Spawn/";
-            switch (subLevels[subIndex].endDirection)
-            {
-                case EndDirection.West:
-                    return baseTag + "West";
-                case EndDirection.East:
-                    return baseTag + "East";
-                case EndDirection.North:
-                    return baseTag + "North";
-                case EndDirection.South:
-                    return baseTag + "South";
-                case EndDirection.Center:
-                    return baseTag + "Center";
-            }
-
-            return "";
-        }
 
         public Ability GetRandomAbility()
         {
@@ -60,15 +41,51 @@ namespace Level
         [Serializable]
         public struct Level
         {
+            [Header("Music Settings")] public AudioClip musicClip;
+
+            [Header("Asteroid Field Settings")] public bool spawnAsteroids;
+            public List<Asteroid> uniqueAsteroids;
+            public float asteroidSpawnDistanceFromPlayer;
+            public float minAsteroidSpawnRate, maxAsteroidSpawnRate;
+            [Header("Enemy Spawn Settings")] public List<BaseEnemy> uniqueEnemies;
+            public float enemySpawnDistanceFromPlayer;
+            public float minEnemySpawnRate, maxEnemySpawnRate;
+
+            [Header("Settings")] public float timeRemaining;
             public string levelScene;
-            public EndDirection endDirection;
-            public CountdownType countdownType;
+            public EndDirection levelExitDirection;
+            public CountdownType timerType;
+
+            public Scene FetchScene()
+            {
+                return SceneManager.GetSceneByName(levelScene);
+            }
+
+            public string SpawnPos()
+            {
+                string baseTag = "Level/Spawn/";
+                switch (levelExitDirection)
+                {
+                    case EndDirection.West:
+                        return baseTag + "West";
+                    case EndDirection.East:
+                        return baseTag + "East";
+                    case EndDirection.North:
+                        return baseTag + "North";
+                    case EndDirection.South:
+                        return baseTag + "South";
+                    case EndDirection.Center:
+                        return baseTag + "Center";
+                }
+
+                return "";
+            }
         }
 
         public enum CountdownType
         {
-            ToGameOver,
-            ToNextStage
+            GameOverOnZero,
+            ProgressOnZero
         }
     }
 }
