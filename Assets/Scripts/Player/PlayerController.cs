@@ -31,8 +31,7 @@ namespace Player
         public AbilityManager AbilityManager => _abilityManager;
         public float currentAccelerationSpeed { get; set; }
         public float currentMaxMovementSpeed { get; set; }
-        
-        
+
 
         private void Awake()
         {
@@ -99,7 +98,8 @@ namespace Player
             }
 
             Vector3 movementDir = _rigidbody.velocity.normalized;
-            model.rotation = Quaternion.LookRotation(movementDir, Vector3.up);
+            if (movementDir != Vector3.zero)
+                model.rotation = Quaternion.LookRotation(movementDir, Vector3.up);
         }
 
         private void FixedUpdate()
@@ -151,7 +151,7 @@ namespace Player
 
         public void UpdateExitTracker(Detector foundDetector, Func<bool> displayCondition)
         {
-            if(_tracker != null)
+            if (_tracker != null)
                 StopCoroutine(_tracker);
             _tracker = StartCoroutine(UpdateTracker(foundDetector));
             _exitFinder.ExitFinderCondition = displayCondition;
@@ -181,11 +181,10 @@ namespace Player
 
         public void FullReset()
         {
-           _possessionManager.ResetPossessions();
-           _abilityManager.FullReset();
-           _health.ResetHealth();
-           _weaponController.ResetWeaponLibrary();
-           
+            _possessionManager.ResetPossessions();
+            _abilityManager.FullReset();
+            _health.ResetHealth();
+            _weaponController.ResetWeaponLibrary();
         }
     }
 }

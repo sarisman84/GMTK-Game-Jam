@@ -435,6 +435,8 @@ namespace Level
             _player.AbilityManager.display.SetActive(false);
             _player.ManualUpdateExitTracker(null);
             _player.SetControllerActive(false, false);
+         
+           
 
             yield return UnloadPreviousLevel(_currentLevel);
         }

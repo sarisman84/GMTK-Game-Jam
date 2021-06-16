@@ -13,7 +13,7 @@ namespace Weaponry.Settings.Bullet_Modifier
         public float detectionRange;
         public float turningSpeed = 0.5f;
 
-        public override void ModifyBullet(Bullet assignedBullet)
+        public override void ModifyBullet(Bullet assignedBullet, WeaponSettings multiShot)
         {
             assignedBullet.ONFixedUpdateEvent += bullet =>
             {

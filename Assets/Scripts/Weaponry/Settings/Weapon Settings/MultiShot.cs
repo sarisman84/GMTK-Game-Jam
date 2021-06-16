@@ -21,10 +21,11 @@ namespace Player
                     barrel.transform.position + (barrel.forward.normalized * 3f),
                     Quaternion.Euler(0, angle, 0));
                 clone.currentTarget = controller.CurTarget;
+                clone.lifeDuration = bulletLifetime;
 
                 foreach (var bulletModifier in bulletModifiers)
                 {
-                    bulletModifier.ModifyBullet(clone);
+                    bulletModifier.ModifyBullet(clone, this);
                 }
 
                 clone.ONFixedUpdateEvent += bullet =>
@@ -36,8 +37,8 @@ namespace Player
                 clone.ONCollisionEnterEvent += collider =>
                 {
                     ImpactEffect.OnImpactEffect(collider, clone, barrel.parent);
-                    clone.gameObject.SetActive(false);
-                
+                    if (!disableDefaultCollision)
+                        clone.gameObject.SetActive(false);
                 };
             }
         }

@@ -29,7 +29,7 @@ namespace Player.HUD.Abilities
             DamageOnImpact damageOnImpact =
                 (DamageOnImpact) playerController.WeaponManager
                     .weaponLibrary[playerController.WeaponManager.CurrentWeapon].ImpactEffect;
-            if (damageOnImpact)
+            if (damageOnImpact != null)
             {
                 oldDamage = damageOnImpact.damage;
                 damageOnImpact.damage += damageBuff;
@@ -46,7 +46,7 @@ namespace Player.HUD.Abilities
                 yield return new WaitForEndOfFrame();
             }
 
-            if (damageOnImpact)
+            if (damageOnImpact != null)
             {
                 damageOnImpact.damage = oldDamage;
             }

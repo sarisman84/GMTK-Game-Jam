@@ -13,11 +13,13 @@ MonoBehaviour:
   m_Name: Triple-Shot
   m_EditorClassIdentifier: 
   bulletSpeed: 15
+  bulletLifetime: 3
   fireRate: 0.5
   bulletPrefab: {fileID: 8162282660309796813, guid: fb4d371421769bb498b87411076fc161, type: 3}
   weaponIcon: {fileID: 21300000, guid: f31d16cc65bc91b499dfd89f05f47651, type: 3}
   weaponModel: {fileID: 6887800369199868406, guid: 6343e7a754561bf43b3de97e2e1fd0ef, type: 3}
-  ImpactEffect: {fileID: 11400000, guid: e6307c358e935d642b01050d5e9a7afa, type: 2}
+  ImpactEffect: {fileID: 11400000, guid: b766a7edef773c442b89b4955f39c02c, type: 2}
   bulletModifiers: []
+  disableDefaultCollision: 0
   ammOfBullets: 3
   spreadBetweenBullets: 45

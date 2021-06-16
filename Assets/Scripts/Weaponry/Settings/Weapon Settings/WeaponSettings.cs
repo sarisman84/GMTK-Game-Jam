@@ -10,6 +10,7 @@ namespace Player
     public abstract class WeaponSettings : ScriptableObject
     {
         public float bulletSpeed = 5f;
+        public float bulletLifetime = 5f;
         public float fireRate;
         public Bullet bulletPrefab;
 
@@ -18,6 +19,8 @@ namespace Player
 
         [Expose] public ImpactEffect ImpactEffect;
         [Expose] public List<BulletModifier> bulletModifiers;
+
+        public bool disableDefaultCollision;
 
         public abstract void OnShoot(Transform barrel, WeaponController controller);
     }

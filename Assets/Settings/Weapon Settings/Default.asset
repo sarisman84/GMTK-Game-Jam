@@ -13,10 +13,12 @@ MonoBehaviour:
   m_Name: Default
   m_EditorClassIdentifier: 
   bulletSpeed: 15
+  bulletLifetime: 3
   fireRate: 0.3
   bulletPrefab: {fileID: 1149102810902346992, guid: bacde7732ab3ba14b83a8cef21e8f645, type: 3}
   weaponIcon: {fileID: 21300000, guid: 68d9375d347a5404c94c056c3abb1d2a, type: 3}
   weaponModel: {fileID: 8479321612364421246, guid: 722a2f073f780274ba85f7058f76846f, type: 3}
-  ImpactEffect: {fileID: 11400000, guid: e6307c358e935d642b01050d5e9a7afa, type: 2}
+  ImpactEffect: {fileID: 11400000, guid: b766a7edef773c442b89b4955f39c02c, type: 2}
   bulletModifiers:
-  - {fileID: 11400000, guid: 66afb06674cbfc142943f5113a538fd1, type: 2}
+  - {fileID: 11400000, guid: 58c826fb44fbace41a839bad4b406ba6, type: 2}
+  disableDefaultCollision: 0

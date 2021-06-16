@@ -117,17 +117,6 @@ namespace Editor.PropertyDrawers
                     indentOnSecondElement = true;
                 }
 
-                if (arrayP != null && it.propertyPath.Contains(arrayP.propertyPath))
-                {
-                    continue;
-                }
-
-                if (it.propertyType == SerializedPropertyType.Generic && it.isArray)
-                {
-                    //DrawReorderableList(disableFirstElement, ref r, it);
-                    arrayP = it;
-                }
-
 
                 DrawSingleElement(disableFirstElement, ref r, it);
                 disableFirstElement = false;
@@ -143,23 +132,6 @@ namespace Editor.PropertyDrawers
             return offset * EditorGUI.indentLevel;
         }
 
-        private void DrawReorderableList(bool disableFirstElement, ref Rect rect,
-            SerializedProperty it)
-        {
-            string key = it.Copy().propertyPath;
-            if (!_reorderableListDictionary.ContainsKey(key))
-            {
-                ReorderableList list = new ReorderableList(_so, it, true, true, true, true);
-                list.elementHeightCallback += index => ElementHeightCallback(list, index);
-                list.drawElementCallback += (elementRect, index, isActive, isFocused) =>
-                    DrawElementCallback(elementRect, index, isActive, isFocused, list);
-                list.drawHeaderCallback += (headerRect) => DrawHeaderCallback(headerRect, it);
-                _reorderableListDictionary.Add(key, list);
-            }
-
-            //This DoList call back also throws the type error as well as the operation thingy.
-            _reorderableListDictionary[key].DoList(rect);
-        }
 
         private void DrawHeaderCallback(Rect rect, SerializedProperty property)
         {
@@ -186,27 +158,6 @@ namespace Editor.PropertyDrawers
             }
         }
 
-
-        private float ElementHeightCallback(ReorderableList list, int index)
-        {
-            SerializedObject localSo = default;
-            SerializedProperty element = list.serializedProperty.GetArrayElementAtIndex(index);
-            if (element.CountInProperty() == 1 &&
-                IsCorrectType(element, typeof(ScriptableObject)))
-            {
-                localSo = new SerializedObject(element.objectReferenceValue);
-            }
-
-            if (CalculatePropertyHeight(element, localSo, out var propertyHeight, false)) return propertyHeight;
-
-            propertyHeight += EditorGUI.GetPropertyHeight(element, element.isExpanded);
-            foreach (SerializedProperty p in element)
-            {
-                propertyHeight += EditorGUI.GetPropertyHeight(p, p.isExpanded) + _spacing;
-            }
-
-            return EditorGUI.GetPropertyHeight(element, element.isExpanded) + propertyHeight;
-        }
 
         private void DrawSingleElement(bool disableFirstElement, ref Rect r, SerializedProperty it)
         {

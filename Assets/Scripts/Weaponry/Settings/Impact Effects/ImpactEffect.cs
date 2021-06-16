@@ -1,10 +1,11 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 using Utility;
 
 namespace Player
 {
-    public abstract class ImpactEffect : ScriptableObject
+    public abstract class ImpactEffect : ScriptableObject, IComparable<ImpactEffect>
     {
         public ParticleSystem fxPrefab;
 
@@ -16,6 +17,11 @@ namespace Player
         {
             yield return new WaitUntil(() => !system.isEmitting);
             system.gameObject.SetActive(false);
+        }
+
+        public int CompareTo(ImpactEffect other)
+        {
+            return GetInstanceID() == other.GetInstanceID() ? 1 : 0;
         }
     }
 }

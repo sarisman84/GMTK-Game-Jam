@@ -1,10 +1,10 @@
-﻿using General;
+﻿using System;
+using General;
 using UnityEngine;
 
 namespace Player
 {
-    [CreateAssetMenu(fileName = "New Damage On Impact Effect", menuName = "GMTK/Weapons/Effects/Create/Damage On Impact",
-        order = 0)]
+    [CreateAssetMenu(fileName = "New Damage Setting", menuName = "GMTK/Weapons/Impact/Damage", order = 0)]
     public class DamageOnImpact : ImpactEffect
     {
         public float damage;

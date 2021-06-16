@@ -7,7 +7,7 @@ namespace Weaponry.Settings.Bullet_Modifier
     public class ChangeSize : BulletModifier
     {
         public float size;
-        public override void ModifyBullet(Bullet assignedBullet)
+        public override void ModifyBullet(Bullet assignedBullet, WeaponSettings multiShot)
         {
             assignedBullet.transform.localScale *= size;
         }

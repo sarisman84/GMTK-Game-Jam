@@ -27,7 +27,6 @@ public class AbilityManager : MonoBehaviour
 
     public void UseCurrentAbility(PlayerController playerController, int getKeyDown)
     {
-        Debug.Log(getKeyDown);
         if (getKeyDown >= currentAbilities.Count || getKeyDown < 0) return;
         if (_currentCd >= currentAbilities[getKeyDown].cooldown)
         {

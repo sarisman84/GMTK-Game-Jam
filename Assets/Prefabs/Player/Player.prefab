@@ -191,6 +191,10 @@ PrefabInstance:
       propertyPath: textDisplay
       value: 
       objectReference: {fileID: 3831484964616703984}
+    - target: {fileID: 2432771207700974787, guid: 67575e0385d03be4d85e02cc315324f1, type: 3}
+      propertyPath: possessionTether
+      value: 
+      objectReference: {fileID: 6102528087575967288, guid: f4eb118c0de3ed64d98c4fa67a92bb40, type: 3}
     - target: {fileID: 4632106847292846312, guid: 67575e0385d03be4d85e02cc315324f1, type: 3}
       propertyPath: pointerHUD
       value: 

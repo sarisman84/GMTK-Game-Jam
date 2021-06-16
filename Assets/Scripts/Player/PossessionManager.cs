@@ -103,7 +103,7 @@ namespace Player
                 enemy.transform.parent = null;
                 enemy.transform.SetParent(_parentForPossessed);
                 display.UpdatePossesionDisplay(possessedEntities);
-              
+                display.CreatePossessionTether(enemy);
             }
 
             bullet.gameObject.SetActive(false);
@@ -113,6 +113,7 @@ namespace Player
         {
             baseEnemy.gameObject.layer = LayerMask.NameToLayer("Enemy");
             possessedEntities.Remove(baseEnemy);
+            display.UpdatePossesionDisplay(possessedEntities);
         }
 
         private void OverrideTargeting(WeaponController weaponController, Transform owner)
@@ -148,8 +149,11 @@ namespace Player
                 Destroy(possessedEntity.gameObject);
             }
 
+            Debug.Log("Resetting possessions!");
+
             possessedEntities = new List<BaseEnemy>();
             display.UpdatePossesionDisplay(possessedEntities);
+            display.ResetTether();
         }
 
         public void TeleportPossessionsToPosition(Vector3 position)
@@ -168,7 +172,6 @@ namespace Player
                 possessedEntity.GetComponent<BaseEnemy>().IsFlaggedForReset = false;
                 possessedEntity.gameObject.SetActive(state);
             }
-            
         }
     }
 }

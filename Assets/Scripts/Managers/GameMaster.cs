@@ -65,7 +65,6 @@ namespace Managers
         {
             if (blacklist == null)
                 blacklist = new List<T>();
-            Debug.Log($"Checking nearby area with {LayerMask.GetMask(mask)}");
             Collider[] foundElements =
                 Physics.OverlapSphere(center.transform.position, radius, LayerMask.GetMask(mask));
             if (foundElements == null) return null;

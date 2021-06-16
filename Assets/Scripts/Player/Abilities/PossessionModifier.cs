@@ -29,12 +29,12 @@ namespace Player.HUD.Abilities
                 oldMovementSpeed.Add(enemy.MovementSpeed);
                 DamageOnImpact damageOnImpact =
                     (DamageOnImpact) enemy.WeaponManager.weaponLibrary[enemy.WeaponManager.CurrentWeapon].ImpactEffect;
-                if (damageOnImpact)
+                if (damageOnImpact != null)
                     oldDamageBuff.Add(damageOnImpact.damage);
 
                 enemy.MovementSpeed += movementSpeedBuff;
                 enemy.GetComponent<HealthModifier>().Heal(instantHealAmm);
-                if (damageOnImpact)
+                if (damageOnImpact != null)
                     damageOnImpact.damage += damageBuff;
 
                 fx.Add(ObjectPooler.DynamicInstantiate(abilityFX, playerController.transform.parent));
@@ -61,7 +61,7 @@ namespace Player.HUD.Abilities
                 DamageOnImpact damageOnImpact =
                     (DamageOnImpact) enemy.WeaponManager.weaponLibrary[enemy.WeaponManager.CurrentWeapon].ImpactEffect;
 
-                if (damageOnImpact)
+                if (damageOnImpact != null)
                     damageOnImpact.damage = oldDamageBuff[index];
 
                 fx[index].gameObject.SetActive(false);

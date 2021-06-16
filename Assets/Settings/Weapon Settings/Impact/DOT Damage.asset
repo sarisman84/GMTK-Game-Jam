@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 37e3b8a771204b499aae472a9416a184, type: 3}
-  m_Name: New Damage On Impact Effect
+  m_Name: DOT Damage
   m_EditorClassIdentifier: 
   fxPrefab: {fileID: 0}
-  damage: 10
+  damage: 5
