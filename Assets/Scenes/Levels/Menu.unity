@@ -814,6 +814,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 48c2bb1f34090434eaf728ae11416316, type: 2}
   - {fileID: 11400000, guid: a8b36b5ec576f4a49b6adc3b63841f35, type: 2}
   - {fileID: 11400000, guid: 025564c84d7977a46810dad4f985049d, type: 2}
+  aStarGridSize: {x: 150, y: 150}
+  aStarObstacleMask:
+    serializedVersion: 2
+    m_Bits: 512
+  aStarNodeRadius: 2
   onGameOver:
     m_PersistentCalls:
       m_Calls: []

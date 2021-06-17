@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3335276694683421290}
   - component: {fileID: 3335276694683421293}
   - component: {fileID: 3335276694683421292}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: OutOfBounds
   m_TagString: Level/OutOfBounds
   m_Icon: {fileID: 0}

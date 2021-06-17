@@ -69,6 +69,12 @@ namespace Player.HUD
             }
         }
 
+        public void RemoveTether(BaseEnemy enemy)
+        {
+            _possessionTethers[enemy].gameObject.SetActive(false);
+            _possessionTethers.Remove(enemy);
+        }
+
         public void ResetTether()
         {
             SetTetherActive(false);

@@ -507,7 +507,7 @@ GameObject:
   - component: {fileID: 265182901}
   - component: {fileID: 265182900}
   - component: {fileID: 265182899}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: UModeler Object
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1146,7 +1146,7 @@ GameObject:
   - component: {fileID: 347149571}
   - component: {fileID: 347149570}
   - component: {fileID: 347149569}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: UModeler Object (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1491,7 +1491,7 @@ GameObject:
   - component: {fileID: 408682416}
   - component: {fileID: 408682415}
   - component: {fileID: 408682414}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: UModeler Object (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2058,7 +2058,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 678891366}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Walls
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2493,7 +2493,7 @@ GameObject:
   - component: {fileID: 1201840025}
   - component: {fileID: 1201840024}
   - component: {fileID: 1201840023}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: UModeler Object (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2838,7 +2838,7 @@ GameObject:
   - component: {fileID: 1211632171}
   - component: {fileID: 1211632170}
   - component: {fileID: 1211632169}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: UModeler Object (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3510,7 +3510,7 @@ GameObject:
   - component: {fileID: 1596000331}
   - component: {fileID: 1596000330}
   - component: {fileID: 1596000329}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: UModeler Object (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

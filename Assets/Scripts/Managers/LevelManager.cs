@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Enemies.AI;
 using Managers;
 using Player;
 using TMPro;
@@ -287,8 +288,11 @@ namespace Level
         [Header("Menu Settings")] public AudioClip menuMusic;
         public Canvas timeDisplayPrefab;
 
-        [Header("Level Settings")] [Space] [Expose]
-        public List<LevelSettings> currentLevelSettings;
+        [Header("Level Settings")] [Expose] public List<LevelSettings> currentLevelSettings;
+
+        public Vector2 aStarGridSize;
+        public LayerMask aStarObstacleMask;
+        public float aStarNodeRadius;
 
         [Space] public UnityEvent onGameOver;
         public UnityEvent onGameCompletion;
@@ -299,6 +303,7 @@ namespace Level
         private TimeDisplayer _timeDisplayer;
         private EnemyGenerator _enemyGenerator;
         private AsteroidField _asteroidGenerator;
+        private Pathfinding _pathfindingManager;
 
         private PlayerController _player;
         private int _currentLevel;
@@ -347,6 +352,9 @@ namespace Level
                     TransitionToNextLevel();
                 }
             }
+
+            if (_pathfindingManager != null)
+                _pathfindingManager.FindPath(_player.transform.position, transform.position);
         }
 
         private IEnumerator Setup()
@@ -379,6 +387,11 @@ namespace Level
                 .GetComponentInChildren<PlayerController>();
             _player.SetControllerActive(false, false);
             _musicPlayer.Play(menuMusic);
+
+            _pathfindingManager =
+                new Pathfinding(transform.position, aStarObstacleMask, aStarGridSize, aStarNodeRadius);
+
+
             yield return null;
         }
 
@@ -394,6 +407,7 @@ namespace Level
 
             var selectedLevel = _selectedLevels[newLevelIndex];
             selectedLevel.FetchScene().SetSceneActive(true);
+            _pathfindingManager.Grid.UpdateGrid();
 
             _enemyGenerator.Generate(_player, selectedLevel.FetchScene(), selectedLevel.uniqueEnemies,
                 selectedLevel.minEnemySpawnRate, selectedLevel.maxEnemySpawnRate,
@@ -435,8 +449,7 @@ namespace Level
             _player.AbilityManager.display.SetActive(false);
             _player.ManualUpdateExitTracker(null);
             _player.SetControllerActive(false, false);
-         
-           
+
 
             yield return UnloadPreviousLevel(_currentLevel);
         }
@@ -491,8 +504,10 @@ namespace Level
                                     TransitionToNextLevel();
                             });
 
-                       
-                                _player.UpdateExitTracker(foundDetector, () => _selectedLevels[newLevelIndex].timerType == LevelSettings.CountdownType.GameOverOnZero);
+
+                            _player.UpdateExitTracker(foundDetector,
+                                () => _selectedLevels[newLevelIndex].timerType ==
+                                      LevelSettings.CountdownType.GameOverOnZero);
                             break;
 
                         case "Level/Instructions":
@@ -528,6 +543,12 @@ namespace Level
             _mainMenu.SetSceneActive(true);
             _musicPlayer.Play(menuMusic);
             yield return new WaitForSeconds(1f);
+        }
+
+        private void OnDrawGizmos()
+        {
+            if (_pathfindingManager != null)
+                _pathfindingManager.Grid.DrawGrid();
         }
 
 

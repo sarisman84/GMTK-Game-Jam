@@ -114,6 +114,7 @@ namespace Player
             baseEnemy.gameObject.layer = LayerMask.NameToLayer("Enemy");
             possessedEntities.Remove(baseEnemy);
             display.UpdatePossesionDisplay(possessedEntities);
+            display.RemoveTether(baseEnemy);
         }
 
         private void OverrideTargeting(WeaponController weaponController, Transform owner)
