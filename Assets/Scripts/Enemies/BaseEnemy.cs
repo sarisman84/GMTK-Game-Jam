@@ -8,6 +8,8 @@ namespace Enemies
     [RequireComponent(typeof(Rigidbody), typeof(WeaponController))]
     public abstract class BaseEnemy : MonoBehaviour
     {
+        [SerializeField] private float movementSpeed;
+        public float attackRange;
         public Action<Rigidbody> ONOverridingFixedUpdate;
         public Action<WeaponController, Transform> ONOverridingWeaponBehaviour;
         public Action ONOverridingDeathEvent;
@@ -17,10 +19,18 @@ namespace Enemies
         protected HealthModifier HealthModifier;
 
         public bool IsFlaggedForReset { private get; set; }
-        public float MovementSpeed { get; set; }
+
+
+        public float MovementSpeed
+        {
+            get => movementSpeed * 100f;
+            set => movementSpeed = value;
+        }
 
         public WeaponController WeaponManager => WeaponController;
         public GameObject target { get; set; }
+
+        protected Vector3 DirectionToTarget => (target.transform.position - transform.position).normalized;
 
 
         protected virtual void Awake()
@@ -31,7 +41,16 @@ namespace Enemies
             HealthModifier = GetComponent<HealthModifier>();
         }
 
-        protected abstract void DefaultWeaponBehaviour();
+        protected virtual void DefaultWeaponBehaviour()
+        {
+            if (target)
+            {
+                WeaponController.Aim((target.transform.position - transform.position)
+                    .normalized);
+                WeaponController.Shoot(IsInsideDetectionRange(target, transform, attackRange));
+            }
+        }
+
         protected abstract void DefaultRigidbodyBehaviour();
 
         protected virtual void Update()
@@ -73,6 +92,12 @@ namespace Enemies
         {
             ONOverridingFixedUpdate = null;
             ONOverridingWeaponBehaviour = null;
+        }
+        
+        public static bool IsInsideDetectionRange(GameObject target, Transform transform, float range)
+        {
+            float dist = Vector3.Distance(target.transform.position, transform.position);
+            return dist < range;
         }
     }
 }

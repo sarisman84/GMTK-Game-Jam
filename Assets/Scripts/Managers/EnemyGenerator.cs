@@ -88,10 +88,10 @@ namespace Managers
 
         public void Generate(PlayerController playerController, Scene currentScene, List<BaseEnemy> numberOfEnemies,
             float minAmm, float maxAmm,
-            float spawnDistFromPlayer, HealthModifier target)
+            float spawnDistFromPlayer)
         {
-            SetTarget(target);
-            Generate(playerController, currentScene, numberOfEnemies, minAmm, maxAmm, spawnDistFromPlayer);
+            SetTarget(playerController.HealthManager);
+            base.Generate(playerController, currentScene, numberOfEnemies, minAmm, maxAmm, spawnDistFromPlayer);
         }
     }
 }

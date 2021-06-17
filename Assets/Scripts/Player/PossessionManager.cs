@@ -125,7 +125,7 @@ namespace Player
             if (closestDummy)
             {
                 weaponController.Aim((closestDummy.transform.position - owner.position).normalized);
-                weaponController.Shoot(Enemy.IsInsideDetectionRange(closestDummy.gameObject, owner, 15f));
+                weaponController.Shoot(BasicEnemy.IsInsideDetectionRange(closestDummy.gameObject, owner, 15f));
             }
         }
 

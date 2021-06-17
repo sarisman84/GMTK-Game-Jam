@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
+using Utility;
 
 namespace Enemies.AI
 {
-    public class Node
+    public class Node: IHeapItem<Node>
     {
         public bool Walkable;
         public Vector3 WorldPosition;
@@ -31,6 +32,17 @@ namespace Enemies.AI
             hCost = 0;
         }
 
+        public int CompareTo(Node other)
+        {
+            int compare = fCost.CompareTo(other.fCost);
+            if (compare == 0)
+            {
+                compare = hCost.CompareTo(other.hCost);
+            }
+
+            return -compare;
+        }
+
         public override bool Equals(object obj)
         {
             return obj != null && WorldPosition == ((Node) obj).WorldPosition;
@@ -45,5 +57,7 @@ namespace Enemies.AI
         {
             return !(a == b);
         }
+
+        public int HeapIndex { get; set; }
     }
 }

@@ -818,7 +818,8 @@ MonoBehaviour:
   aStarObstacleMask:
     serializedVersion: 2
     m_Bits: 512
-  aStarNodeRadius: 2
+  aStarNodeRadius: 0.5
+  onlyDisplayPathGizmos: 1
   onGameOver:
     m_PersistentCalls:
       m_Calls: []

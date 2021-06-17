@@ -128,9 +128,9 @@ GameObject:
   - component: {fileID: 8096020584464913838}
   - component: {fileID: 8096020584464913839}
   - component: {fileID: 8096020584464913811}
-  - component: {fileID: 8096020584464913808}
   - component: {fileID: 1772325600875603084}
   - component: {fileID: 8290886754629305504}
+  - component: {fileID: -7486834285346459462}
   m_Layer: 6
   m_Name: Test
   m_TagString: Untagged
@@ -233,20 +233,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 116
   m_CollisionDetection: 0
---- !u!114 &8096020584464913808
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8096020584464913837}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 05d5ab0cdcb94d768062dc8a4905b2f1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 2
-  changeDirInIntervals: 2
 --- !u!114 &1772325600875603084
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -295,3 +281,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &-7486834285346459462
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8096020584464913837}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59054d6e8f7dda1498f0269114949aec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  movementSpeed: 0.5
+  attackRange: 15
+  pathRefreshRate: 0.5

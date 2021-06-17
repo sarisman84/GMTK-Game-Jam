@@ -13,6 +13,7 @@ public class PathfindingGrid
     private float _nodeDiameter;
     private int _gridSizeX, _gridSizeY;
     private Vector3 position;
+    public bool displayGrid;
 
     public PathfindingGrid(Vector3 center, LayerMask unwalkableMask, Vector2 gridWorldSize, float nodeRadius)
     {
@@ -28,7 +29,8 @@ public class PathfindingGrid
         UpdateGrid();
     }
 
-    public List<Node> currentPath { private get; set; }
+    public int maxSize => _gridSizeX * _gridSizeY;
+
 
     public void UpdateGrid()
     {
@@ -95,13 +97,12 @@ public class PathfindingGrid
     public void DrawGrid()
     {
         Gizmos.DrawWireCube(position, new Vector3(_gridWorldSize.x, 1, _gridWorldSize.y));
-        if (_grid != null)
+
+        if (_grid != null && displayGrid)
         {
             foreach (var node in _grid)
             {
                 Gizmos.color = (node.Walkable) ? Color.white : Color.red;
-                if (currentPath != null && currentPath.Contains(node))
-                    Gizmos.color = Color.black;
                 Gizmos.DrawCube(node.WorldPosition, Vector3.one * (_nodeDiameter - 0.1f));
             }
         }

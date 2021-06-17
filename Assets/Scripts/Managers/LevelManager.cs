@@ -293,6 +293,7 @@ namespace Level
         public Vector2 aStarGridSize;
         public LayerMask aStarObstacleMask;
         public float aStarNodeRadius;
+        public bool displayGrid;
 
         [Space] public UnityEvent onGameOver;
         public UnityEvent onGameCompletion;
@@ -303,7 +304,7 @@ namespace Level
         private TimeDisplayer _timeDisplayer;
         private EnemyGenerator _enemyGenerator;
         private AsteroidField _asteroidGenerator;
-        private Pathfinding _pathfindingManager;
+        private PathfindingManager _pathfindingManager;
 
         private PlayerController _player;
         private int _currentLevel;
@@ -352,9 +353,6 @@ namespace Level
                     TransitionToNextLevel();
                 }
             }
-
-            if (_pathfindingManager != null)
-                _pathfindingManager.FindPath(_player.transform.position, transform.position);
         }
 
         private IEnumerator Setup()
@@ -389,7 +387,8 @@ namespace Level
             _musicPlayer.Play(menuMusic);
 
             _pathfindingManager =
-                new Pathfinding(transform.position, aStarObstacleMask, aStarGridSize, aStarNodeRadius);
+                new PathfindingManager(transform.position, aStarObstacleMask, aStarGridSize, aStarNodeRadius, _enemyGenerator);
+            _pathfindingManager.logistics.Grid.displayGrid = displayGrid;
 
 
             yield return null;
@@ -407,12 +406,11 @@ namespace Level
 
             var selectedLevel = _selectedLevels[newLevelIndex];
             selectedLevel.FetchScene().SetSceneActive(true);
-            _pathfindingManager.Grid.UpdateGrid();
+            _pathfindingManager.logistics.Grid.UpdateGrid();
 
             _enemyGenerator.Generate(_player, selectedLevel.FetchScene(), selectedLevel.uniqueEnemies,
                 selectedLevel.minEnemySpawnRate, selectedLevel.maxEnemySpawnRate,
-                selectedLevel.enemySpawnDistanceFromPlayer,
-                _player.HealthManager);
+                selectedLevel.enemySpawnDistanceFromPlayer);
 
             if (selectedLevel.spawnAsteroids)
                 _asteroidGenerator.Generate(_player, selectedLevel.FetchScene(), selectedLevel.uniqueAsteroids,
@@ -548,7 +546,7 @@ namespace Level
         private void OnDrawGizmos()
         {
             if (_pathfindingManager != null)
-                _pathfindingManager.Grid.DrawGrid();
+                _pathfindingManager.logistics.Grid.DrawGrid();
         }
 
 
