@@ -26,13 +26,13 @@ namespace Player.HUD.Abilities
             fx = new List<ParticleSystem>();
             ApplyEffect(currentPossesedEnemies, (enemy, index) =>
             {
-                oldMovementSpeed.Add(enemy.MovementSpeed);
+                oldMovementSpeed.Add(enemy.speed);
                 DamageOnImpact damageOnImpact =
-                    (DamageOnImpact) enemy.WeaponManager.weaponLibrary[enemy.WeaponManager.CurrentWeapon].ImpactEffect;
+                    (DamageOnImpact) enemy.weaponManager.weaponLibrary[enemy.weaponManager.CurrentWeapon].ImpactEffect;
                 if (damageOnImpact != null)
                     oldDamageBuff.Add(damageOnImpact.damage);
 
-                enemy.MovementSpeed += movementSpeedBuff;
+                enemy.speed += movementSpeedBuff;
                 enemy.GetComponent<HealthModifier>().Heal(instantHealAmm);
                 if (damageOnImpact != null)
                     damageOnImpact.damage += damageBuff;
@@ -57,9 +57,9 @@ namespace Player.HUD.Abilities
 
             ApplyEffect(currentPossesedEnemies, (enemy, index) =>
             {
-                enemy.MovementSpeed = oldMovementSpeed[index];
+                enemy.speed = oldMovementSpeed[index];
                 DamageOnImpact damageOnImpact =
-                    (DamageOnImpact) enemy.WeaponManager.weaponLibrary[enemy.WeaponManager.CurrentWeapon].ImpactEffect;
+                    (DamageOnImpact) enemy.weaponManager.weaponLibrary[enemy.weaponManager.CurrentWeapon].ImpactEffect;
 
                 if (damageOnImpact != null)
                     damageOnImpact.damage = oldDamageBuff[index];

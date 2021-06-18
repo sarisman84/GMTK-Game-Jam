@@ -13,21 +13,21 @@ namespace Enemies.AI
     public class Pathfinding
     {
         private PathfindingManager _requestManager;
-        private PathfindingGrid _grid;
+        private PathfindingArea _area;
 
-        public PathfindingGrid Grid => _grid;
+        public PathfindingArea area => _area;
         private MonoBehaviour _coroutineOwner;
 
         public Pathfinding(Vector3 center, LayerMask unwalkableMask, Vector2 gridWorldSize, float nodeRadius,
             MonoBehaviour coroutineOwner, PathfindingManager manager)
         {
-            _grid = new PathfindingGrid(center, unwalkableMask, gridWorldSize, nodeRadius);
+            _area = new PathfindingArea(center, unwalkableMask, gridWorldSize, nodeRadius);
             _coroutineOwner = coroutineOwner;
             _requestManager = manager;
         }
 
 
-        IEnumerator FindPath(Vector3 startPos, Vector3 targetPos)
+        IEnumerator FindPath(Vector3 startPos, Vector3 targetPos, Func<List<Node>, Vector3[]> weightCallback)
         {
             Stopwatch sw = new Stopwatch();
             sw.Start();
@@ -35,12 +35,12 @@ namespace Enemies.AI
             Vector3[] waypoints = new Vector3[0];
             bool pathSuccess = false;
 
-            Node startNode = _grid.GetNodeFromWorldPosition(startPos);
-            Node targetNode = _grid.GetNodeFromWorldPosition(targetPos);
+            Node startNode = _area.GetNodeFromWorldPosition(startPos);
+            Node targetNode = _area.GetNodeFromWorldPosition(targetPos);
 
             if (startNode.Walkable && targetNode.Walkable)
             {
-                Heap<Node> openSet = new Heap<Node>(_grid.maxSize);
+                Heap<Node> openSet = new Heap<Node>(_area.maxSize);
                 HashSet<Node> closedSet = new HashSet<Node>();
                 openSet.Add(startNode);
 
@@ -57,7 +57,7 @@ namespace Enemies.AI
                         break;
                     }
 
-                    foreach (Node neighbour in _grid.GetNeighbours(node))
+                    foreach (Node neighbour in _area.GetNeighbours(node))
                     {
                         if (!neighbour.Walkable || closedSet.Contains(neighbour))
                         {
@@ -73,6 +73,8 @@ namespace Enemies.AI
 
                             if (!openSet.Contains(neighbour))
                                 openSet.Add(neighbour);
+                            else
+                                openSet.UpdateItem(neighbour);
                         }
                     }
                 }
@@ -81,13 +83,13 @@ namespace Enemies.AI
             yield return null;
             if (pathSuccess)
             {
-                waypoints = RetracePath(startNode, targetNode);
+                waypoints = RetracePath(startNode, targetNode, weightCallback);
             }
 
             _requestManager.FinishedProcessingPath(waypoints, pathSuccess);
         }
 
-        Vector3[] RetracePath(Node startNode, Node endNode)
+        Vector3[] RetracePath(Node startNode, Node endNode, Func<List<Node>, Vector3[]> weightCallback)
         {
             List<Node> path = new List<Node>();
             Node currentNode = endNode;
@@ -98,19 +100,21 @@ namespace Enemies.AI
                 currentNode = currentNode.parent;
             }
 
-            Vector3[] waypoints = SimplifyPath(path);
+
+            Vector3[] waypoints = weightCallback?.Invoke(path);
             Array.Reverse(waypoints);
             return waypoints;
         }
 
-        Vector3[] SimplifyPath(List<Node> path)
+        public static Vector3[] SimplifyPath(List<Node> path)
         {
             List<Vector3> waypoints = new List<Vector3>();
             Vector2 directionOld = Vector2.zero;
 
             for (int i = 1; i < path.Count; i++)
             {
-                Vector2 directionNew = new Vector2(path[i - 1].XGridPos - path[i].XGridPos, path[i - 1].YGridPos - path[i].YGridPos);
+                Vector2 directionNew = new Vector2(path[i - 1].XGridPos - path[i].XGridPos,
+                    path[i - 1].YGridPos - path[i].YGridPos);
                 if (directionNew != directionOld)
                 {
                     waypoints.Add(path[i].WorldPosition);
@@ -134,9 +138,12 @@ namespace Enemies.AI
             return 14 * distX + 10 * (distY - distX);
         }
 
-        public void StartFindPath(Vector3 pathStart, Vector3 pathEnd)
+        public void StartFindPath(Vector3 pathStart, Vector3 pathEnd, Func<List<Node>, Vector3[]> weightCallback = null)
         {
-            _coroutineOwner.StartCoroutine(FindPath(pathStart, pathEnd));
+            _coroutineOwner.StartCoroutine(FindPath(pathStart, pathEnd, weightCallback ?? SimplifyPath));
         }
+        
+      
+
     }
 }

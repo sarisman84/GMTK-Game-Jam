@@ -62,7 +62,7 @@ namespace General
         {
             if (gameObject.GetComponent<BaseEnemy>() is { } enemy)
             {
-                enemy.IsFlaggedForReset = true;
+                enemy.isFlaggedForReset = true;
             }
 
             gameObject.SetActive(false);

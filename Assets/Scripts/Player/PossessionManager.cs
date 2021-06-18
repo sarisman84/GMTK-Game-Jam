@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using Enemies;
+using Enemies.AI;
 using Enemies.Testing;
 using General;
 using Managers;
@@ -92,9 +95,9 @@ namespace Player
                 !possessedEntities.Contains(enemy))
             {
                 possessedEntities.Add(enemy);
-                enemy.WeaponManager.SetDesiredTarget(typeof(BaseEnemy));
-                enemy.ONOverridingFixedUpdate += FollowPossessor;
-                enemy.ONOverridingWeaponBehaviour += OverrideTargeting;
+                enemy.weaponManager.SetDesiredTarget(typeof(BaseEnemy));
+                enemy.SetBehaviour(BaseEnemy.BehaviourType.Pathfinding, () => FollowPossessor(enemy));
+                enemy.SetBehaviour(BaseEnemy.BehaviourType.Weapon, () => OverrideTargeting(enemy));
                 enemy.ONOverridingDeathEvent += () => ClearPossession(enemy);
                 enemy.gameObject.layer = LayerMask.NameToLayer("Ally");
                 enemy.GetComponent<HealthModifier>().ResetHealth();
@@ -112,33 +115,55 @@ namespace Player
         private void ClearPossession(BaseEnemy baseEnemy)
         {
             baseEnemy.gameObject.layer = LayerMask.NameToLayer("Enemy");
+            baseEnemy.ResetBehaviour();
             possessedEntities.Remove(baseEnemy);
             display.UpdatePossesionDisplay(possessedEntities);
             display.RemoveTether(baseEnemy);
         }
 
-        private void OverrideTargeting(WeaponController weaponController, Transform owner)
+        private void OverrideTargeting(BaseEnemy obj)
         {
             BaseEnemy closestDummy =
-                GameMaster.singletonAccess.GetNearestObjectOfType(owner.gameObject, 15f,
+                GameMaster.singletonAccess.GetNearestObjectOfType(obj.gameObject, 15f,
                     possessedEntities, "Enemy");
             if (closestDummy)
             {
-                weaponController.Aim((closestDummy.transform.position - owner.position).normalized);
-                weaponController.Shoot(BasicEnemy.IsInsideDetectionRange(closestDummy.gameObject, owner, 15f));
+                obj.weaponController.Aim((closestDummy.transform.position - obj.transform.position).normalized);
+                obj.weaponController.Shoot(
+                    BasicEnemy.IsInsideDetectionRange(closestDummy.gameObject, obj.transform, obj.attackRange));
+            }
+            else
+            {
+                obj.weaponController.Aim((transform.position - obj.transform.position).normalized);
             }
         }
 
-        private void FollowPossessor(Rigidbody obj)
+        private float _currentRate;
+
+        private void FollowPossessor(BaseEnemy obj)
         {
             if (!obj) return;
             float dist = Vector3.Distance(transform.position, obj.transform.position);
 
             if (dist > minionMinSpace)
-                obj.velocity = (transform.position - obj.transform.position).normalized * (500f * Time.deltaTime);
+            {
+                _currentRate += Time.deltaTime;
+                if (_currentRate >= 0.5f)
+                {
+                    var position = transform.position;
+                    var position1 = obj.transform.position;
+                    PathfindingManager.RequestPath(position1,
+                        (position1 + position).normalized + position,
+                        obj.OnPathFound);
+                    _currentRate = 0;
+                }
+                
+                
+            }
             else
-                obj.velocity = Vector3.zero;
+                obj.currentDirection = Vector3.zero;
         }
+
 
         /// <summary>
         /// Destroys all possessions and resets the possession list.
@@ -151,7 +176,6 @@ namespace Player
             }
 
             Debug.Log("Resetting possessions!");
-
             possessedEntities = new List<BaseEnemy>();
             display.UpdatePossesionDisplay(possessedEntities);
             display.ResetTether();
@@ -163,6 +187,7 @@ namespace Player
             {
                 possessedEntity.transform.position =
                     GameMaster.singletonAccess.GetRandomPositionAroundPoint(position, minionMinSpace);
+                possessedEntity.ResetBehaviour(true);
             }
         }
 
@@ -170,7 +195,8 @@ namespace Player
         {
             foreach (var possessedEntity in possessedEntities)
             {
-                possessedEntity.GetComponent<BaseEnemy>().IsFlaggedForReset = false;
+                possessedEntity.ResetBehaviour(true);
+                possessedEntity.isFlaggedForReset = false;
                 possessedEntity.gameObject.SetActive(state);
             }
         }

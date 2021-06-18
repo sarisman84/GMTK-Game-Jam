@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Enemies.AI;
 using UnityEngine;
 
-public class PathfindingGrid
+public class PathfindingArea
 {
     private Node[,] _grid;
     private LayerMask _unwalkableMask;
@@ -15,7 +15,7 @@ public class PathfindingGrid
     private Vector3 position;
     public bool displayGrid;
 
-    public PathfindingGrid(Vector3 center, LayerMask unwalkableMask, Vector2 gridWorldSize, float nodeRadius)
+    public PathfindingArea(Vector3 center, LayerMask unwalkableMask, Vector2 gridWorldSize, float nodeRadius)
     {
         _unwalkableMask = unwalkableMask;
         _gridWorldSize = gridWorldSize;

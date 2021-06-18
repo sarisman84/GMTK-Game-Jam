@@ -20,9 +20,9 @@ public class PathfindingManager
     public Pathfinding logistics => _pathfinding;
 
 
-    public static void RequestPath(Vector3 pathStart, Vector3 pathEnd, Action<Vector3[], bool> callback)
+    public static void RequestPath(Vector3 pathStart, Vector3 pathEnd, Action<Vector3[], bool> callback, Func<List<Node>, Vector3[]> weightCallback = null)
     {
-        PathRequest newRequest = new PathRequest(pathStart, pathEnd, callback);
+        PathRequest newRequest = new PathRequest(pathStart, pathEnd, callback, weightCallback);
         _pathfindingManager._pathRequestQueue.Enqueue(newRequest);
         _pathfindingManager.TryProcessNext();
     }
@@ -33,7 +33,7 @@ public class PathfindingManager
         {
             _currentPathRequest = _pathRequestQueue.Dequeue();
             isProcessingPath = true;
-            _pathfinding.StartFindPath(_currentPathRequest.PathStart, _currentPathRequest.PathEnd);
+            _pathfinding.StartFindPath(_currentPathRequest.PathStart, _currentPathRequest.PathEnd, _currentPathRequest.WeightCallback);
         }
     }
 
@@ -48,12 +48,15 @@ public class PathfindingManager
     {
         public Vector3 PathStart, PathEnd;
         public Action<Vector3[], bool> Callback;
+        public Func<List<Node>, Vector3[]> WeightCallback;
 
-        public PathRequest(Vector3 pathStart, Vector3 pathEnd, Action<Vector3[], bool> callback)
+        public PathRequest(Vector3 pathStart, Vector3 pathEnd, Action<Vector3[], bool> callback,
+            Func<List<Node>, Vector3[]> weightCallback)
         {
             PathStart = pathStart;
             PathEnd = pathEnd;
             Callback = callback;
+            WeightCallback = weightCallback;
         }
     }
 }

@@ -388,7 +388,7 @@ namespace Level
 
             _pathfindingManager =
                 new PathfindingManager(transform.position, aStarObstacleMask, aStarGridSize, aStarNodeRadius, _enemyGenerator);
-            _pathfindingManager.logistics.Grid.displayGrid = displayGrid;
+            _pathfindingManager.logistics.area.displayGrid = displayGrid;
 
 
             yield return null;
@@ -406,7 +406,7 @@ namespace Level
 
             var selectedLevel = _selectedLevels[newLevelIndex];
             selectedLevel.FetchScene().SetSceneActive(true);
-            _pathfindingManager.logistics.Grid.UpdateGrid();
+            _pathfindingManager.logistics.area.UpdateGrid();
 
             _enemyGenerator.Generate(_player, selectedLevel.FetchScene(), selectedLevel.uniqueEnemies,
                 selectedLevel.minEnemySpawnRate, selectedLevel.maxEnemySpawnRate,
@@ -546,7 +546,7 @@ namespace Level
         private void OnDrawGizmos()
         {
             if (_pathfindingManager != null)
-                _pathfindingManager.logistics.Grid.DrawGrid();
+                _pathfindingManager.logistics.area.DrawGrid();
         }
 
 

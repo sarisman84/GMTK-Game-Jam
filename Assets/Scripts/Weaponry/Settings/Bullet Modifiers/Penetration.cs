@@ -22,7 +22,7 @@ public class Penetration : BulletModifier
     private void AddPenetrationEffect(Collider obj, Bullet bullet)
     {
         if (obj.GetComponent<BaseEnemy>() is { } baseEnemy &&
-            baseEnemy.WeaponManager.CurTarget == typeof(PlayerController) && currentPenetration <= maxPenetration)
+            baseEnemy.weaponManager.CurTarget == typeof(PlayerController) && currentPenetration <= maxPenetration)
         {
             currentPenetration++;
         }

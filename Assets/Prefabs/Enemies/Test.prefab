@@ -293,6 +293,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59054d6e8f7dda1498f0269114949aec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementSpeed: 0.5
+  movementSpeed: 5
   attackRange: 15
+  currentDirection: {x: 0, y: 0, z: 0}
   pathRefreshRate: 0.5

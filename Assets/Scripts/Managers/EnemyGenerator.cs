@@ -65,12 +65,11 @@ namespace Managers
                 BaseEnemy chosenEnemy =
                     ObjectPooler.DynamicInstantiate(uniqueEnemyList[Random.Range(0, uniqueEnemyList.Count)],
                         SpawnAroundPlayer(currentScene, playerController, spawnDistFromPlayer), Quaternion.identity);
-                chosenEnemy.target = _target.gameObject;
                 chosenEnemy.ONOverridingDeathEvent +=
                     () =>
                     {
                         if (_target.GetComponent<PlayerController>() is { } player)
-                            if (chosenEnemy.WeaponManager.CurTarget == typeof(PlayerController))
+                            if (chosenEnemy.weaponManager.CurTarget == typeof(PlayerController))
                                 player.PossessionManager.AdditionToCurrentKillCount = 1;
                     };
 
