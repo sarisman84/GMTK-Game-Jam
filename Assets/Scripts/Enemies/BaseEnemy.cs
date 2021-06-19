@@ -17,6 +17,8 @@ namespace Enemies
         public float attackRange;
         public float turnDistance = 5;
         public float turnSpeed = 3;
+        public float speedPercent = 5;
+        public float stoppingDst = 10;
 
         public event Action ONOverridingDeathEvent;
         public event Action ONOverridingWeaponBehaviour;
@@ -177,7 +179,7 @@ namespace Enemies
         {
             if (succeded && gameObject.activeSelf)
             {
-                Path = new Path(waypoints, transform.position, turnDistance);
+                Path = new Path(waypoints, transform.position, turnDistance, stoppingDst);
                 ResetBehaviour();
                 _coroutine = StartCoroutine(FollowPath());
             }
@@ -209,22 +211,35 @@ namespace Enemies
                         followingPath = false;
                         break;
                     }
-
-                    pathIndex++;
+                    else
+                    {
+                        pathIndex++;
+                    }
                 }
 
                 if (followingPath)
                 {
+                    if (pathIndex >= Path.slowDownIndex && stoppingDst > 0)
+                    {
+                        speedPercent =
+                            Mathf.Clamp01(Path.turnBoundaries[Path.finishLineIndex].DistanceFromPoint(pos2D) /
+                                          stoppingDst);
+                        if (speedPercent < 0.01f)
+                        {
+                            followingPath = false;
+                        }
+                    }
+
                     Quaternion targetRotation =
-                        Quaternion.LookRotation((Path.lookPoints[pathIndex] - transform.position));
+                        Quaternion.LookRotation(Path.lookPoints[pathIndex] - transform.position);
                     transform.rotation =
                         Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * turnSpeed);
-                    currentDirection = transform.forward * speed;
+                    // transform.Translate(Vector3.forward * (Time.deltaTime * speed * speedPercent), Space.Self);
+                    currentDirection = (Path.lookPoints[pathIndex] - transform.position).normalized * (speed * speedPercent);
                 }
 
                 yield return null;
             }
-
 
             yield return null;
         }

@@ -123,7 +123,7 @@ namespace Player
             CustomInput.SetInputActive(false);
         }
 
-        public void SetControllerActive(bool state, bool isFlaggedForDeath)
+        public void SetActive(bool state, bool isFlaggedForDeath)
         {
             _exitFinder.SetActive(state);
             _weaponController.displayer.SetActive(state);
@@ -131,6 +131,9 @@ namespace Player
             _possessionManager.SetPossessionsActive(state);
             _abilityManager.display.SetActive(state);
             _health.display.SetActive(state);
+
+            if (!state)
+                SetInputActive(false);
 
             if (isFlaggedForDeath)
             {
@@ -185,6 +188,11 @@ namespace Player
             _abilityManager.FullReset();
             _health.ResetHealth();
             _weaponController.ResetWeaponLibrary();
+        }
+
+        public void SetInputActive(bool value)
+        {
+            CustomInput.SetInputActive(value);
         }
     }
 }

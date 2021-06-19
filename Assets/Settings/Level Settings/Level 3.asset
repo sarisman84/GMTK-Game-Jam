@@ -32,5 +32,7 @@ MonoBehaviour:
     levelScene: Level 3
     levelExitDirection: 2
     timerType: 0
+    onLevelEnterTransition: {fileID: 11400000, guid: 59a4f5d347983a54db9228ad21800d82, type: 2}
+    onLevelExitTransition: {fileID: 11400000, guid: 4d630557bab3cf14a978e6becb051266, type: 2}
   abilitiesToGiveToPlayerOnLevelEntry:
   - {fileID: 11400000, guid: 16754afd20806af4faf5c9362586098c, type: 2}

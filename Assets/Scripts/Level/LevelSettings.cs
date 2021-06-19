@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Enemies;
 using Level.Asteroids;
+using Level.UI;
 using Player.HUD.Abilities;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -51,10 +52,12 @@ namespace Level
             public float enemySpawnDistanceFromPlayer;
             public float minEnemySpawnRate, maxEnemySpawnRate;
 
-            [Header("Settings")] public float timeRemaining;
+            [Header("Settings")] 
+            public float timeRemaining;
             public string levelScene;
             public EndDirection levelExitDirection;
             public CountdownType timerType;
+            public DoTweenAnimationClip onLevelEnterTransition, onLevelExitTransition;
 
             public Scene FetchScene()
             {

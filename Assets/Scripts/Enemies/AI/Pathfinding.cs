@@ -52,7 +52,6 @@ namespace Enemies.AI
                     if (node == targetNode)
                     {
                         sw.Stop();
-                        Debug.Log("Path found: " + sw.ElapsedMilliseconds + " ms");
                         pathSuccess = true;
                         break;
                     }
@@ -142,8 +141,5 @@ namespace Enemies.AI
         {
             _coroutineOwner.StartCoroutine(FindPath(pathStart, pathEnd, weightCallback ?? SimplifyPath));
         }
-        
-      
-
     }
 }

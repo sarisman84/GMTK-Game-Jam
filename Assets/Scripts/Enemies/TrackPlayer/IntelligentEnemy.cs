@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Enemies;
 using Enemies.AI;
 using Enemies.Testing;
+using Player;
 using UnityEngine;
 
 public class IntelligentEnemy : BaseEnemy
@@ -22,7 +23,7 @@ public class IntelligentEnemy : BaseEnemy
     {
         _curRefreshRate += Time.deltaTime;
 
-        if (_curRefreshRate >= pathRefreshRate && !Physics.Raycast(transform.position, directionToTarget, attackRange))
+        if (_curRefreshRate >= pathRefreshRate)
         {
             PathfindingManager.RequestPath(transform.position, currentTarget.transform.position,
                 (path, success) => OnPathFound(path, success));
@@ -35,7 +36,7 @@ public class IntelligentEnemy : BaseEnemy
     {
         if (Path != null)
         {
-            Path.DrawWithGizmos();
+            Path.DrawWithGizmos(currentTarget.GetComponent<PlayerController>() ? Color.black : Color.cyan);
         }
     }
 }

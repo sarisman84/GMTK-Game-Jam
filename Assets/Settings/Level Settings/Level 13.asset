@@ -32,5 +32,7 @@ MonoBehaviour:
     levelScene: Level 13
     levelExitDirection: 4
     timerType: 1
+    onLevelEnterTransition: {fileID: 11400000, guid: 59a4f5d347983a54db9228ad21800d82, type: 2}
+    onLevelExitTransition: {fileID: 11400000, guid: 4d630557bab3cf14a978e6becb051266, type: 2}
   abilitiesToGiveToPlayerOnLevelEntry:
   - {fileID: 11400000, guid: 7b2bfd5749525a64891fcfad109bcd29, type: 2}
