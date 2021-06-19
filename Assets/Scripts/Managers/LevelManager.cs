@@ -75,7 +75,7 @@ namespace Level
             _loadLevelCoroutine = StartCoroutine(LoadLevel(_currentLevel));
         }
 
-        private bool hasProceededToNextLevel = false;
+        private bool isTransitioning = false;
 
         private void Update()
         {
@@ -84,7 +84,7 @@ namespace Level
                 if (_timeDisplayer.TimeCounter.HasRanOutOfTime(_selectedLevels[_currentLevel].timerType ==
                                                                LevelSettings.CountdownType.GameOverOnZero) ||
                     (!_player.gameObject.activeSelf && _player.HealthManager.IsFlaggedForDeath) &&
-                    !hasProceededToNextLevel)
+                    !isTransitioning)
                 {
                     if (_loadLevelCoroutine != null)
                     {
@@ -92,14 +92,14 @@ namespace Level
                     }
 
                     StartCoroutine(OnGameOver());
-                    hasProceededToNextLevel = true;
+                    isTransitioning = true;
                 }
                 else if (_timeDisplayer.TimeCounter.HasRanOutOfTime(_selectedLevels[_currentLevel].timerType ==
                                                                     LevelSettings.CountdownType.ProgressOnZero) &&
-                         !hasProceededToNextLevel)
+                         !isTransitioning)
                 {
                     TransitionToNextLevel();
-                    hasProceededToNextLevel = true;
+                    isTransitioning = true;
                 }
             }
         }
@@ -212,7 +212,7 @@ namespace Level
             yield return new WaitUntil(() => !_transition.isPlaying);
             _player.SetInputActive(true);
             _player.AbilityManager.display.SetActive(true);
-            hasProceededToNextLevel = false;
+            isTransitioning = false;
         }
 
         private IEnumerator ResetGame()
@@ -243,6 +243,7 @@ namespace Level
         {
             _transition.Play(onVictoryTransition);
             yield return new WaitUntil(() => !_transition.isPlaying);
+            isTransitioning = false;
             yield return ResetGame();
             yield return TransitionToMainMenu();
             onGameCompletion?.Invoke();
@@ -252,6 +253,7 @@ namespace Level
         {
             _transition.Play(onGameOverTransition);
             yield return new WaitUntil(() => !_transition.isPlaying);
+            isTransitioning = false;
             yield return ResetGame();
             yield return TransitionToMainMenu();
             onGameOver?.Invoke();
