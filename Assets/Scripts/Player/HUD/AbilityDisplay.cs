@@ -13,7 +13,7 @@ public class AbilityDisplay : MonoBehaviour
     private Dictionary<Ability, AbilityIcon> currentAbilityIcons = new();
 
 
-    public void UpdateIcons(List<Ability> abilities)
+    public void UpdateIconList(List<Ability> abilities)
     {
         Reset();
         foreach (var currentAbility in abilities)
@@ -36,7 +36,7 @@ public class AbilityDisplay : MonoBehaviour
         foreach (var currentAbilityIcon in currentAbilityIcons)
         {
             if (value)
-                UpdateCurrentCooldownDisplay(currentAbilityIcon.Key);
+                UpdateIconState(currentAbilityIcon.Key);
             else
                 currentAbilityIcon.Value.CooldownElement.fillAmount = 1;
 
@@ -44,12 +44,13 @@ public class AbilityDisplay : MonoBehaviour
         }
     }
 
-    public void UpdateCurrentCooldownDisplay(Ability ability)
+    public void UpdateIconState(Ability ability)
     {
         if (currentAbilityIcons.ContainsKey(ability))
         {
             currentAbilityIcons[ability].CooldownElement.fillAmount =
                 (ability.cooldown - ability.currentCooldown) / ability.cooldown;
+            currentAbilityIcons[ability].Slot.color = ability.isBeingUsed ? Color.gray : Color.white;
         }
     }
 

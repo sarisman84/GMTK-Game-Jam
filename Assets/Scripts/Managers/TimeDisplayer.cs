@@ -66,8 +66,8 @@ namespace Managers
 
         public string FormatToMinutes()
         {
-            float minute = _currentTime / 60;
-            float seconds = _currentTime % 60;
+            float minute = Mathf.FloorToInt(_currentTime / 60);
+            float seconds = Mathf.FloorToInt(_currentTime % 60);
 
             return $"{minute:00}:{seconds:00}";
         }

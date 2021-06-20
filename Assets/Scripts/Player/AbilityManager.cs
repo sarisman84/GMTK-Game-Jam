@@ -30,7 +30,7 @@ public class AbilityManager : MonoBehaviour
         for (var i = 0; i < currentAbilities.Count; i++)
         {
             var ability = currentAbilities[i];
-            display.UpdateCurrentCooldownDisplay(ability.UseAbility(this, playerController, i == getKeyDown));
+            display.UpdateIconState(ability.UseAbility(this, playerController, i == getKeyDown));
         }
     }
 
@@ -50,7 +50,7 @@ public class AbilityManager : MonoBehaviour
 
         currentAbilities.Add(abilityToGiveToPlayer);
         if (display)
-            display.UpdateIcons(currentAbilities);
+            display.UpdateIconList(currentAbilities);
     }
 
     /// <summary>

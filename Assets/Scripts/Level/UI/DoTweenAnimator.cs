@@ -13,6 +13,7 @@ public class DoTweenAnimator : MonoBehaviour
     private float accumilatedProcessTime = 0;
 
     public bool isPlaying { private set; get; }
+    public float playTime { get; private set; }
 
 
     private void Awake()
@@ -49,6 +50,7 @@ public class DoTweenAnimator : MonoBehaviour
 
     public IEnumerator TweenObjectWithClip(DoTweenAnimationClip clip)
     {
+        playTime = clip.duration;
         isPlaying = true;
         Debug.Log(clip.PlayTween(objectsToTween, this));
         yield return new WaitForSeconds(clip.duration);

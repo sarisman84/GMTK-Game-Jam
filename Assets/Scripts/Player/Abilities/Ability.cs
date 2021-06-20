@@ -16,8 +16,8 @@ namespace Player.HUD.Abilities
         private bool _hasBeenUsed;
         public bool isInCooldown { private set; get; }
         public float currentCooldown => CurrentCd;
-      
-        
+        public bool isBeingUsed => _hasBeenUsed;
+
 
         private void OnDisable()
         {

@@ -199,7 +199,8 @@ namespace Enemies
             bool followingPath = true;
             int pathIndex = 0;
 
-            rigidBody.MoveRotation(Quaternion.LookRotation((Path.lookPoints[0] - transform.position)));
+            if (Path.lookPoints.Length > 0)
+                rigidBody.MoveRotation(Quaternion.LookRotation((Path.lookPoints[0] - transform.position)));
 
             while (followingPath)
             {
@@ -235,7 +236,8 @@ namespace Enemies
                     transform.rotation =
                         Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * turnSpeed);
                     // transform.Translate(Vector3.forward * (Time.deltaTime * speed * speedPercent), Space.Self);
-                    currentDirection = (Path.lookPoints[pathIndex] - transform.position).normalized * (speed * speedPercent);
+                    currentDirection = (Path.lookPoints[pathIndex] - transform.position).normalized *
+                                       (speed * speedPercent);
                 }
 
                 yield return null;
