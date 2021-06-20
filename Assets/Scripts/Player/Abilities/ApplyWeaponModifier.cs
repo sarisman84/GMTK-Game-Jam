@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 using Utility;
 using Weaponry.Settings.Bullet_Modifier;
@@ -13,7 +14,7 @@ namespace Player.HUD.Abilities
         public float duration = 3f;
         private ParticleSystem fx;
 
-        public override IEnumerator Activate(PlayerController playerController)
+        public override IEnumerator Activate(PlayerController playerController, Action onAbilityEndEvent)
         {
             fx = ObjectPooler.DynamicInstantiate(abilityFX, playerController.transform.parent);
             fx.Play();
@@ -40,6 +41,7 @@ namespace Player.HUD.Abilities
             {
                 weapon.bulletModifiers.Remove(Modifier);
             }
+            onAbilityEndEvent?.Invoke();
         }
 
         public override void Reset()
@@ -50,6 +52,8 @@ namespace Player.HUD.Abilities
                 fx.gameObject.SetActive(false);
                 fx = null;
             }
+
+            base.Reset();
         }
     }
 }

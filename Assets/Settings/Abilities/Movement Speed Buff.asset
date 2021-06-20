@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: Movement Speed Buff
   m_EditorClassIdentifier: 
   icon: {fileID: 21300000, guid: 2ca158d7b87b2594e93c632de2c9b827, type: 3}
-  cooldown: 20
+  cooldown: 5
   abilityFX: {fileID: 6757548500812899094, guid: fb8759a0074db4041ba5e18665589254, type: 3}
   buffDuration: 15
   damageBuff: 0
-  movementSpeedBuff: 5
+  movementSpeedBuff: 1.2
   instantHealAmm: 0

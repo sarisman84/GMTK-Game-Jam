@@ -34,7 +34,7 @@ public class IntelligentEnemy : BaseEnemy
 
     private void OnDrawGizmos()
     {
-        if (Path != null)
+        if (Path != null && currentTarget)
         {
             Path.DrawWithGizmos(currentTarget.GetComponent<PlayerController>() ? Color.black : Color.cyan);
         }

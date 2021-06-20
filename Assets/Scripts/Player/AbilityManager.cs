@@ -27,11 +27,10 @@ public class AbilityManager : MonoBehaviour
 
     public void UseCurrentAbility(PlayerController playerController, int getKeyDown)
     {
-        if (getKeyDown >= currentAbilities.Count || getKeyDown < 0) return;
-        if (_currentCd >= currentAbilities[getKeyDown].cooldown)
+        for (var i = 0; i < currentAbilities.Count; i++)
         {
-            StartCoroutine(currentAbilities[getKeyDown].Activate(playerController));
-            _currentCd = 0;
+            var ability = currentAbilities[i];
+            display.UpdateCurrentCooldownDisplay(ability.UseAbility(this, playerController, i == getKeyDown));
         }
     }
 
@@ -75,6 +74,9 @@ public class AbilityManager : MonoBehaviour
 
     public void ResetCd()
     {
-        _currentCd = float.MaxValue;
+        foreach (var ability in currentAbilities)
+        {
+            ability.Reset();
+        }
     }
 }

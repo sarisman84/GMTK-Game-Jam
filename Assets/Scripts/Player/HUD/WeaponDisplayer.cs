@@ -15,7 +15,7 @@ namespace Player.HUD
         {
             if (iconDisplayer)
             {
-                if (!iconDisplayer.transform.parent.gameObject.activeSelf)
+                if (!iconDisplayer.transform.parent.gameObject.activeSelf && gameObject.activeSelf)
                     iconDisplayer.transform.parent.gameObject.SetActive(true);
                 iconDisplayer.sprite = selectedWeapon.weaponIcon;
             }

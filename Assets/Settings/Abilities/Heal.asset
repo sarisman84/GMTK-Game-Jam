@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Heal
   m_EditorClassIdentifier: 
   icon: {fileID: 21300000, guid: df10bbd80282cdf4e82d13ef360d3e0a, type: 3}
-  cooldown: 15
+  cooldown: 5
   abilityFX: {fileID: 6757548500812899094, guid: fb8759a0074db4041ba5e18665589254, type: 3}
   buffDuration: 1
   damageBuff: 0

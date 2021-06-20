@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using General;
 using UnityEngine;
 using Utility;
@@ -13,7 +14,7 @@ namespace Player.HUD.Abilities
         [Space] public float instantHealAmm;
         private ParticleSystem fx;
 
-        public override IEnumerator Activate(PlayerController playerController)
+        public override IEnumerator Activate(PlayerController playerController, Action onAbilityEndEvent)
         {
             if (!playerController) yield break;
 
@@ -41,7 +42,8 @@ namespace Player.HUD.Abilities
             float cd = 0;
             while (cd < buffDuration)
             {
-                fx.transform.position = playerController.transform.position;
+                if (fx)
+                    fx.transform.position = playerController.transform.position;
                 cd += Time.deltaTime;
                 yield return new WaitForEndOfFrame();
             }
@@ -55,6 +57,7 @@ namespace Player.HUD.Abilities
             playerController.currentAccelerationSpeed = oldaccelerationSpeed;
 
             Reset();
+            onAbilityEndEvent?.Invoke();
         }
 
         public override void Reset()
@@ -65,6 +68,8 @@ namespace Player.HUD.Abilities
                 fx.gameObject.SetActive(false);
                 fx = null;
             }
+
+            base.Reset();
         }
     }
 }

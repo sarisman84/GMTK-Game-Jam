@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using Level.Asteroids;
 using UnityEngine;
 using Utility;
@@ -12,7 +13,7 @@ namespace Player.HUD.Abilities
         public float barrierDuration = 3f;
         private ParticleSystem fx;
 
-        public override IEnumerator Activate(PlayerController playerController)
+        public override IEnumerator Activate(PlayerController playerController, Action onAbilityEndEvent)
         {
             fx = ObjectPooler.DynamicInstantiate(abilityFX, playerController.transform.parent);
             ParticleSystem.ShapeModule module = fx.shape;
@@ -29,6 +30,7 @@ namespace Player.HUD.Abilities
 
             module.radius = 1;
             Reset();
+            onAbilityEndEvent?.Invoke();
         }
 
         private IEnumerator ClearNearbyBullets(Vector3 transformPosition)
@@ -45,6 +47,7 @@ namespace Player.HUD.Abilities
             }
 
             yield return null;
+            
         }
 
         public override void Reset()
@@ -55,6 +58,7 @@ namespace Player.HUD.Abilities
                 fx.gameObject.SetActive(false);
                 fx = null;
             }
+            base.Reset();
         }
     }
 }

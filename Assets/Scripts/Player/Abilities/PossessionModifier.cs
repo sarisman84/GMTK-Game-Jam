@@ -18,7 +18,7 @@ namespace Player.HUD.Abilities
 
         private List<ParticleSystem> fx;
 
-        public override IEnumerator Activate(PlayerController playerController)
+        public override IEnumerator Activate(PlayerController playerController, Action onAbilityEndEvent)
         {
             List<BaseEnemy> currentPossesedEnemies = playerController.PossessionManager.possessedEntities;
             List<float> oldMovementSpeed = new List<float>();
@@ -66,6 +66,8 @@ namespace Player.HUD.Abilities
 
                 fx[index].gameObject.SetActive(false);
             });
+            
+            onAbilityEndEvent?.Invoke();
         }
 
         public void ApplyEffect(List<BaseEnemy> targetEnemies, Action<BaseEnemy, int> method)
@@ -89,6 +91,7 @@ namespace Player.HUD.Abilities
             }
 
             fx = new List<ParticleSystem>();
+            base.Reset();
         }
     }
 }

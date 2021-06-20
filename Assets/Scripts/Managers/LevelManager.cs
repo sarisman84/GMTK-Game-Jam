@@ -90,9 +90,10 @@ namespace Level
                     {
                         StopCoroutine(_loadLevelCoroutine);
                     }
-
-                    StartCoroutine(OnGameOver());
+                    
                     isTransitioning = true;
+                    StartCoroutine(OnGameOver());
+                    
                 }
                 else if (_timeDisplayer.TimeCounter.HasRanOutOfTime(_selectedLevels[_currentLevel].timerType ==
                                                                     LevelSettings.CountdownType.ProgressOnZero) &&
@@ -253,10 +254,10 @@ namespace Level
         {
             _transition.Play(onGameOverTransition);
             yield return new WaitUntil(() => !_transition.isPlaying);
-            isTransitioning = false;
             yield return ResetGame();
             yield return TransitionToMainMenu();
             onGameOver?.Invoke();
+            isTransitioning = false;
         }
 
 

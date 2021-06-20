@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: IncreaseAtkOnPosessed 1
   m_EditorClassIdentifier: 
   icon: {fileID: 21300000, guid: 76e35c93ea4c85346bc26e31f99893c9, type: 3}
-  cooldown: 20
+  cooldown: 5
   abilityFX: {fileID: 6757548500812899094, guid: fb8759a0074db4041ba5e18665589254, type: 3}
   buffDuration: 15
   damageBuff: 15

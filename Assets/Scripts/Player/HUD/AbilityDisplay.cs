@@ -10,7 +10,7 @@ using Utility;
 public class AbilityDisplay : MonoBehaviour
 {
     public Image iconPrefab;
-    private List<Image> currentAbilityIcons = new();
+    private Dictionary<Ability, AbilityIcon> currentAbilityIcons = new();
 
 
     public void UpdateIcons(List<Ability> abilities)
@@ -20,7 +20,9 @@ public class AbilityDisplay : MonoBehaviour
         {
             Image image = ObjectPooler.DynamicInstantiate(iconPrefab, transform);
             image.sprite = currentAbility.icon;
-            currentAbilityIcons.Add(image);
+            if (!currentAbilityIcons.ContainsKey(currentAbility))
+                currentAbilityIcons.Add(currentAbility,
+                    new AbilityIcon(image, image.transform.GetChild(0).GetComponent<Image>()));
         }
     }
 
@@ -33,7 +35,33 @@ public class AbilityDisplay : MonoBehaviour
     {
         foreach (var currentAbilityIcon in currentAbilityIcons)
         {
-            currentAbilityIcon.gameObject.SetActive(value);
+            if (value)
+                UpdateCurrentCooldownDisplay(currentAbilityIcon.Key);
+            else
+                currentAbilityIcon.Value.CooldownElement.fillAmount = 1;
+
+            currentAbilityIcon.Value.Slot.gameObject.SetActive(value);
+        }
+    }
+
+    public void UpdateCurrentCooldownDisplay(Ability ability)
+    {
+        if (currentAbilityIcons.ContainsKey(ability))
+        {
+            currentAbilityIcons[ability].CooldownElement.fillAmount =
+                (ability.cooldown - ability.currentCooldown) / ability.cooldown;
+        }
+    }
+
+    struct AbilityIcon
+    {
+        public Image Slot;
+        public Image CooldownElement;
+
+        public AbilityIcon(Image slot, Image cooldownElement)
+        {
+            Slot = slot;
+            CooldownElement = cooldownElement;
         }
     }
 }

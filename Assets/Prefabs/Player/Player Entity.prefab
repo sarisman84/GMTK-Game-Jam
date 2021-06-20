@@ -310,6 +310,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textDisplay: {fileID: 0}
+  possessionTether: {fileID: 6102528087575967288, guid: f4eb118c0de3ed64d98c4fa67a92bb40, type: 3}
 --- !u!1 &6393662442942745496
 GameObject:
   m_ObjectHideFlags: 0
