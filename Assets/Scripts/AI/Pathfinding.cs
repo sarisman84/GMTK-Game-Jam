@@ -12,14 +12,14 @@ namespace Enemies.AI
 {
     public class Pathfinding
     {
-        private PathfindingManager _requestManager;
+        private PathRequestManager _requestManager;
         private PathfindingArea _area;
 
         public PathfindingArea area => _area;
         private MonoBehaviour _coroutineOwner;
 
         public Pathfinding(Vector3 center, LayerMask unwalkableMask, Vector2 gridWorldSize, float nodeRadius,
-            MonoBehaviour coroutineOwner, PathfindingManager manager)
+            MonoBehaviour coroutineOwner, PathRequestManager manager)
         {
             _area = new PathfindingArea(center, unwalkableMask, gridWorldSize, nodeRadius);
             _coroutineOwner = coroutineOwner;
@@ -137,9 +137,9 @@ namespace Enemies.AI
             return 14 * distX + 10 * (distY - distX);
         }
 
-        public void StartFindPath(Vector3 pathStart, Vector3 pathEnd, Func<List<Node>, Vector3[]> weightCallback = null)
+        public void StartFindPath(Vector3 pathStart, Vector3 pathEnd)
         {
-            _coroutineOwner.StartCoroutine(FindPath(pathStart, pathEnd, weightCallback ?? SimplifyPath));
+            _coroutineOwner.StartCoroutine(FindPath(pathStart, pathEnd, SimplifyPath));
         }
     }
 }
