@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3fd8df24dc1a4240bf71ec5627c20921, type: 3}
   m_Name: Fade In
   m_EditorClassIdentifier: 
-  duration: 2
+  duration: 1
   delayBetweenEachTween: 1
   tweenType: 0
   targetValue: 1

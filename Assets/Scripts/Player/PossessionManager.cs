@@ -95,10 +95,8 @@ namespace Player
                 !possessedEntities.Contains(enemy))
             {
                 possessedEntities.Add(enemy);
-                enemy.weaponManager.SetDesiredTarget(typeof(BaseEnemy));
-                enemy.SetBehaviour(BaseEnemy.BehaviourType.Pathfinding, () => FollowPossessor(enemy));
-                enemy.SetBehaviour(BaseEnemy.BehaviourType.Weapon, () => OverrideTargeting(enemy));
-                enemy.ONOverridingDeathEvent += () => ClearPossession(enemy);
+                enemy.SetTarget(typeof(BaseEnemy));
+                enemy.healthManager.onDeath.AddListener(() => ClearPossession(enemy));
                 enemy.gameObject.layer = LayerMask.NameToLayer("Ally");
                 enemy.GetComponent<HealthModifier>().ResetHealth();
                 ONPossessionEvent?.Invoke(enemy);
@@ -115,7 +113,6 @@ namespace Player
         private void ClearPossession(BaseEnemy baseEnemy)
         {
             baseEnemy.gameObject.layer = LayerMask.NameToLayer("Enemy");
-            baseEnemy.ResetBehaviour();
             possessedEntities.Remove(baseEnemy);
             display.UpdatePossesionDisplay(possessedEntities);
             display.RemoveTether(baseEnemy);
@@ -140,30 +137,6 @@ namespace Player
 
         private float _currentRate;
 
-        private void FollowPossessor(BaseEnemy obj)
-        {
-            if (!obj) return;
-            float dist = Vector3.Distance(transform.position, obj.transform.position);
-
-            if (dist > minionMinSpace)
-            {
-                _currentRate += Time.deltaTime;
-                if (_currentRate >= 0.5f)
-                {
-                    var position = transform.position;
-                    var position1 = obj.transform.position;
-                    PathfindingManager.RequestPath(position1,
-                        (position1 + position).normalized + position,
-                        obj.OnPathFound);
-                    _currentRate = 0;
-                }
-                
-                
-            }
-            else
-                obj.currentDirection = Vector3.zero;
-        }
-
 
         /// <summary>
         /// Destroys all possessions and resets the possession list.
@@ -187,7 +160,6 @@ namespace Player
             {
                 possessedEntity.transform.position =
                     GameMaster.singletonAccess.GetRandomPositionAroundPoint(position, minionMinSpace);
-                possessedEntity.ResetBehaviour(true);
             }
         }
 
@@ -195,8 +167,7 @@ namespace Player
         {
             foreach (var possessedEntity in possessedEntities)
             {
-                possessedEntity.ResetBehaviour(true);
-                possessedEntity.isFlaggedForReset = false;
+                possessedEntity.healthManager.IsFlaggedForDeath = false;
                 possessedEntity.gameObject.SetActive(state);
             }
         }

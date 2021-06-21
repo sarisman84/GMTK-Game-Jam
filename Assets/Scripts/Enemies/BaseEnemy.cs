@@ -10,138 +10,85 @@ using Utility;
 
 namespace Enemies
 {
-    [RequireComponent(typeof(Rigidbody), typeof(WeaponController))]
+    [RequireComponent(typeof(WeaponController))]
     public abstract class BaseEnemy : MonoBehaviour
     {
-        [SerializeField] private float movementSpeed;
         public float attackRange;
-        public float turnDistance = 5;
-        public float turnSpeed = 3;
-        public float speedPercent = 5;
-        public float stoppingDst = 10;
-
-        public event Action ONOverridingDeathEvent;
-        public event Action ONOverridingWeaponBehaviour;
-        public event Action ONOverridingPathfinding;
-
-
-        protected Rigidbody Rigidbody;
+        public float detectionRange = 9999;
+        protected Action MovementBehaviourEvent;
         protected WeaponController WeaponController;
         protected HealthModifier HealthModifier;
-
-        protected Path Path;
-        public Rigidbody rigidBody => Rigidbody;
-        public WeaponController weaponController => WeaponController;
-
-        public Vector3 currentDirection;
-
-        public bool isFlaggedForReset { private get; set; }
+        protected LayerMask TargetLayer;
 
 
-        public float speed
+        public enum TargetType
         {
-            get => movementSpeed * 100f;
-            set => movementSpeed = value;
+            Player,
+            Enemy
         }
 
+        public abstract float movementSpeed { get; set; }
+
+        public HealthModifier healthManager => HealthModifier;
+        public WeaponController weaponController => WeaponController;
         public WeaponController weaponManager => WeaponController;
+        public TargetType CurrentTarget { get; private set; }
 
 
-        protected GameObject currentTarget => GetTargetFromDetectionArea(transform.position, attackRange * 100);
-
-        private GameObject GetTargetFromDetectionArea(Vector3 transformPosition, float f)
+        protected GameObject GetTargetFromDetectionArea()
         {
             Collider[] colliders = new Collider[3];
-            Physics.OverlapSphereNonAlloc(transformPosition, f, colliders, LayerMask.GetMask("Ally", "Player"));
+            Physics.OverlapSphereNonAlloc(transform.position, detectionRange, colliders, TargetLayer);
             return colliders.ConvertTo(c =>
                 {
-                    if (c == null)
+                    if (!c)
                         return new PotentialTarget();
                     return new PotentialTarget(gameObject, c.gameObject);
                 }).ToHeap().RemoveFirst()
                 .Target;
         }
 
-        protected Vector3 directionToTarget => (currentTarget.transform.position - transform.position).normalized;
-
-
-        public enum BehaviourType
+        public void SetTarget<T>(T playerControllerTransform) where T : MonoBehaviour
         {
-            Weapon,
-            Pathfinding,
-            Death
+            SetTarget(playerControllerTransform.GetType());
         }
 
-        public void SetBehaviour(BehaviourType type, Action callback)
+        public virtual void SetTarget(Type type)
         {
-            switch (type)
+            if (type == typeof(PlayerController))
             {
-                case BehaviourType.Weapon:
-                    ONOverridingWeaponBehaviour = callback;
-                    break;
-                case BehaviourType.Pathfinding:
-                    ONOverridingPathfinding = callback;
-                    break;
-                case BehaviourType.Death:
-                    ONOverridingDeathEvent = callback;
-                    break;
+                TargetLayer = LayerMask.GetMask("Ally", "Player");
+                CurrentTarget = TargetType.Player;
+            }
+            else if (type == typeof(BaseEnemy))
+            {
+                TargetLayer = LayerMask.GetMask("Enemy");
+                CurrentTarget = TargetType.Enemy;
             }
         }
+
+
+        protected void UseWeapon(GameObject target)
+        {
+            if (WeaponController && target && IsInsideDetectionRange(target, transform, attackRange))
+            {
+                var position = transform.position;
+                Vector3 targetDir = (target.transform.position - position).normalized;
+                weaponController.Aim(targetDir);
+                weaponController.Shoot(!Physics.Raycast(position, targetDir, attackRange,
+                    LayerMask.GetMask("Default")));
+            }
+
+            weaponController.Aim(transform.forward.normalized);
+        }
+
 
         protected virtual void Awake()
         {
-            Rigidbody = GetComponent<Rigidbody>();
             WeaponController = GetComponent<WeaponController>();
-            WeaponController.SetDesiredTarget(typeof(PlayerController));
             HealthModifier = GetComponent<HealthModifier>();
-
-            ONOverridingPathfinding = DefaultPathfind;
-            ONOverridingWeaponBehaviour = () => BasicWeaponBehaviour(currentTarget, gameObject.transform, attackRange);
         }
 
-
-        private void Update()
-        {
-            ONOverridingWeaponBehaviour?.Invoke();
-            ONOverridingPathfinding?.Invoke();
-        }
-
-        private void FixedUpdate()
-        {
-            Rigidbody.velocity = currentDirection * Time.fixedDeltaTime;
-        }
-
-
-        protected abstract void DefaultPathfind();
-
-        protected virtual void OnDisable()
-        {
-            if (HealthModifier.IsFlaggedForDeath)
-            {
-                ONOverridingDeathEvent?.Invoke();
-            }
-
-            if (isFlaggedForReset)
-            {
-                ResetBehaviour(true);
-                isFlaggedForReset = false;
-                ONOverridingDeathEvent = null;
-                ONOverridingPathfinding = DefaultPathfind;
-                ONOverridingWeaponBehaviour =
-                    () => BasicWeaponBehaviour(currentTarget, gameObject.transform, attackRange);
-            }
-        }
-
-        public static void BasicWeaponBehaviour(GameObject currentTarget, Transform owner, float attackRange)
-        {
-            var weaponController = owner.GetComponent<WeaponController>();
-            if (currentTarget)
-            {
-                weaponController.Aim((currentTarget.transform.position - owner.position)
-                    .normalized);
-                weaponController.Shoot(IsInsideDetectionRange(currentTarget, owner, attackRange));
-            }
-        }
 
         public static bool IsInsideDetectionRange(GameObject target, Transform transform, float range)
         {
@@ -149,6 +96,8 @@ namespace Enemies
             return dist < range;
         }
 
+
+        #region HeapImplementationOfGameObject
 
         class PotentialTarget : IHeapItem<PotentialTarget>
         {
@@ -172,78 +121,6 @@ namespace Enemies
             }
         }
 
-        private Coroutine _coroutine;
-
-
-        public void OnPathFound(Vector3[] waypoints, bool succeded)
-        {
-            if (succeded && gameObject.activeSelf)
-            {
-                Path = new Path(waypoints, transform.position, turnDistance, stoppingDst);
-                ResetBehaviour();
-                _coroutine = StartCoroutine(FollowPath());
-            }
-        }
-
-        public void ResetBehaviour(bool resetPath = false)
-        {
-            if (_coroutine != null)
-                StopCoroutine(_coroutine);
-            if (resetPath)
-                Path = null;
-        }
-
-
-        private IEnumerator FollowPath()
-        {
-            bool followingPath = true;
-            int pathIndex = 0;
-
-            if (Path.lookPoints.Length > 0)
-                rigidBody.MoveRotation(Quaternion.LookRotation((Path.lookPoints[0] - transform.position)));
-
-            while (followingPath)
-            {
-                Vector2 pos2D = new Vector2(transform.position.x, transform.position.z);
-                while (Path.turnBoundaries[pathIndex].HasCrossedLine(pos2D))
-                {
-                    if (pathIndex == Path.finishLineIndex)
-                    {
-                        followingPath = false;
-                        break;
-                    }
-                    else
-                    {
-                        pathIndex++;
-                    }
-                }
-
-                if (followingPath)
-                {
-                    if (pathIndex >= Path.slowDownIndex && stoppingDst > 0)
-                    {
-                        speedPercent =
-                            Mathf.Clamp01(Path.turnBoundaries[Path.finishLineIndex].DistanceFromPoint(pos2D) /
-                                          stoppingDst);
-                        if (speedPercent < 0.01f)
-                        {
-                            followingPath = false;
-                        }
-                    }
-
-                    Quaternion targetRotation =
-                        Quaternion.LookRotation(Path.lookPoints[pathIndex] - transform.position);
-                    transform.rotation =
-                        Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * turnSpeed);
-                    // transform.Translate(Vector3.forward * (Time.deltaTime * speed * speedPercent), Space.Self);
-                    currentDirection = (Path.lookPoints[pathIndex] - transform.position).normalized *
-                                       (speed * speedPercent);
-                }
-
-                yield return null;
-            }
-
-            yield return null;
-        }
+        #endregion
     }
 }

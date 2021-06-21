@@ -5,7 +5,8 @@ using Player;
 using UnityEngine;
 using Weaponry.Settings.Bullet_Modifier;
 
-[CreateAssetMenu(fileName = "New Penetration Modifier", menuName = "GMTK/Weapons/Modifiers/Create Penetration Modifier", order = 0)]
+[CreateAssetMenu(fileName = "New Penetration Modifier", menuName = "GMTK/Weapons/Modifiers/Create Penetration Modifier",
+    order = 0)]
 public class Penetration : BulletModifier
 {
     public int maxPenetration = 3;
@@ -22,7 +23,7 @@ public class Penetration : BulletModifier
     private void AddPenetrationEffect(Collider obj, Bullet bullet)
     {
         if (obj.GetComponent<BaseEnemy>() is { } baseEnemy &&
-            baseEnemy.weaponManager.CurTarget == typeof(PlayerController) && currentPenetration <= maxPenetration)
+            baseEnemy.CurrentTarget == BaseEnemy.TargetType.Player && currentPenetration <= maxPenetration)
         {
             currentPenetration++;
         }

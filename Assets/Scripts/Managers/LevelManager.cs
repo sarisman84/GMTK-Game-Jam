@@ -46,7 +46,7 @@ namespace Level
         private TimeDisplayer _timeDisplayer;
         private EnemyGenerator _enemyGenerator;
         private AsteroidField _asteroidGenerator;
-        private PathfindingManager _pathfindingManager;
+        private PathRequestManager _pathRequestManager;
         private DoTweenAnimator _transition;
 
         private PlayerController _player;
@@ -138,10 +138,10 @@ namespace Level
             _player.SetActive(false, false);
             _musicPlayer.Play(menuMusic);
 
-            _pathfindingManager =
-                new PathfindingManager(transform.position, aStarObstacleMask, aStarGridSize, aStarNodeRadius,
+            _pathRequestManager =
+                new PathRequestManager(transform.position, aStarObstacleMask, aStarGridSize, aStarNodeRadius,
                     _enemyGenerator);
-            _pathfindingManager.logistics.area.displayGrid = displayGrid;
+            _pathRequestManager.logistics.area.displayGrid = displayGrid;
             _transition.Play(toMainMenuTransition);
 
 
@@ -176,7 +176,7 @@ namespace Level
 
 
             selectedLevel.FetchScene().SetSceneActive(true);
-            _pathfindingManager.logistics.area.UpdateGrid();
+            _pathRequestManager.logistics.area.UpdateGrid();
             _musicPlayer.Play(selectedLevel.musicClip);
 
 
@@ -338,8 +338,8 @@ namespace Level
 
         private void OnDrawGizmos()
         {
-            if (_pathfindingManager != null)
-                _pathfindingManager.logistics.area.DrawGrid();
+            if (_pathRequestManager != null)
+                _pathRequestManager.logistics.area.DrawGrid();
         }
 
 

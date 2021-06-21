@@ -18,7 +18,6 @@ namespace Player
         private Camera _cam;
         private Plane _plane;
         public WeaponDisplayer displayer;
-        public Type CurTarget { get; private set; }
 
 
         public int CurrentWeapon => _currentWeapon;
@@ -27,7 +26,6 @@ namespace Player
         {
             _cam = Camera.main;
             _plane = new Plane();
-         
         }
 
         private void Update()
@@ -87,12 +85,7 @@ namespace Player
                 displayer.OnWeaponSelection(weaponLibrary[_currentWeapon]);
         }
 
-        public void SetDesiredTarget(Type target)
-        {
-            CurTarget = target;
-        }
 
-        
         /// <summary>
         /// Clears the current weapon library as well as resets the weapon displayer.
         /// </summary>

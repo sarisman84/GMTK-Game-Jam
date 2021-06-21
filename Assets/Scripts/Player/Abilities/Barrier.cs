@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using Enemies;
 using Level.Asteroids;
 using UnityEngine;
 using Utility;
@@ -42,12 +43,12 @@ namespace Player.HUD.Abilities
             foreach (var foundObj in results)
             {
                 if (foundObj && (foundObj.GetComponent<Bullet>() is { } bullet &&
-                    bullet.currentTarget == typeof(PlayerController) || foundObj.GetComponent<Asteroid>() is not null))
+                                 bullet.currentTarget == BaseEnemy.TargetType.Player ||
+                                 foundObj.GetComponent<Asteroid>() is not null))
                     foundObj.gameObject.SetActive(false);
             }
 
             yield return null;
-            
         }
 
         public override void Reset()
@@ -58,6 +59,7 @@ namespace Player.HUD.Abilities
                 fx.gameObject.SetActive(false);
                 fx = null;
             }
+
             base.Reset();
         }
     }

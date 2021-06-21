@@ -27,7 +27,7 @@ namespace Weaponry.Settings.Bullet_Modifier
             GameObject foundObj =
                 GameMaster.singletonAccess.GetNearestObjectOfType<BaseEnemy>(bullet.gameObject,
                     detectionRange, null,
-                    bullet.currentTarget == typeof(PlayerController)
+                    bullet.currentTarget == BaseEnemy.TargetType.Player
                         ? new[] {"Ally", "Player"}
                         : new[] {"Enemy"})?.gameObject;
 

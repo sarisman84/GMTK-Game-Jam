@@ -52,7 +52,6 @@ namespace Player
                 "Select_Nine");
             _rigidbody = GetComponent<Rigidbody>();
             _weaponController = GetComponent<WeaponController>();
-            _weaponController.SetDesiredTarget(typeof(BaseEnemy));
             _possessionManager = GetComponent<PossessionManager>();
             _health = GetComponent<HealthModifier>();
             _abilityManager = GetComponent<AbilityManager>();

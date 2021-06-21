@@ -12,7 +12,7 @@ namespace General
         public UnityEvent<float> onHealthChanged;
         public UnityEvent onDeath;
         private float currentHealth;
-        public bool IsFlaggedForDeath { get; private set; }
+        public bool IsFlaggedForDeath { get; internal set; }
 
         private HealthDisplay _display;
 
@@ -60,11 +60,6 @@ namespace General
 
         public void DestroyThis()
         {
-            if (gameObject.GetComponent<BaseEnemy>() is { } enemy)
-            {
-                enemy.isFlaggedForReset = true;
-            }
-
             gameObject.SetActive(false);
             ResetHealth();
         }

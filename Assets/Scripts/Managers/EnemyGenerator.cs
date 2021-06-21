@@ -28,13 +28,6 @@ namespace Managers
             }
         }
 
-        private HealthModifier _target;
-
-        public void SetTarget(HealthModifier target)
-        {
-            _target = target;
-        }
-
 
         // private void OnDrawGizmos()
         // {
@@ -65,13 +58,12 @@ namespace Managers
                 BaseEnemy chosenEnemy =
                     ObjectPooler.DynamicInstantiate(uniqueEnemyList[Random.Range(0, uniqueEnemyList.Count)],
                         SpawnAroundPlayer(currentScene, playerController, spawnDistFromPlayer), Quaternion.identity);
-                chosenEnemy.ONOverridingDeathEvent +=
-                    () =>
-                    {
-                        if (_target.GetComponent<PlayerController>() is { } player)
-                            if (chosenEnemy.weaponManager.CurTarget == typeof(PlayerController))
-                                player.PossessionManager.AdditionToCurrentKillCount = 1;
-                    };
+                chosenEnemy.SetTarget(playerController);
+                chosenEnemy.healthManager.onDeath.AddListener(() =>
+                {
+                    if (chosenEnemy.CurrentTarget == BaseEnemy.TargetType.Player)
+                        playerController.PossessionManager.AdditionToCurrentKillCount = 1;
+                });
 
 
                 yield return new WaitForSeconds(Random.Range(minSpawnRate, maxSpawnRate));
@@ -89,7 +81,6 @@ namespace Managers
             float minAmm, float maxAmm,
             float spawnDistFromPlayer)
         {
-            SetTarget(playerController.HealthManager);
             base.Generate(playerController, currentScene, numberOfEnemies, minAmm, maxAmm, spawnDistFromPlayer);
         }
     }

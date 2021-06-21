@@ -1,4 +1,5 @@
 ﻿using System;
+using Enemies;
 using Managers;
 using UnityEngine;
 using Utility;
@@ -20,7 +21,9 @@ namespace Player
                 Bullet clone = ObjectPooler.DynamicInstantiate(bulletPrefab,
                     barrel.transform.position + (barrel.forward.normalized * 3f),
                     Quaternion.Euler(0, angle, 0));
-                clone.currentTarget = controller.CurTarget;
+                clone.currentTarget = controller.GetComponent<BaseEnemy>() is { } enemy
+                    ? enemy.CurrentTarget
+                    : BaseEnemy.TargetType.Enemy;
                 clone.lifeDuration = bulletLifetime;
 
                 foreach (var bulletModifier in bulletModifiers)
