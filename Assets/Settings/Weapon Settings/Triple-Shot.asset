@@ -22,4 +22,4 @@ MonoBehaviour:
   bulletModifiers: []
   disableDefaultCollision: 0
   ammOfBullets: 3
-  spreadBetweenBullets: 45
+  spreadBetweenBullets: 15

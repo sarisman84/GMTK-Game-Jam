@@ -10,6 +10,7 @@ namespace Managers
     {
         public TimeCounter TimeCounter;
         private TMP_Text _display;
+        public event Func<bool> displayTimeCondition;
 
         public void BeginCounting(float selectedLevelTimeRemaining)
         {
@@ -26,7 +27,8 @@ namespace Managers
         private void Update()
         {
             if (TimeCounter != null)
-                if (TimeCounter.isNotOutOfTime && TimeCounter.CurrentTime <= 60)
+                if (TimeCounter.isNotOutOfTime && TimeCounter.CurrentTime <= 60 ||
+                    displayTimeCondition != null && displayTimeCondition.Invoke())
                 {
                     _display.gameObject.SetActive(true);
                     _display.text = TimeCounter.FormatToMinutes();

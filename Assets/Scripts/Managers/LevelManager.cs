@@ -96,7 +96,6 @@ namespace Level
                 {
                     TransitionToNextLevel();
                     _isTransitioningToVictory = true;
-               
                 }
             }
         }
@@ -128,6 +127,9 @@ namespace Level
 
             _musicPlayer = new GameObject("Music Player").AddComponent<MusicPlayer>();
             _timeDisplayer = new GameObject("Time Displayer").AddComponent<TimeDisplayer>();
+            _timeDisplayer.displayTimeCondition += () => _timeDisplayer.TimeCounter.HasRanOutOfTime(
+                _selectedLevels[_currentLevel].timerType ==
+                LevelSettings.CountdownType.ProgressOnZero);
             _enemyGenerator = new GameObject("Enemy Spawner").AddComponent<EnemyGenerator>();
             _asteroidGenerator = new GameObject("Asteroid Field").AddComponent<AsteroidField>();
 

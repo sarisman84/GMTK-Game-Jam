@@ -9,6 +9,7 @@ namespace Enemies
         private Agent _agent;
         public Agent AStarAgent => _agent;
 
+
         public override float movementSpeed
         {
             get => _agent.speed;
@@ -25,14 +26,29 @@ namespace Enemies
         {
             Debug.Log($"[{name}]: Setting target");
             base.SetTarget(type);
-            _agent.target = GetTargetFromDetectionArea() is { } targetFound ? targetFound.transform : null;
-            
+            _agent.target = GetTargetFromDetectionArea(transform, detectionRange, TargetLayer) is { } targetFound
+                ? targetFound.transform
+                : null;
         }
 
         private void Update()
         {
-            _agent.target = GetTargetFromDetectionArea() is { } targetFound ? targetFound.transform : null;
-            UseWeapon(_agent.target ? _agent.target.gameObject : null);
+            GameObject foundTarget = GetTargetFromDetectionArea(transform, detectionRange, TargetLayer);
+            
+            OnMovementUpdate(this);
+            if (!IsSelfUsingCustomMovementUpdate())
+                _agent.target = foundTarget
+                    ? foundTarget.transform
+                    : null;
+            
+            UseWeapon(foundTarget ? foundTarget : null);
+        }
+
+
+        private void OnDisable()
+        {
+            ResetMovementUpdate();
+            ResetPossessionState();
         }
     }
 }

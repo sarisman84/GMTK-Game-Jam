@@ -19,7 +19,8 @@ namespace Player
     {
         public Bullet bulletPrefab;
         public Transform barrel;
-        public float minionMinSpace = 2f;
+        public float minionMinDistFromPossessor = 2f;
+        public float minionMaxDistFromPossessor = 20f;
         public float ammOfKillsRequired = 5f;
 
         public List<BaseEnemy> possessedEntities;
@@ -81,6 +82,8 @@ namespace Player
                 clone.transform.localScale = Vector3.one * 5f;
                 clone.ONFixedUpdateEvent += bullet =>
                     bullet.Rigidbody.velocity = bullet.transform.forward * (50 * 100f * Time.fixedDeltaTime);
+                clone.currentTarget = BaseEnemy.TargetType.Enemy;
+                clone.gameObject.layer = LayerMask.NameToLayer("Bullet/Ally");
 
 
                 clone.ONCollisionEnterEvent += collider1 => OnBulletCollisionEnter(collider1, clone);
@@ -97,6 +100,7 @@ namespace Player
                 possessedEntities.Add(enemy);
                 enemy.SetTarget(typeof(BaseEnemy));
                 enemy.healthManager.onDeath.AddListener(() => ClearPossession(enemy));
+                enemy.ONTargetUpdateEvent += FollowPossessor;
                 enemy.gameObject.layer = LayerMask.NameToLayer("Ally");
                 enemy.GetComponent<HealthModifier>().ResetHealth();
                 ONPossessionEvent?.Invoke(enemy);
@@ -105,9 +109,35 @@ namespace Player
                 enemy.transform.SetParent(_parentForPossessed);
                 display.UpdatePossesionDisplay(possessedEntities);
                 display.CreatePossessionTether(enemy);
+                enemy.isPossessed = true;
             }
 
             bullet.gameObject.SetActive(false);
+        }
+
+        private void FollowPossessor(BaseEnemy obj)
+        {
+            switch (obj)
+            {
+                case IntelligentEnemy intelligentEnemy:
+                    GameObject target =
+                        BaseEnemy.GetTargetFromDetectionArea(obj.transform, obj.detectionRange, obj.CurrentTargetLayer);
+
+                    intelligentEnemy.AStarAgent.target = target
+                        ? target.transform
+                        : Vector3.Distance(intelligentEnemy.transform.position, transform.position) >
+                          minionMinDistFromPossessor
+                            ? transform
+                            : null;
+                    break;
+            }
+
+            if (Vector3.Distance(obj.transform.position, transform.position) > minionMaxDistFromPossessor)
+            {
+                obj.transform.position =
+                    GameMaster.singletonAccess.GetRandomPositionAroundPoint(transform.position,
+                        minionMinDistFromPossessor);
+            }
         }
 
         private void ClearPossession(BaseEnemy baseEnemy)
@@ -118,22 +148,6 @@ namespace Player
             display.RemoveTether(baseEnemy);
         }
 
-        private void OverrideTargeting(BaseEnemy obj)
-        {
-            BaseEnemy closestDummy =
-                GameMaster.singletonAccess.GetNearestObjectOfType(obj.gameObject, 15f,
-                    possessedEntities, "Enemy");
-            if (closestDummy)
-            {
-                obj.weaponController.Aim((closestDummy.transform.position - obj.transform.position).normalized);
-                obj.weaponController.Shoot(
-                    BasicEnemy.IsInsideDetectionRange(closestDummy.gameObject, obj.transform, obj.attackRange));
-            }
-            else
-            {
-                obj.weaponController.Aim((transform.position - obj.transform.position).normalized);
-            }
-        }
 
         private float _currentRate;
 
@@ -159,7 +173,8 @@ namespace Player
             foreach (var possessedEntity in possessedEntities)
             {
                 possessedEntity.transform.position =
-                    GameMaster.singletonAccess.GetRandomPositionAroundPoint(position, minionMinSpace);
+                    GameMaster.singletonAccess.GetRandomPositionAroundPoint(position, minionMinDistFromPossessor);
+                possessedEntity.isPossessed = true;
             }
         }
 

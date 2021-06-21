@@ -34,7 +34,7 @@ namespace Enemies.Testing
             }
 
             transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(_currentDirection), 0.7f);
-            UseWeapon(GetTargetFromDetectionArea());
+            UseWeapon(GetTargetFromDetectionArea(transform, detectionRange, TargetLayer));
         }
 
         protected override void Awake()
@@ -47,6 +47,12 @@ namespace Enemies.Testing
         private void FixedUpdate()
         {
             _rigidbody.velocity = transform.forward.normalized * (movementSpeed * Time.fixedDeltaTime);
+        }
+
+        private void OnDisable()
+        {
+            ResetMovementUpdate();
+            ResetPossessionState();
         }
     }
 }

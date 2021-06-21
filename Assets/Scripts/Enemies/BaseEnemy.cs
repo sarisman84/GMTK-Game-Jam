@@ -19,6 +19,8 @@ namespace Enemies
         protected WeaponController WeaponController;
         protected HealthModifier HealthModifier;
         protected LayerMask TargetLayer;
+        
+        public bool isPossessed { get; set; }
 
 
         public enum TargetType
@@ -33,9 +35,12 @@ namespace Enemies
         public WeaponController weaponController => WeaponController;
         public WeaponController weaponManager => WeaponController;
         public TargetType CurrentTarget { get; private set; }
+        public LayerMask CurrentTargetLayer => TargetLayer;
+        public event Action<BaseEnemy> ONTargetUpdateEvent;
 
 
-        protected GameObject GetTargetFromDetectionArea()
+        public static GameObject GetTargetFromDetectionArea(Transform transform, float detectionRange,
+            LayerMask TargetLayer)
         {
             Collider[] colliders = new Collider[3];
             Physics.OverlapSphereNonAlloc(transform.position, detectionRange, colliders, TargetLayer);
@@ -43,7 +48,7 @@ namespace Enemies
                 {
                     if (!c)
                         return new PotentialTarget();
-                    return new PotentialTarget(gameObject, c.gameObject);
+                    return new PotentialTarget(transform.gameObject, c.gameObject);
                 }).ToHeap().RemoveFirst()
                 .Target;
         }
@@ -51,6 +56,26 @@ namespace Enemies
         public void SetTarget<T>(T playerControllerTransform) where T : MonoBehaviour
         {
             SetTarget(playerControllerTransform.GetType());
+        }
+
+        protected void OnMovementUpdate<TEnemy>(TEnemy enemy) where TEnemy : BaseEnemy
+        {
+            ONTargetUpdateEvent?.Invoke(enemy);
+        }
+
+        protected bool IsSelfUsingCustomMovementUpdate()
+        {
+            return ONTargetUpdateEvent != null;
+        }
+
+        protected void ResetMovementUpdate()
+        {
+            ONTargetUpdateEvent = null;
+        }
+
+        protected void ResetPossessionState()
+        {
+            isPossessed = false;
         }
 
         public virtual void SetTarget(Type type)

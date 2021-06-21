@@ -5700,6 +5700,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Spawn Point Center
       objectReference: {fileID: 0}
+    - target: {fileID: 1373147550466674267, guid: 4504c9e966d45f74ba4b7707f1631a04, type: 3}
+      propertyPath: m_TagString
+      value: Level/Spawn/Center
+      objectReference: {fileID: 0}
     - target: {fileID: 7611222977191383066, guid: 4504c9e966d45f74ba4b7707f1631a04, type: 3}
       propertyPath: m_RootOrder
       value: 0

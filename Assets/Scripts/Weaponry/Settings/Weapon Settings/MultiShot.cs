@@ -21,10 +21,16 @@ namespace Player
                 Bullet clone = ObjectPooler.DynamicInstantiate(bulletPrefab,
                     barrel.transform.position + (barrel.forward.normalized * 3f),
                     Quaternion.Euler(0, angle, 0));
-                clone.currentTarget = controller.GetComponent<BaseEnemy>() is { } enemy
+                BaseEnemy enemy = controller.GetComponent<BaseEnemy>();
+                clone.currentTarget = enemy
                     ? enemy.CurrentTarget
                     : BaseEnemy.TargetType.Enemy;
                 clone.lifeDuration = bulletLifetime;
+
+                clone.gameObject.layer =
+                    controller.gameObject.GetComponent<PlayerController>() || enemy && enemy.isPossessed
+                        ? LayerMask.NameToLayer("Bullet/Ally")
+                        : LayerMask.NameToLayer("Bullet/Enemy");
 
                 foreach (var bulletModifier in bulletModifiers)
                 {

@@ -25,7 +25,7 @@ namespace Enemies
 
         public void OnPathFound(Vector3[] waypoints, bool pathSuccessful)
         {
-            if (pathSuccessful)
+            if (pathSuccessful && gameObject.activeSelf)
             {
                 path = new Path(waypoints, transform.position, turnDst, stoppingDst);
 
@@ -54,7 +54,8 @@ namespace Enemies
                 if (target)
                     if ((target.position - targetPosOld).sqrMagnitude > sqrMoveThreshold)
                     {
-                        PathRequestManager.RequestPath(transform.position, target.position, OnPathFound);
+                        PathRequestManager.RequestPath(
+                            transform.position, target.position, OnPathFound);
                         targetPosOld = target.position;
                     }
             }
@@ -70,6 +71,7 @@ namespace Enemies
             while (followingPath)
             {
                 Vector2 pos2D = new Vector2(transform.position.x, transform.position.z);
+                if (path.turnBoundaries.Length == 0) break;
                 while (path.turnBoundaries[pathIndex].HasCrossedLine(pos2D))
                 {
                     if (pathIndex == path.finishLineIndex)

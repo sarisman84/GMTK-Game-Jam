@@ -25,6 +25,7 @@ MonoBehaviour:
     maxAsteroidSpawnRate: 5
     uniqueEnemies:
     - {fileID: 3807971264212406663, guid: 007af0ee780c09a4baed2ed8c901d4f9, type: 3}
+    - {fileID: 5149619891050080706, guid: d89c9b804938d014fa58b7fb6ee4e57a, type: 3}
     enemySpawnDistanceFromPlayer: 20
     minEnemySpawnRate: 1
     maxEnemySpawnRate: 3

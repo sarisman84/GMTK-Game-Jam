@@ -16,14 +16,14 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - Bullet
+  - Bullet/Ally
   - Water
   - UI
   - Enemy
   - Ally
   - Player
   - Unwalkable
-  - 
+  - Bullet/Enemy
   - 
   - 
   - 
